@@ -8,6 +8,24 @@ const Layout = ({ children }) => {
     buttons: [],
   });
 
+  // template
+  // topBarState = {
+  //   pageName: "訂購單",
+  //   buttons: [
+  //     {
+  //       name: "check",
+  //       path: "/order",
+  //       callback: {},
+  //       icon: <someIcon></someIcon>,
+  //     },{
+  //       name: "add",
+  //       path: "/order/something",
+  //       callback: {},
+  //       icon: <someIcon></someIcon>,
+  //     }
+  //   ],
+  // };
+
   return (
     <div>
       <TopBarStateContext.Provider value={[topBarState, setTopBarState]}>
