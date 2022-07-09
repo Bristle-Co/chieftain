@@ -1,11 +1,11 @@
-.Container{
-    height: inherit;
-    aspect-ratio: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.Container {
+  height: inherit;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.Container * {
-    
+.Container:active {
+  background-color: #c4c4c4;
 }

@@ -30,6 +30,8 @@ const Layout = ({ children }) => {
     <div>
       <TopBarStateContext.Provider value={[topBarState, setTopBarState]}>
         <TopBar />
+        {/*  this is a dummy div to move actual page content down cuz topbar is floating*/}
+        <div style={{ height: "40px", width: "100vw" }}></div>
         {children}
       </TopBarStateContext.Provider>
     </div>

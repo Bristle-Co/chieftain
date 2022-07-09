@@ -1,7 +1,6 @@
 :export {
-    brown: #957B5F;
-    green: #017131;
-    light_grey: #C4C4C4;
-
-  }
-  
+  brown: #957b5f;
+  green: #017131;
+  light_grey: #c4c4c4;
+  hover_shadow: #f2f2f2;
+}
