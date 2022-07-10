@@ -10,16 +10,19 @@ import { TopBarStateContext } from "../context.js";
 import { IconContext } from "react-icons";
 
 const TopBar = () => {
-  const [sideMenuState, setSideMenuState] = useState(false);
+  const [isSideMenuActive, setIsSideMenuActive] = useState(false);
 
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
+  const toggleSideMenu = () => {
+    setIsSideMenuActive(!isSideMenuActive);
+  };
   return (
     <>
       <div className={styles.TopBarContainer}>
         <IconContext.Provider
           value={{ color: "#957B5F", height: "100%", width: "100%" }}
         >
-          <TopBarButton onClick={() => setSideMenuState(!sideMenuState)}>
+          <TopBarButton onClick={toggleSideMenu}>
             <IoMenuOutline />
           </TopBarButton>
           <Image
@@ -29,7 +32,7 @@ const TopBar = () => {
             className="selectDisable"
             src={Logo}
           ></Image>
-          {topBarState.pageName}
+          <span className={styles.PageTitle}>{topBarState.pageName}</span>
           <div className={styles.RightButtonContainer}>
             {topBarState.buttons.map((buttonJson) => (
               <TopBarButton
@@ -43,14 +46,16 @@ const TopBar = () => {
           </div>
         </IconContext.Provider>
       </div>
-      <nav className={sideMenuState ? styles.SideMenuActive : styles.SideMenu}>
+      <nav
+        className={isSideMenuActive ? styles.SideMenuActive : styles.SideMenu}
+      >
         <ul className={styles.SideMenuList}>
           {SideMenuNavigation.map((item, index) => {
             return (
               <li key={index}>
                 <Link href={item.path}>
                   <div
-                    onClick={() => setSideMenuState(!sideMenuState)}
+                    onClick={toggleSideMenu}
                     style={{ width: "100%", height: "100%" }}
                   >
                     <span>{item.title}</span>
@@ -62,13 +67,6 @@ const TopBar = () => {
           })}
         </ul>
       </nav>
-
-      <div
-        className={sideMenuState ? styles.MenuShieldActive : styles.MenuShield}
-        onClick={() => setSideMenuState(!sideMenuState)}
-      >
-        testing andy
-      </div>
     </>
   );
 };

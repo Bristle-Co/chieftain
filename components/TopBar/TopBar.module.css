@@ -20,6 +20,23 @@
   margin-left: auto;
 }
 
+.PageTitle {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  font-size: 1em;
+  height: 100%;
+  /* because I'm centering this span in position:absolute by doing auto margin + left right 0
+  it will grow the width to full width, to avoid that I set a fixed width. I expect no title will be longer than 10 characters */
+  width: 10em;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #00000000;
+}
+
 @media only screen and (max-width: 400px) {
   .LogoContainer {
     height: 40px;
@@ -90,26 +107,4 @@
   width: 60%;
   height: 2px;
   background-color: #017131;
-}
-
-.MenuShield {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: #00000000;
-  z-index: 800;
-  transition: background-color 350ms linear;
-}
-
-.MenuShieldActive {
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  width: 100vw;
-  background-color: #0000001a;
-  z-index: 800;
-  transition: background-color 350ms linear;
 }
