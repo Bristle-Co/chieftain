@@ -1,0 +1,16 @@
+.Container {
+  margin-left: 1vw;
+  margin-right: 1vw;
+  margin-top: 3vh;
+}
+
+.SearchBarContainer {
+  display: flex;
+}
+.SearchForm {
+  margin-bottom: 2vh;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

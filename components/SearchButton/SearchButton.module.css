@@ -1,0 +1,17 @@
+.SearchButton {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--brown);
+  border: none;
+  border-radius: 0.3em;
+}
+.SearchIcon {
+  font-size: 2em;
+  color: white;
+  height: auto;
+}
+
+.SearchButton:active {
+  background-color: #f2f2f2;
+}

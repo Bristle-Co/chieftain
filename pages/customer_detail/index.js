@@ -1,6 +1,9 @@
 import { TopBarStateContext } from "../../components/context.js";
 import { useContext } from "react";
 import { IoAdd } from "react-icons/io5";
+import SearchInput from "../../components/SearchInput/SearchInput.js";
+import SearchButton from "../../components/SearchButton/SearchButton.js";
+import styles from "./customer_detail.module.css";
 import axios from "axios";
 import Link from "next/link";
 
@@ -49,10 +52,38 @@ const CustomerDetail = (props) => {
   setTopBarState(customerDetailTopBarState);
 
   return (
-    <>
-      <h3>customer</h3>
-      <p>{JSON.stringify(props.data[1])}</p>
-    </>
+    <div className={styles.Container}>
+      <form className={styles.SearchForm}>
+        <SearchInput type="text" placeholder="類似即可" />
+        <SearchInput type="text" placeholder="類似即可" />
+        <SearchInput type="text" placeholder="類似即可" />
+        <SearchInput type="text" placeholder="類似即可" />
+        <SearchInput type="text" placeholder="類似即可" />
+        <SearchButton type="submit" />
+      </form>
+      <table>
+        <thead>
+          <tr>
+            <th>客戶代號</th>
+            <th>客戶名稱</th>
+            <th>聯絡人</th>
+            <th>公司聯絡電話</th>
+            <th>地址</th>
+          </tr>
+        </thead>
+        <tbody>
+          {props.data.map((customer) => (
+            <tr>
+              <td>{customer.customerId}</td>
+              <td>{customer.name}</td>
+              <td>{customer.contactName}</td>
+              <td>{customer.contactNumber}</td>
+              <td>{customer.address}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 };
 
