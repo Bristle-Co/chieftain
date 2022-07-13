@@ -62,20 +62,20 @@ const CustomerDetail = (props) => {
               {/* set the column width here inline by percentage
               all other child elements should have width:100% to fill all available space in a cell*/}
               <th style={{ width: "10%" }}>
-                <input type="text" placeholder="類似即可" />
+                <input type="text" placeholder=" 類似即可" />
               </th>
               <th style={{ width: "20%" }}>
-                <input type="text" placeholder="類似即可" />
+                <input type="text" placeholder=" 類似即可" />
               </th>
               <th style={{ width: "10%" }}>
-                <input type="text" placeholder="類似即可" />
+                <input type="text" placeholder=" 類似即可" />
               </th>
               <th style={{ width: "10%" }}>
-                <input type="text" placeholder="類似即可" />
+                <input type="text" placeholder=" 類似即可" />
               </th>
               <th style={{ width: "50%" }}>
                 <div>
-                  <input type="text" placeholder="類似即可" />
+                  <input type="text" placeholder=" 類似即可" />
                   <SearchButton type="submit" />
                 </div>
               </th>
