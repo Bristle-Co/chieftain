@@ -3,7 +3,7 @@ import Logo from "../../public/Bristle_logo_with_name.jpg";
 import styles from "./TopBar.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import SideMenuNavigation from "./Navigation.js";
+import SideMenuNavigation from "../Navigation.js";
 import TopBarButton from "./TopBarButton/TopBarButton.js";
 import { IoMenuOutline } from "react-icons/io5";
 import { TopBarStateContext } from "../context.js";
@@ -56,7 +56,7 @@ const TopBar = () => {
                 <Link href={item.path}>
                   <div
                     onClick={toggleSideMenu}
-                    style={{ width: "100%", height: "100%" }}
+                    className = {styles.NavigationItemContainer}
                   >
                     <span>{item.title}</span>
                     <div className={styles.Dividor} />

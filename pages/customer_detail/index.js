@@ -1,9 +1,10 @@
 import { TopBarStateContext } from "../../components/context.js";
 import { useContext } from "react";
 import { IoAdd } from "react-icons/io5";
-import SearchInput from "../../components/SearchInput/SearchInput.js";
 import SearchButton from "../../components/SearchButton/SearchButton.js";
+import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import styles from "./customer_detail.module.css";
+import DataTableStyles from "../../styles/DataTable.module.css";
 import axios from "axios";
 import Link from "next/link";
 
@@ -53,36 +54,65 @@ const CustomerDetail = (props) => {
 
   return (
     <div className={styles.Container}>
+      {/* form is only allowed to wrap entire table */}
       <form className={styles.SearchForm}>
-        <SearchInput type="text" placeholder="類似即可" />
-        <SearchInput type="text" placeholder="類似即可" />
-        <SearchInput type="text" placeholder="類似即可" />
-        <SearchInput type="text" placeholder="類似即可" />
-        <SearchInput type="text" placeholder="類似即可" />
-        <SearchButton type="submit" />
-      </form>
-      <table>
-        <thead>
-          <tr>
-            <th>客戶代號</th>
-            <th>客戶名稱</th>
-            <th>聯絡人</th>
-            <th>公司聯絡電話</th>
-            <th>地址</th>
-          </tr>
-        </thead>
-        <tbody>
-          {props.data.map((customer) => (
+        <table className={DataTableStyles.DataTable}>
+          <thead>
             <tr>
-              <td>{customer.customerId}</td>
-              <td>{customer.name}</td>
-              <td>{customer.contactName}</td>
-              <td>{customer.contactNumber}</td>
-              <td>{customer.address}</td>
+              {/* set the column width here inline by percentage
+              all other child elements should have width:100% to fill all available space in a cell*/}
+              <th style={{ width: "10%" }}>
+                <input type="text" placeholder="類似即可" />
+              </th>
+              <th style={{ width: "20%" }}>
+                <input type="text" placeholder="類似即可" />
+              </th>
+              <th style={{ width: "10%" }}>
+                <input type="text" placeholder="類似即可" />
+              </th>
+              <th style={{ width: "10%" }}>
+                <input type="text" placeholder="類似即可" />
+              </th>
+              <th style={{ width: "50%" }}>
+                <div>
+                  <input type="text" placeholder="類似即可" />
+                  <SearchButton type="submit" />
+                </div>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+
+            <tr>
+              <th className={styles.CustomerIdTitle}>客戶代號</th>
+              <th className={styles.NameTitle}>客戶名稱</th>
+              <th className={styles.ContactNameTitle}>聯絡人</th>
+              <th className={styles.ContactNumberTitle}>公司聯絡電話</th>
+              <th className={styles.AddressTitle}>地址</th>
+            </tr>
+          </thead>
+          <tbody>
+            {props.data.map((customer) => (
+              <tr>
+                <td>{customer.customerId}</td>
+                <td>{customer.name}</td>
+                <td>{customer.contactName}</td>
+                <td>{customer.contactNumber}</td>
+                <td>
+                  <div>
+                    {customer.address}
+                    <Link
+                      href={
+                        "/customer_detail/view_customer/" + customer.customerId
+                      }
+                    >
+                      <ArrowButton type="button" />
+                    </Link>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </form>
     </div>
   );
 };
