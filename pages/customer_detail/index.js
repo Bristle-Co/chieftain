@@ -1,6 +1,7 @@
 import { TopBarStateContext } from "../../components/context.js";
 import { useContext, useState, useEffect } from "react";
 import { IoAdd } from "react-icons/io5";
+import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
 import SearchButton from "../../components/SearchButton/SearchButton.js";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import styles from "./customer_detail.module.css";
@@ -13,33 +14,19 @@ import {
 } from "../../components/redux/customers.js";
 import { useDispatch, useSelector } from "react-redux";
 
-const customerDetailTopBarState = {
-  pageName: "客戶明細",
-  buttons: [
-    {
-      name: "新增客戶資料",
-      callback: null,
-      icon: (
-        <Link href="/customer_detail/add_customer">
-          <IoAdd />
-        </Link>
-      ),
-    },
-  ],
-};
-
 export async function getServerSideProps(context) {
   let customers;
+  const initialRequest = {
+    method: "get",
+    url: "/customer_detail/getCustomers",
+    baseURL: process.env.backendServerBaseURI,
+    params: {
+      pageIndex: 0,
+      pageSize: process.env.globalPageSize,
+    },
+  };
   try {
-    const result = await axios({
-      method: "get",
-      url: "/customer_detail/getCustomers",
-      baseURL: process.env.backendServerBaseURI,
-      params: {
-        pageIndex: 0,
-        pageSize: 20,
-      },
-    });
+    const result = await axios(initialRequest);
     customers = result.data.data;
   } catch (error) {
     console.log(error.response);
@@ -50,19 +37,39 @@ export async function getServerSideProps(context) {
   return {
     props: {
       data: customers,
+      initialAxiosRequest: initialRequest,
     },
   };
 }
 
 const CustomerDetail = (props) => {
-  useEffect(() => {
-    // only call this once in page reload, because getServerSideProps only gets called on page load
-    dispatch(setCustomers(props.data));
-  }, []);
   const dispatch = useDispatch();
   const { customers } = useSelector((state) => state.customers);
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
-  setTopBarState(customerDetailTopBarState);
+  const customerDetailTopBarState = {
+    pageName: "客戶明細",
+    buttons: [
+      {
+        name: "上一頁",
+        callback: () => getPreviousPage(),
+        icon: <IoIosArrowBack />,
+      },
+      {
+        name: "下一頁",
+        callback: () => getNextPage(),
+        icon: <IoIosArrowForward />,
+      },
+      {
+        name: "新增客戶資料",
+        callback: null,
+        icon: (
+          <Link href="/customer_detail/add_customer">
+            <IoAdd />
+          </Link>
+        ),
+      },
+    ],
+  };
 
   // state variable for search input fields
   const [customerIdSearch, setCustomerIdSearch] = useState("");
@@ -70,16 +77,82 @@ const CustomerDetail = (props) => {
   const [contactNameSearch, setContactNameSearch] = useState("");
   const [constactNumberSearch, setContactNumberSearch] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
+  const [pageIndexSearch, setpageIndexSearch] = useState(0);
+  const [currentAxiosRequest, setCurrentAxiosRequest] = useState({
+    method: "get",
+    url: "/customer_detail/getCustomers",
+    baseURL: process.env.backendServerBaseURI,
+    params: {
+      pageIndex: 0,
+      pageSize: process.env.globalPageSize,
+    },
+  });
 
-  // save initial data from getServerSideProps in redux store
+  const getNextPage = () => {
+    console.log(process.env.globalPageSize);
+    console.log(customers.length);
+    if (customers.length < process.env.globalPageSize) {
+      alert("已經是最後一頁啦~");
+      return;
+    }
+    console.log(currentAxiosRequest);
+    console.log(
+      JSON.stringify({
+        ...currentAxiosRequest,
+        params: {
+          ...currentAxiosRequest.params,
+          pageIndex: pageIndexSearch + 1,
+        },
+      })
+    );
+    setCurrentAxiosRequest({
+      ...currentAxiosRequest,
+      params: {
+        ...currentAxiosRequest.params,
+        pageIndex: pageIndexSearch + 1,
+      },
+    });
+    setpageIndexSearch(pageIndexSearch + 1);
+    fetchCustomersWithExistingRequest();
+  };
 
-  const fetchCustomerByFilter = (event) => {
+  const getPreviousPage = () => {
+    if (pageIndexSearch <= 0) {
+      alert("已經是第一頁啦~");
+      return;
+    }
+    setCurrentAxiosRequest({
+      ...currentAxiosRequest,
+      params: {
+        ...currentAxiosRequest.params,
+        pageIndex: pageIndexSearch - 1,
+      },
+    });
+
+    setpageIndexSearch(pageIndexSearch - 1);
+
+    fetchCustomersWithExistingRequest();
+  };
+
+  const fetchCustomersWithExistingRequest = () => {
+    axios(currentAxiosRequest)
+      .then((result) => {
+        dispatch(setCustomers(result.data.data));
+        console.log(
+          "fetch customer by existing request from client side success"
+        );
+        console.log(result.data.data);
+        // only update current axios request if request is successful
+        setCurrentAxiosRequest(currentAxiosRequest);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  const fetchCustomersByFilter = (event) => {
     event.preventDefault();
-    console.log("called");
-
     //TODO validate serach fields
 
-    axios({
+    const axiosConfig = {
       method: "get",
       url: "/customer_detail/getCustomers",
       baseURL: process.env.backendServerBaseURI,
@@ -93,19 +166,31 @@ const CustomerDetail = (props) => {
         pageIndex: 0,
         pageSize: 20,
       },
-    })
+    };
+    axios(axiosConfig)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log("fetch customer by filter from client side success");
         console.log(result.data.data);
+
+        // only update current axios request if request is successful
+        setCurrentAxiosRequest(axiosConfig);
       })
       .catch((error) => console.log(error));
   };
 
+  useEffect(() => {
+    // only call this once in page reload, because getServerSideProps only gets called on page load
+    // save initial data from getServerSideProps in redux store
+    setTopBarState(customerDetailTopBarState);
+    dispatch(setCustomers(props.data));
+    setCurrentAxiosRequest(props.initialAxiosRequest);
+  }, []);
+
   return (
     <div className={styles.Container}>
       {/* form is only allowed to wrap entire table */}
-      <form className={styles.SearchForm} onSubmit={fetchCustomerByFilter}>
+      <form className={styles.SearchForm} onSubmit={fetchCustomersByFilter}>
         <table className={DataTableStyles.DataTable}>
           <thead>
             <tr>
