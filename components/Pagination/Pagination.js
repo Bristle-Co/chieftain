@@ -9,8 +9,6 @@ const Pagination = (props) => {
   const [propsedPageIndex, setPropsedPageIndex] = useState(0);
   const onPageSumbit = (event) => {
     event.preventDefault();
-    console.log(props.pageIndex);
-    console.log(propsedPageIndex);
     // must set props.pageIndex before submitting
     // API call relies pageIndex in the parent level
 
@@ -46,13 +44,7 @@ const Pagination = (props) => {
           <input type="submit" hidden />
         </form>
 
-        <TopBarButton
-          onClick={() => {
-            console.log(props.pageIndex);
-            console.log(propsedPageIndex);
-            props.next();
-          }}
-        >
+        <TopBarButton onClick={() => props.next()}>
           <IoIosArrowForward className={styles.Button} />
         </TopBarButton>
       </div>
