@@ -36,6 +36,7 @@ const TopBar = () => {
           <div className={styles.RightButtonContainer}>
             {topBarState.buttons.map((buttonJson) => (
               <TopBarButton
+                key={buttonJson.name}
                 onClick={
                   buttonJson.callback != null ? buttonJson.callback : null
                 }
@@ -56,7 +57,7 @@ const TopBar = () => {
                 <Link href={item.path}>
                   <div
                     onClick={toggleSideMenu}
-                    className = {styles.NavigationItemContainer}
+                    className={styles.NavigationItemContainer}
                   >
                     <span>{item.title}</span>
                     <div className={styles.Dividor} />

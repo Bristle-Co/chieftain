@@ -1,7 +1,6 @@
 import { TopBarStateContext } from "../../components/context.js";
 import { useContext, useState, useEffect } from "react";
-import { IoAdd } from "react-icons/io5";
-import { IoIosArrowForward, IoIosArrowBack } from "react-icons/io";
+import { IoIosAdd } from "react-icons/io";
 import SearchButton from "../../components/SearchButton/SearchButton.js";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import styles from "./customer_detail.module.css";
@@ -13,6 +12,9 @@ import {
   clearCustomers,
 } from "../../components/redux/customers.js";
 import { useDispatch, useSelector } from "react-redux";
+import Pagination from "../../components/Pagination/Pagination.js";
+import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
+import { IconContext } from "react-icons";
 
 export async function getServerSideProps(context) {
   let customers;
@@ -48,27 +50,7 @@ const CustomerDetail = (props) => {
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
   const customerDetailTopBarState = {
     pageName: "客戶明細",
-    buttons: [
-      {
-        name: "上一頁",
-        callback: () => getPreviousPage(),
-        icon: <IoIosArrowBack />,
-      },
-      {
-        name: "下一頁",
-        callback: () => getNextPage(),
-        icon: <IoIosArrowForward />,
-      },
-      {
-        name: "新增客戶資料",
-        callback: null,
-        icon: (
-          <Link href="/customer_detail/add_customer">
-            <IoAdd />
-          </Link>
-        ),
-      },
-    ],
+    buttons: [],
   };
 
   // state variable for search input fields
@@ -77,7 +59,15 @@ const CustomerDetail = (props) => {
   const [contactNameSearch, setContactNameSearch] = useState("");
   const [constactNumberSearch, setContactNumberSearch] = useState("");
   const [addressSearch, setAddressSearch] = useState("");
+
+  // This is the actual pageIndex of the current state, will always be valid
   const [pageIndexSearch, setpageIndexSearch] = useState(0);
+
+  // this is used for pagination component to support the functionality
+  // of only updating pageIndex when API request is successful
+  // this index could be set to a invalid number sometimes
+  const [proposedPageIndex, setProposedPageIndex] = useState(0);
+
   const [currentAxiosRequest, setCurrentAxiosRequest] = useState({
     method: "get",
     url: "/customer_detail/getCustomers",
@@ -89,31 +79,11 @@ const CustomerDetail = (props) => {
   });
 
   const getNextPage = () => {
-    console.log(process.env.globalPageSize);
-    console.log(customers.length);
     if (customers.length < process.env.globalPageSize) {
       alert("已經是最後一頁啦~");
       return;
     }
-    console.log(currentAxiosRequest);
-    console.log(
-      JSON.stringify({
-        ...currentAxiosRequest,
-        params: {
-          ...currentAxiosRequest.params,
-          pageIndex: pageIndexSearch + 1,
-        },
-      })
-    );
-    setCurrentAxiosRequest({
-      ...currentAxiosRequest,
-      params: {
-        ...currentAxiosRequest.params,
-        pageIndex: pageIndexSearch + 1,
-      },
-    });
-    setpageIndexSearch(pageIndexSearch + 1);
-    fetchCustomersWithExistingRequest();
+    fetchCustomersByPageIndex(pageIndexSearch + 1);
   };
 
   const getPreviousPage = () => {
@@ -121,29 +91,42 @@ const CustomerDetail = (props) => {
       alert("已經是第一頁啦~");
       return;
     }
-    setCurrentAxiosRequest({
+    fetchCustomersByPageIndex(pageIndexSearch - 1);
+  };
+
+  const fetchCustomersByPageIndex = (index) => {
+    const newRequest = {
       ...currentAxiosRequest,
       params: {
         ...currentAxiosRequest.params,
-        pageIndex: pageIndexSearch - 1,
+        pageIndex: index,
       },
-    });
+    };
+    console.log("getCustomers request sent, request:");
 
-    setpageIndexSearch(pageIndexSearch - 1);
-
-    fetchCustomersWithExistingRequest();
-  };
-
-  const fetchCustomersWithExistingRequest = () => {
-    axios(currentAxiosRequest)
+    console.log(newRequest);
+    axios(newRequest)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log(
-          "fetch customer by existing request from client side success"
+          "fetch customer by existing request from client side success. result: "
         );
         console.log(result.data.data);
+
+        if (result.data.data.length <= 0) {
+          alert("超過最大頁數 這頁沒有資料囉");
+          fetchCustomersByPageIndex(pageIndexSearch);
+          return;
+        }
+        console.log("oneeeeee");
         // only update current axios request if request is successful
-        setCurrentAxiosRequest(currentAxiosRequest);
+        setCurrentAxiosRequest(newRequest);
+
+        // only update real page index if request is successful
+        setpageIndexSearch(index);
+
+        // sync proposedPageIndex so page index in pagination component is synced
+        setProposedPageIndex(index);
       })
       .catch((error) => console.log(error));
   };
@@ -164,7 +147,7 @@ const CustomerDetail = (props) => {
           constactNumberSearch === "" ? null : constactNumberSearch,
         address: addressSearch === "" ? null : addressSearch,
         pageIndex: 0,
-        pageSize: 20,
+        pageSize: process.env.globalPageSize,
       },
     };
     axios(axiosConfig)
@@ -175,25 +158,42 @@ const CustomerDetail = (props) => {
 
         // only update current axios request if request is successful
         setCurrentAxiosRequest(axiosConfig);
+        setProposedPageIndex(0);
+        setpageIndexSearch(0);
       })
       .catch((error) => console.log(error));
   };
 
   useEffect(() => {
-    // only call this once in page reload, because getServerSideProps only gets called on page load
-    // save initial data from getServerSideProps in redux store
     setTopBarState(customerDetailTopBarState);
     dispatch(setCustomers(props.data));
-    setCurrentAxiosRequest(props.initialAxiosRequest);
   }, []);
-
   return (
     <div className={styles.Container}>
+      <IconContext.Provider
+        value={{ color: "var(--brown)", height: "100%", width: "100%" }}
+      >
+        <div key="test" className={styles.ButtonContainer}>
+          <Pagination
+            previous={() => getPreviousPage()}
+            next={() => getNextPage()}
+            proposedPageIndex={proposedPageIndex}
+            setProposedPageIndex={(val) => setProposedPageIndex(val)}
+            onSubmit={(pageIndex) => fetchCustomersByPageIndex(pageIndex)}
+          />
+          <Link href="/customer_detail/add_customer">
+            <TopBarButton>
+              <IoIosAdd style={{ fontSize: "1.4em" }} />
+            </TopBarButton>
+          </Link>
+        </div>
+      </IconContext.Provider>
+
       {/* form is only allowed to wrap entire table */}
       <form className={styles.SearchForm} onSubmit={fetchCustomersByFilter}>
         <table className={DataTableStyles.DataTable}>
           <thead>
-            <tr>
+            <tr key="searchBar">
               {/* set the column width here inline by percentage
               all other child elements should have width:100% to fill all available space in a cell*/}
               <th key="customerId" style={{ width: "10%" }}>
@@ -241,7 +241,7 @@ const CustomerDetail = (props) => {
               </th>
             </tr>
 
-            <tr>
+            <tr key="titleBar">
               <th key="customerId" className={styles.CustomerIdTitle}>
                 客戶代號
               </th>
@@ -260,8 +260,8 @@ const CustomerDetail = (props) => {
             </tr>
           </thead>
           <tbody>
-            {customers.map((customer) => (
-              <tr>
+            {customers.map((customer, index) => (
+              <tr key={index}>
                 <td key="customerId">{customer.customerId}</td>
                 <td key="name">{customer.name}</td>
                 <td key="contactName">{customer.contactName}</td>

@@ -5,20 +5,7 @@ import { IoCheckmark } from "react-icons/io5";
 
 const orderTopBarState = {
   pageName: "新增訂購單",
-  buttons: [
-    {
-      name: "返回",
-      callback: () => {
-        window.history.back();
-      },
-      icon: <IoIosReturnLeft />,
-    },
-    {
-      name: "確定",
-      callback: {},
-      icon: <IoCheckmark />,
-    },
-  ],
+  buttons: []
 };
 
 const AddOrder = () => {
