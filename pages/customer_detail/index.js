@@ -61,12 +61,7 @@ const CustomerDetail = (props) => {
   const [addressSearch, setAddressSearch] = useState("");
 
   // This is the actual pageIndex of the current state, will always be valid
-  const [pageIndexSearch, setpageIndexSearch] = useState(0);
-
-  // this is used for pagination component to support the functionality
-  // of only updating pageIndex when API request is successful
-  // this index could be set to a invalid number sometimes
-  const [proposedPageIndex, setProposedPageIndex] = useState(0);
+  const [pageIndexSearch, setPageIndexSearch] = useState(0);
 
   const [currentAxiosRequest, setCurrentAxiosRequest] = useState({
     method: "get",
@@ -83,7 +78,7 @@ const CustomerDetail = (props) => {
       alert("已經是最後一頁啦~");
       return;
     }
-    fetchCustomersByPageIndex(pageIndexSearch + 1);
+    fetchCustomersByPageIndex(parseInt(pageIndexSearch) + 1);
   };
 
   const getPreviousPage = () => {
@@ -91,10 +86,14 @@ const CustomerDetail = (props) => {
       alert("已經是第一頁啦~");
       return;
     }
-    fetchCustomersByPageIndex(pageIndexSearch - 1);
+    fetchCustomersByPageIndex(parseInt(pageIndexSearch) - 1);
   };
 
   const fetchCustomersByPageIndex = (index) => {
+    if (index < 0) {
+      alert("頁數不能為負數");
+      return;
+    }
     const newRequest = {
       ...currentAxiosRequest,
       params: {
@@ -123,10 +122,7 @@ const CustomerDetail = (props) => {
         setCurrentAxiosRequest(newRequest);
 
         // only update real page index if request is successful
-        setpageIndexSearch(index);
-
-        // sync proposedPageIndex so page index in pagination component is synced
-        setProposedPageIndex(index);
+        setPageIndexSearch(index);
       })
       .catch((error) => console.log(error));
   };
@@ -158,8 +154,7 @@ const CustomerDetail = (props) => {
 
         // only update current axios request if request is successful
         setCurrentAxiosRequest(axiosConfig);
-        setProposedPageIndex(0);
-        setpageIndexSearch(0);
+        setPageIndexSearch(0);
       })
       .catch((error) => console.log(error));
   };
@@ -177,8 +172,8 @@ const CustomerDetail = (props) => {
           <Pagination
             previous={() => getPreviousPage()}
             next={() => getNextPage()}
-            proposedPageIndex={proposedPageIndex}
-            setProposedPageIndex={(val) => setProposedPageIndex(val)}
+            pageIndex={pageIndexSearch}
+            setPageIndex={(val) => setpageIndexSearch(val)}
             onSubmit={(pageIndex) => fetchCustomersByPageIndex(pageIndex)}
           />
           <Link href="/customer_detail/add_customer">

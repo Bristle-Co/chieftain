@@ -6,15 +6,15 @@ import React, { useState } from "react";
 
 const Pagination = (props) => {
   const [isInputFocused, setIsInputFocused] = useState(false);
+  const [propsedPageIndex, setPropsedPageIndex] = useState(0);
   const onPageSumbit = (event) => {
     event.preventDefault();
+    console.log(props.pageIndex);
+    console.log(propsedPageIndex);
     // must set props.pageIndex before submitting
     // API call relies pageIndex in the parent level
-    if (props.proposedPageIndex == "") {
-      alert("頁數不能空白哦");
-      return;
-    }
-    props.onSubmit(props.proposedPageIndex);
+
+    props.onSubmit(parseInt(propsedPageIndex));
   };
 
   return (
@@ -25,24 +25,34 @@ const Pagination = (props) => {
         <TopBarButton onClick={() => props.previous()}>
           <IoIosArrowBack className={styles.Button} />
         </TopBarButton>
+
         <form onSubmit={onPageSumbit}>
           <div className={styles.InputContainer}>
             <input
               type="number"
-              value={props.proposedPageIndex}
-              onfocus={() => setIsInputFocused(true)}
-              onChange={(event) =>
-                props.setProposedPageIndex(event.target.value)
-              }
-              //   onBlur={(event) => {
-              //     setPageIndex(props.proposedPageIndex);
-              //   }}
+              value={isInputFocused ? propsedPageIndex : props.pageIndex}
+              onFocus={() => {
+                setPropsedPageIndex(props.pageIndex);
+                setIsInputFocused(true);
+              }}
+              onChange={(event) => setPropsedPageIndex(event.target.value)}
+              onBlur={() => {
+                setPropsedPageIndex(props.pageIndex);
+                setIsInputFocused(false);
+              }}
             />
           </div>
+
           <input type="submit" hidden />
         </form>
 
-        <TopBarButton onClick={() => props.next()}>
+        <TopBarButton
+          onClick={() => {
+            console.log(props.pageIndex);
+            console.log(propsedPageIndex);
+            props.next();
+          }}
+        >
           <IoIosArrowForward className={styles.Button} />
         </TopBarButton>
       </div>
