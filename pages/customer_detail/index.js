@@ -161,7 +161,10 @@ const CustomerDetail = (props) => {
 
   useEffect(() => {
     setTopBarState(customerDetailTopBarState);
-    dispatch(setCustomers(props.data));
+    if (customers[0].customerId === "") {
+      // there is no customers fetched before
+      fetchCustomersByPageIndex(0);
+    }
   }, []);
   return (
     <div className={styles.Container}>
@@ -266,7 +269,10 @@ const CustomerDetail = (props) => {
                     {customer.address}
                     <Link
                       href={
-                        "/customer_detail/view_customer/" + customer.customerId
+                        "/customer_detail/view_customer/" +
+                        customer.customerId +
+                        "?storeIndex=" +
+                        index
                       }
                     >
                       <ArrowButton type="button" />
