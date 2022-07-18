@@ -16,33 +16,55 @@ import Pagination from "../../components/Pagination/Pagination.js";
 import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
 import { IconContext } from "react-icons";
 
-export async function getServerSideProps(context) {
-  let customers;
-  const initialRequest = {
-    method: "get",
-    url: "/customer_detail/getCustomers",
-    baseURL: process.env.backendServerBaseURI,
-    params: {
-      pageIndex: 0,
-      pageSize: process.env.globalPageSize,
-    },
-  };
-  try {
-    const result = await axios(initialRequest);
-    customers = result.data.data;
-  } catch (error) {
-    console.log(error.response);
-  }
-  console.log("fetch customer from server side success");
-  console.log(customers);
+// export async function getServerSideProps(context) {
+//   let customers;
+//   const initialRequest = {
+//     method: "get",
+//     url: "/customer_detail/getCustomers",
+//     baseURL: process.env.backendServerBaseURI,
+//     params: {
+//       pageIndex: 0,
+//       pageSize: process.env.globalPageSize,
+//     },
+//   };
+//   try {
+//     const result = await axios(initialRequest);
+//     customers = result.data.data;
+//   } catch (error) {
+//     console.log("fetch customer from server side failed");
+//     console.log(error.response);
+//     return {
+//       props: {
+//         data: [
+//           {
+//             customerId: "錯誤",
+//             name: "錯誤",
+//             contactName: "錯誤",
+//             contactNumber: "錯誤",
+//             contactMobileNumber: "錯誤",
+//             faxNumber: "錯誤",
+//             postalCode: "錯誤",
+//             address: "錯誤",
+//             taxId: "錯誤",
+//             receiver: "錯誤",
+//             note: "錯誤",
+//           },
+//         ],
+//         initialAxiosRequest: initialRequest,
+//       },
+//     };
+//   }
 
-  return {
-    props: {
-      data: customers,
-      initialAxiosRequest: initialRequest,
-    },
-  };
-}
+//   console.log("fetch customer from server side success");
+//   console.log(customers);
+
+//   return {
+//     props: {
+//       data: customers,
+//       initialAxiosRequest: initialRequest,
+//     },
+//   };
+// }
 
 const CustomerDetail = (props) => {
   const dispatch = useDispatch();
@@ -106,18 +128,16 @@ const CustomerDetail = (props) => {
     console.log(newRequest);
     axios(newRequest)
       .then((result) => {
+        if (result.data.data.length <= 0) {
+          console.log("empty result after fetch customer");
+          alert("超過最大頁數 這頁沒有資料囉");
+          return;
+        }
         dispatch(setCustomers(result.data.data));
         console.log(
           "fetch customer by existing request from client side success. result: "
         );
         console.log(result.data.data);
-
-        if (result.data.data.length <= 0) {
-          alert("超過最大頁數 這頁沒有資料囉");
-          fetchCustomersByPageIndex(pageIndexSearch);
-          return;
-        }
-        console.log("oneeeeee");
         // only update current axios request if request is successful
         setCurrentAxiosRequest(newRequest);
 
@@ -171,7 +191,7 @@ const CustomerDetail = (props) => {
       <IconContext.Provider
         value={{ color: "var(--brown)", height: "100%", width: "100%" }}
       >
-        <div key="test" className={styles.ButtonContainer}>
+        <div key="test" className="ButtonContainer">
           <Pagination
             previous={() => getPreviousPage()}
             next={() => getNextPage()}

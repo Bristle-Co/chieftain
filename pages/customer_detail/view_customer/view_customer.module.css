@@ -2,33 +2,60 @@
   margin-left: 1vw;
   margin-right: 1vw;
   margin-top: 3vh;
-  width: 98vw;
-  height: 94vh;
-  background-color: antiquewhite;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
 }
-.labelContainer {
-  display: inline-flex;
-  width: max-content;
-  flex-direction: column;
-  align-items: flex-end;
-}
-
-.labelContainer div {
-  margin-bottom: 5px;
-}
-
 .DataContainer {
-  margin-left: 1em;
-  display: inline-flex;
-  width: max-content;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
+  font-size: 1em;
 }
 
 .DataContainer div {
-  margin-bottom: 5px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+/* for field title when both editing/not editing */
+.DataContainer div span:first-of-type {
+  height: 100%;
+  font-size: 1em;
+  text-align: right;
+  /* for now the largest field is 5 characters, change in future if adding more fields */
+  width: 5em;
+  margin-right: 5px;
+}
+
+/* for both input when editing and span when not editing */
+.DataContainer div *:last-of-type {
+  width: 20vw;
+  overflow-wrap: break-word;
+}
+
+/* for data input tag when editing */
+.DataContainer div input {
+  margin-left: 5px;
+  height: 1.5em;
+  border: solid 1px #957b5f;
+  width: 100%;
+  border-radius: 0.2em;
+}
+
+/* for last field (note) textarea when editing */
+.DataContainer div textarea {
+  margin-left: 5px;
+  border: solid 1px #957b5f;
+  width: 100%;
+  border-radius: 0.2em;
+  height: 20vh;
+}
+
+/* for data span tag when not editing */
+.DataContainer div span:nth-child(2) {
+  margin-left: 5px;
 }

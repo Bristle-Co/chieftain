@@ -18,6 +18,19 @@ const initialState = {
       note: "",
     },
   ],
+  customerInUse: {
+    customerId: "",
+    name: "",
+    contactName: "",
+    contactNumber: "",
+    contactMobileNumber: "",
+    faxNumber: "",
+    postalCode: "",
+    address: "",
+    taxId: "",
+    receiver: "",
+    note: "",
+  },
 };
 
 export const customerSlice = createSlice({
@@ -30,10 +43,14 @@ export const customerSlice = createSlice({
     clearCustomers: (state) => {
       state.customers = [];
     },
+    setCustomerInUse: (state, action) => {
+      state.customerInUse = action.payload;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCustomers, clearCustomers } = customerSlice.actions;
+export const { setCustomers, clearCustomers, setCustomerInUse } =
+  customerSlice.actions;
 
 export default customerSlice.reducer;
