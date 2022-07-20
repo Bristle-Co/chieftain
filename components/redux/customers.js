@@ -36,7 +36,7 @@ const initialState = {
 };
 
 export const customerSlice = createSlice({
-  name: "counter",
+  name: "customer",
   initialState,
   reducers: {
     setCustomers: (state, action) => {
