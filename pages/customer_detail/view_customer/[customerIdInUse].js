@@ -12,6 +12,7 @@ import {
   IoReturnUpBack,
 } from "react-icons/io5";
 import {
+  setCustomers,
   setCustomerInUse,
   resetCustomerInUseToDefault,
 } from "../../../components/redux/customers.js";
@@ -80,6 +81,9 @@ export async function getServerSideProps(context) {
 const view_customer = (props) => {
   const dispatch = useDispatch();
   const { customerInUse } = useSelector((state) => state.customerInUse);
+  const { customers } = useSelector((state) => state.customers);
+  const { request } = useSelector((state) => state.request);
+
   const router = useRouter();
   const { customerIdInUse } = router.query;
   const [isEditing, setIsEditing] = useState(false);
@@ -147,6 +151,7 @@ const view_customer = (props) => {
             console.log(result);
             dispatch(setCustomerInUse(result.data.data[0]));
             setIsEditing(false);
+            fetchCustomerWithCachedRequest();
           })
           .catch((error) => {
             console.log("get after update failed");
@@ -173,6 +178,7 @@ const view_customer = (props) => {
         console.log("delete success");
         console.log(result);
         dispatch(resetCustomerInUseToDefault());
+        fetchCustomerWithCachedRequest();
         window.location.replace("/customer_detail");
       })
       .catch((error) => {
@@ -181,6 +187,24 @@ const view_customer = (props) => {
       });
   };
 
+  const fetchCustomerWithCachedRequest = () => {
+    console.log("getCustomers request sent, request:");
+    console.log(request);
+    axios(request)
+      .then((result) => {
+        dispatch(setCustomers(result.data.data));
+        console.log(
+          "fetch customer by existing request from client side success. result: "
+        );
+        console.log(result.data.data);
+      })
+      .catch((error) => {
+        console.log(
+          "fetch customer by existing request from client side failed. error: "
+        );
+        console.log(error);
+      });
+  };
   return (
     <div className={styles.Container}>
       <IconContext.Provider

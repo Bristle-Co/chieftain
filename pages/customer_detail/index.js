@@ -210,8 +210,10 @@ const CustomerDetail = (props) => {
   useEffect(() => {
     setTopBarState(customerDetailTopBarState);
 
-    // always refetch entire set of data
-    fetchCustomerWithCachedRequest();
+    // only fetch customers on first time load when there is no customers fetched in redux store
+    if (customers[0].customerId === "") {
+      fetchCustomerWithCachedRequest();
+    }
   }, []);
   return (
     <div className={styles.Container}>
