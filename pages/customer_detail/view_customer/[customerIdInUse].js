@@ -40,11 +40,11 @@ const getCustomerByIdRequest = (givenCustomerId) => {
   };
 };
 export async function getServerSideProps(context) {
-  const { customerId } = context.query;
+  const { customerIdInUse } = context.query;
   let customer;
 
   try {
-    const result = await axios(getCustomerByIdRequest(customerId));
+    const result = await axios(getCustomerByIdRequest(customerIdInUse));
     customer = result.data.data[0];
   } catch (error) {
     console.log(error.response);
