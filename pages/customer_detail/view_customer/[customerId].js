@@ -11,11 +11,7 @@ import {
   IoTrashOutline,
   IoReturnUpBack,
 } from "react-icons/io5";
-import {
-  setCustomers,
-  setCustomerInUse,
-  resetCustomerInUseToDefault,
-} from "../../../components/redux/customers.js";
+import { setCustomers } from "../../../components/redux/customers.js";
 
 const isEqualCustomer = (customer1, customer2) => {
   let isEqual = true;
@@ -41,11 +37,11 @@ const getCustomerByIdRequest = (givenCustomerId) => {
   };
 };
 export async function getServerSideProps(context) {
-  const { customerIdInUse } = context.query;
+  const { customerId } = context.query;
   let customer;
 
   try {
-    const result = await axios(getCustomerByIdRequest(customerIdInUse));
+    const result = await axios(getCustomerByIdRequest(customerId));
     customer = result.data.data[0];
   } catch (error) {
     console.log(error.response);
@@ -80,16 +76,11 @@ export async function getServerSideProps(context) {
 }
 const view_customer = (props) => {
   const dispatch = useDispatch();
-  const { customerInUse } = useSelector((state) => state.customerInUse);
-  const { customers } = useSelector((state) => state.customers);
   const { request } = useSelector((state) => state.request);
+  const [customer, setCustomer] = useState(props.data);
 
   const router = useRouter();
-  const { customerIdInUse } = router.query;
   const [isEditing, setIsEditing] = useState(false);
-  useEffect(() => {
-    dispatch(setCustomerInUse(props.data));
-  }, []);
 
   // useState variable for customer fields
   const [customerId, setCustomerId] = useState(props.data.customerId);
@@ -130,7 +121,7 @@ const view_customer = (props) => {
       receiver: receiver,
       note: note,
     };
-    if (isEqualCustomer(customerInUse, updatedCustomer)) {
+    if (isEqualCustomer(customer, updatedCustomer)) {
       console.log("no fields changed, update request is not sent");
       setIsEditing(false);
       return;
@@ -149,7 +140,7 @@ const view_customer = (props) => {
           .then((result) => {
             console.log("get after update sucess");
             console.log(result);
-            dispatch(setCustomerInUse(result.data.data[0]));
+            setCustomer(result.data.data[0]);
             setIsEditing(false);
             fetchCustomerWithCachedRequest();
           })
@@ -165,19 +156,18 @@ const view_customer = (props) => {
   };
 
   const deleteCustomerAndGoToMainPage = () => {
-    console.log("delete customer request with ID " + customerIdInUse + " sent");
+    console.log("delete customer request with ID " + customerId + " sent");
     axios({
       method: "DELETE",
       url: "/customer_detail",
       baseURL: process.env.backendServerBaseURI,
       params: {
-        customerId: customerIdInUse,
+        customerId: customerId,
       },
     })
       .then((result) => {
         console.log("delete success");
         console.log(result);
-        dispatch(resetCustomerInUseToDefault());
         fetchCustomerWithCachedRequest();
         window.location.replace("/customer_detail");
       })
@@ -194,13 +184,13 @@ const view_customer = (props) => {
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log(
-          "fetch customer by existing request from client side success. result: "
+          "getCustomers by existing request from client side success. result: "
         );
         console.log(result.data.data);
       })
       .catch((error) => {
         console.log(
-          "fetch customer by existing request from client side failed. error: "
+          "getCustomers by existing request from client side failed. error: "
         );
         console.log(error);
       });
@@ -228,14 +218,14 @@ const view_customer = (props) => {
       </IconContext.Provider>
       <div className={styles.DataContainer}>
         <div>
-          <span>客戶代號</span>:<span>{customerInUse.customerId}</span>
+          <span>客戶代號</span>:<span>{customer.customerId}</span>
         </div>
         <div>
           <span>公司名稱</span>:
           {isEditing ? (
             <input value={name} onChange={(e) => setName(e.target.value)} />
           ) : (
-            <span>{customerInUse.name}</span>
+            <span>{customer.name}</span>
           )}
         </div>
         <div>
@@ -246,7 +236,7 @@ const view_customer = (props) => {
               onChange={(e) => setContactName(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.contactName}</span>
+            <span>{customer.contactName}</span>
           )}
         </div>
         <div>
@@ -257,7 +247,7 @@ const view_customer = (props) => {
               onChange={(e) => setContactNumber(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.contactNumber}</span>
+            <span>{customer.contactNumber}</span>
           )}
         </div>
         <div>
@@ -268,7 +258,7 @@ const view_customer = (props) => {
               onChange={(e) => setContactMobileNumber(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.contactMobileNumber}</span>
+            <span>{customer.contactMobileNumber}</span>
           )}
         </div>
         <div>
@@ -279,7 +269,7 @@ const view_customer = (props) => {
               onChange={(e) => setFaxNumber(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.faxNumber}</span>
+            <span>{customer.faxNumber}</span>
           )}
         </div>
         <div>
@@ -290,7 +280,7 @@ const view_customer = (props) => {
               onChange={(e) => setPostalCode(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.postalCode}</span>
+            <span>{customer.postalCode}</span>
           )}
         </div>
         <div>
@@ -301,7 +291,7 @@ const view_customer = (props) => {
               onChange={(e) => setAddress(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.address}</span>
+            <span>{customer.address}</span>
           )}
         </div>
         <div>
@@ -309,7 +299,7 @@ const view_customer = (props) => {
           {isEditing ? (
             <input value={taxId} onChange={(e) => setTaxId(e.target.value)} />
           ) : (
-            <span>{customerInUse.taxId}</span>
+            <span>{customer.taxId}</span>
           )}
         </div>
         <div>
@@ -320,7 +310,7 @@ const view_customer = (props) => {
               onChange={(e) => setReceiver(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.receiver}</span>
+            <span>{customer.receiver}</span>
           )}
         </div>
         <div>
@@ -331,7 +321,7 @@ const view_customer = (props) => {
               onChange={(e) => setNote(e.target.value)}
             />
           ) : (
-            <span>{customerInUse.note}</span>
+            <span>{customer.note}</span>
           )}
         </div>
       </div>

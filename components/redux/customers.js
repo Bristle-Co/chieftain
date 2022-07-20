@@ -18,19 +18,6 @@ const initialState = {
       note: "",
     },
   ],
-  customerInUse: {
-    customerId: "",
-    name: "",
-    contactName: "",
-    contactNumber: "",
-    contactMobileNumber: "",
-    faxNumber: "",
-    postalCode: "",
-    address: "",
-    taxId: "",
-    receiver: "",
-    note: "",
-  },
   // request is kept in cache so pagination parameters are not lost after navigating to different pages
   request: {
     method: "GET",
@@ -58,24 +45,6 @@ export const customerSlice = createSlice({
     clearCustomers: (state) => {
       state.customers = [];
     },
-    setCustomerInUse: (state, action) => {
-      state.customerInUse = action.payload;
-    },
-    resetCustomerInUseToDefault: (state) => {
-      state.customerInUse = {
-        customerId: "",
-        name: "",
-        contactName: "",
-        contactNumber: "",
-        contactMobileNumber: "",
-        faxNumber: "",
-        postalCode: "",
-        address: "",
-        taxId: "",
-        receiver: "",
-        note: "",
-      };
-    },
     setCustomerRequest: (state, action) => {
       state.request = action.payload;
     },
@@ -97,8 +66,6 @@ export const customerSlice = createSlice({
 export const {
   setCustomers,
   clearCustomers,
-  setCustomerInUse,
-  resetCustomerInUseToDefault,
   setCustomerRequest,
   resetCustomerRequestParamsToDefault,
 } = customerSlice.actions;

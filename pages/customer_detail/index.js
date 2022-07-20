@@ -129,13 +129,13 @@ const CustomerDetail = (props) => {
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log(
-          "fetch customer by existing request from client side success. result: "
+          "getCustomers by existing request from client side success. result: "
         );
         console.log(result.data.data);
       })
       .catch((error) => {
         console.log(
-          "fetch customer by existing request from client side failed. error: "
+          "getCustomers by existing request from client side failed. error: "
         );
         console.log(error);
       });
@@ -165,7 +165,7 @@ const CustomerDetail = (props) => {
         }
         dispatch(setCustomers(result.data.data));
         console.log(
-          "fetch customer by pageIndex from client side success. result: "
+          "getCustomers by pageIndex from client side success. result: "
         );
         console.log(result.data.data);
         // only update current axios request if request is successful
@@ -197,7 +197,7 @@ const CustomerDetail = (props) => {
     axios(newRequest)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
-        console.log("fetch customer by filter from client side success");
+        console.log("getCustomers by filter from client side success");
         console.log(result.data.data);
 
         // only update current axios request if request is successful

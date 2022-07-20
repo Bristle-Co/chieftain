@@ -5,7 +5,6 @@ const store = configureStore({
   reducer: {
     // this name must match the name of the initial state field
     customers: customerReducer,
-    customerInUse: customerReducer,
     request: customerReducer,
   },
 });
