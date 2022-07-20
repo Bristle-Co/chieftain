@@ -9,8 +9,12 @@ import {
   IoPencil,
   IoCheckmarkDoneOutline,
   IoTrashOutline,
+  IoReturnUpBack,
 } from "react-icons/io5";
-import { setCustomerInUse } from "../../../components/redux/customers.js";
+import {
+  setCustomerInUse,
+  resetCustomerInUseToDefault,
+} from "../../../components/redux/customers.js";
 
 const isEqualCustomer = (customer1, customer2) => {
   let isEqual = true;
@@ -25,8 +29,8 @@ const isEqualCustomer = (customer1, customer2) => {
 };
 const getCustomerByIdRequest = (givenCustomerId) => {
   return {
-    method: "get",
-    url: "/customer_detail/getCustomers",
+    method: "GET",
+    url: "/customer_detail",
     baseURL: process.env.backendServerBaseURI,
     params: {
       customerId: givenCustomerId,
@@ -77,7 +81,7 @@ const view_customer = (props) => {
   const dispatch = useDispatch();
   const { customerInUse } = useSelector((state) => state.customerInUse);
   const router = useRouter();
-  const { customerIdInUse, storeIndex } = router.query;
+  const { customerIdInUse } = router.query;
   const [isEditing, setIsEditing] = useState(false);
   useEffect(() => {
     dispatch(setCustomerInUse(props.data));
@@ -129,7 +133,7 @@ const view_customer = (props) => {
     }
     axios({
       method: "PUT",
-      url: "/customer_detail/updateCustomer",
+      url: "/customer_detail",
       baseURL: process.env.backendServerBaseURI,
       data: updatedCustomer,
     })
@@ -155,16 +159,45 @@ const view_customer = (props) => {
       });
   };
 
+  const deleteCustomerAndGoToMainPage = () => {
+    console.log("delete customer request with ID " + customerIdInUse + " sent");
+    axios({
+      method: "DELETE",
+      url: "/customer_detail",
+      baseURL: process.env.backendServerBaseURI,
+      params: {
+        customerId: customerIdInUse,
+      },
+    })
+      .then((result) => {
+        console.log("delete success");
+        console.log(result);
+        dispatch(resetCustomerInUseToDefault());
+        window.location.replace("/customer_detail");
+      })
+      .catch((error) => {
+        console.log("delete failed");
+        console.log(error);
+      });
+  };
+
   return (
     <div className={styles.Container}>
       <IconContext.Provider
         value={{ color: "var(--brown)", height: "100%", width: "100%" }}
       >
         <div key="test" className="ButtonContainer">
+          <TopBarButton onClick={() => window.history.back()}>
+            <IoReturnUpBack />
+          </TopBarButton>
           <TopBarButton onClick={() => handleEditing()}>
             {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
           </TopBarButton>
-          <TopBarButton>
+          <TopBarButton
+            onClick={() => {
+              deleteCustomerAndGoToMainPage();
+            }}
+          >
             <IoTrashOutline />
           </TopBarButton>
         </div>

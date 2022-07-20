@@ -10,6 +10,7 @@ import Link from "next/link";
 import {
   setCustomers,
   clearCustomers,
+  setCustomerRequest,
 } from "../../components/redux/customers.js";
 import { useDispatch, useSelector } from "react-redux";
 import Pagination from "../../components/Pagination/Pagination.js";
@@ -69,6 +70,8 @@ import { IconContext } from "react-icons";
 const CustomerDetail = (props) => {
   const dispatch = useDispatch();
   const { customers } = useSelector((state) => state.customers);
+  const { request } = useSelector((state) => state.request);
+
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
   const customerDetailTopBarState = {
     pageName: "客戶明細",
@@ -76,14 +79,22 @@ const CustomerDetail = (props) => {
   };
 
   // state variable for search input fields
-  const [customerIdSearch, setCustomerIdSearch] = useState("");
-  const [nameSearch, setNameSearch] = useState("");
-  const [contactNameSearch, setContactNameSearch] = useState("");
-  const [constactNumberSearch, setContactNumberSearch] = useState("");
-  const [addressSearch, setAddressSearch] = useState("");
+  const [customerIdSearch, setCustomerIdSearch] = useState(
+    request.params.customerId
+  );
+  const [nameSearch, setNameSearch] = useState(request.params.name);
+  const [contactNameSearch, setContactNameSearch] = useState(
+    request.params.contactName
+  );
+  const [contactNumberSearch, setContactNumberSearch] = useState(
+    request.params.contactNumber
+  );
+  const [addressSearch, setAddressSearch] = useState(request.params.address);
 
   // This is the actual pageIndex of the current state, will always be valid
-  const [pageIndexSearch, setPageIndexSearch] = useState(0);
+  const [pageIndexSearch, setPageIndexSearch] = useState(
+    request.params.pageIndex
+  );
 
   const [currentAxiosRequest, setCurrentAxiosRequest] = useState({
     method: "get",
@@ -111,15 +122,34 @@ const CustomerDetail = (props) => {
     fetchCustomersByPageIndex(parseInt(pageIndexSearch) - 1);
   };
 
+  const fetchCustomerWithCachedRequest = () => {
+    console.log("getCustomers request sent, request:");
+    console.log(request);
+    axios(request)
+      .then((result) => {
+        dispatch(setCustomers(result.data.data));
+        console.log(
+          "fetch customer by existing request from client side success. result: "
+        );
+        console.log(result.data.data);
+      })
+      .catch((error) => {
+        console.log(
+          "fetch customer by existing request from client side failed. error: "
+        );
+        console.log(error);
+      });
+  };
+
   const fetchCustomersByPageIndex = (index) => {
     if (index < 0) {
       alert("頁數不能為負數");
       return;
     }
     const newRequest = {
-      ...currentAxiosRequest,
+      ...request,
       params: {
-        ...currentAxiosRequest.params,
+        ...request.params,
         pageIndex: index,
       },
     };
@@ -135,11 +165,11 @@ const CustomerDetail = (props) => {
         }
         dispatch(setCustomers(result.data.data));
         console.log(
-          "fetch customer by existing request from client side success. result: "
+          "fetch customer by pageIndex from client side success. result: "
         );
         console.log(result.data.data);
         // only update current axios request if request is successful
-        setCurrentAxiosRequest(newRequest);
+        dispatch(setCustomerRequest(newRequest));
 
         // only update real page index if request is successful
         setPageIndexSearch(index);
@@ -151,29 +181,27 @@ const CustomerDetail = (props) => {
     event.preventDefault();
     //TODO validate serach fields
 
-    const axiosConfig = {
-      method: "get",
-      url: "/customer_detail/getCustomers",
+    const newRequest = {
+      url: "/customer_detail",
       baseURL: process.env.backendServerBaseURI,
       params: {
         customerId: customerIdSearch === "" ? null : customerIdSearch,
         name: nameSearch === "" ? null : nameSearch,
         contactName: contactNameSearch === "" ? null : contactNameSearch,
-        contactNumber:
-          constactNumberSearch === "" ? null : constactNumberSearch,
+        contactNumber: contactNumberSearch === "" ? null : contactNumberSearch,
         address: addressSearch === "" ? null : addressSearch,
         pageIndex: 0,
         pageSize: process.env.globalPageSize,
       },
     };
-    axios(axiosConfig)
+    axios(newRequest)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log("fetch customer by filter from client side success");
         console.log(result.data.data);
 
         // only update current axios request if request is successful
-        setCurrentAxiosRequest(axiosConfig);
+        dispatch(setCustomerRequest(newRequest));
         setPageIndexSearch(0);
       })
       .catch((error) => console.log(error));
@@ -181,10 +209,9 @@ const CustomerDetail = (props) => {
 
   useEffect(() => {
     setTopBarState(customerDetailTopBarState);
-    if (customers[0].customerId === "") {
-      // there is no customers fetched before
-      fetchCustomersByPageIndex(0);
-    }
+
+    // always refetch entire set of data
+    fetchCustomerWithCachedRequest();
   }, []);
   return (
     <div className={styles.Container}>
@@ -242,7 +269,7 @@ const CustomerDetail = (props) => {
                 <input
                   type="text"
                   placeholder=" 類似即可"
-                  value={constactNumberSearch}
+                  value={contactNumberSearch}
                   onChange={(e) => setContactNumberSearch(e.target.value)}
                 />
               </th>
@@ -289,10 +316,7 @@ const CustomerDetail = (props) => {
                     {customer.address}
                     <Link
                       href={
-                        "/customer_detail/view_customer/" +
-                        customer.customerId +
-                        "?storeIndex=" +
-                        index
+                        "/customer_detail/view_customer/" + customer.customerId
                       }
                     >
                       <ArrowButton type="button" />

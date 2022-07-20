@@ -31,6 +31,21 @@ const initialState = {
     receiver: "",
     note: "",
   },
+  // request is kept in cache so pagination parameters are not lost after navigating to different pages
+  request: {
+    method: "GET",
+    url: "/customer_detail",
+    baseURL: process.env.backendServerBaseURI,
+    params: {
+      customerId: "",
+      name: "",
+      contactName: "",
+      contactNumber: "",
+      address: "",
+      pageIndex: 0,
+      pageSize: process.env.globalPageSize,
+    },
+  },
 };
 
 export const customerSlice = createSlice({
@@ -46,11 +61,46 @@ export const customerSlice = createSlice({
     setCustomerInUse: (state, action) => {
       state.customerInUse = action.payload;
     },
+    resetCustomerInUseToDefault: (state) => {
+      state.customerInUse = {
+        customerId: "",
+        name: "",
+        contactName: "",
+        contactNumber: "",
+        contactMobileNumber: "",
+        faxNumber: "",
+        postalCode: "",
+        address: "",
+        taxId: "",
+        receiver: "",
+        note: "",
+      };
+    },
+    setCustomerRequest: (state, action) => {
+      state.request = action.payload;
+    },
+    resetCustomerRequestParamsToDefault: (state) => {
+      state.request.params = {
+        customerId: "",
+        name: "",
+        contactName: "",
+        contactNumber: "",
+        address: "",
+        pageIndex: 0,
+        pageSize: process.env.globalPageSize,
+      };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setCustomers, clearCustomers, setCustomerInUse } =
-  customerSlice.actions;
+export const {
+  setCustomers,
+  clearCustomers,
+  setCustomerInUse,
+  resetCustomerInUseToDefault,
+  setCustomerRequest,
+  resetCustomerRequestParamsToDefault,
+} = customerSlice.actions;
 
 export default customerSlice.reducer;
