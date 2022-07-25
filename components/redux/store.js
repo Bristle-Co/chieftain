@@ -7,9 +7,10 @@ const store = configureStore({
   reducer: {
     // this name must match the name of the initial state field
     customers: customerReducer,
-    request: customerReducer,
+    customerRequest: customerReducer,
     pageMetaData: pageMetaDataReducer,
     orders: orderReducer,
+    orderRequest: orderReducer,
   },
 });
 

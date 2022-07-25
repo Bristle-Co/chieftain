@@ -1,0 +1,79 @@
+/* global css for table data */
+.DataTable {
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 1em;
+  width: 100%;
+  overflow-wrap: break-word;
+}
+
+/* for the first row search bar */
+.DataTable thead tr:first-child th {
+  padding: 5px;
+  padding-bottom: 10px;
+}
+
+.DataTable thead tr:first-child th input {
+  height: 2em;
+  border: none;
+  border: solid 1px #957b5f;
+  width: 100%;
+  border-radius: 0.3em;
+  padding: 0 0 0 0;
+}
+
+.DataTable thead tr:first-child th:first-child {
+  /* this is 3.5px because first row doesn't have a 1.5px border */
+  padding-left: 0px;
+}
+
+.DataTable thead tr:first-child th:last-child {
+  /* this is 3.5px because first row doesn't have a 1.5px border */
+  padding-right: 0px;
+}
+
+/* for the first row search bar last cell div container with search button */
+.DataTable thead tr:first-child th:last-child div {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  width: 100%;
+}
+.DataTable thead tr:first-child th:last-child div button {
+  margin-left: 10px;
+}
+
+/* for second row title */
+.DataTable thead tr:nth-child(2) th {
+  padding: 2px;
+}
+
+.DataTable thead tr:last-child {
+  color: white;
+  background-color: var(--green);
+}
+.DataTable thead tr:last-child th {
+  border-right: 1.5px solid white;
+  border-top: 1.5px solid var(--green);
+  border-bottom: 1.5px solid var(--brown);
+  border-left: 1.5px solid var(--green);
+}
+
+.DataTable thead tr:last-child th:last-child {
+  padding: 0;
+  border-right: 1.5px solid var(--green);
+}
+
+/* for data cells */
+.DataTable td {
+  padding: 2px;
+  border: 1.5px solid var(--brown);
+}
+
+/* for the last column of data cell that has a arrow button */
+.DataTable tbody td:last-child div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}

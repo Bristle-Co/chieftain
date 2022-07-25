@@ -5,49 +5,68 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   orders: [
     {
-      orderID: null,
-      customerOrderId: "PO customerOrderId",
-      customerId: "達創",
-      dueDate: "2022-03-30",
-      note: "note11111111",
-      deliveredAt: null,
-      issuedAt: null,
+      orderId: 0,
+      customerOrderId: "無資料",
+      customerId: "無資料",
+      dueDate: "無資料",
+      note: "無資料",
+      deliveredAt: "無資料",
+      issuedAt: "無資料",
       productEntries: [
         {
-          productEntryId: null,
-          model: "complete new model 3",
-          quantity: 11,
-          price: 1000,
-          productTicket_id: "test ticket id6",
+          productEntryId: "無資料",
+          model: "無資料",
+          quantity: 0,
+          price: 0,
+          productTicket_id: "無資料",
         },
       ],
     },
   ],
   // request is kept in cache so pagination parameters are not lost after navigating to different pages
-  request: {
+  orderRequest: {
     method: "GET",
     url: "/order",
     baseURL: process.env.backendServerBaseURI,
-    params: {},
+    params: {
+      // this is an integer field
+
+      pageIndex: 0,
+      pageSize: process.env.globalPageSize,
+    },
   },
 };
+
+// all available params
+// params: {
+//   orderId:"",
+//   customerOrderId:"",
+//   customerId: "",
+//   dueDateFrom: "",
+//   dueDateTo: "",
+//   issuedAtFrom: "",
+//   issuedAtTo: "",
+//   pageIndex: 0,
+//   pageSize: process.env.globalPageSize,
+// }
 
 export const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
     setOrders: (state, action) => {
-      state.customers = action.payload;
+      state.orders = action.payload;
     },
     clearOrders: (state) => {
-      state.customers = [];
+      state.orders = [];
     },
     setOrderRequest: (state, action) => {
-      state.request = action.payload;
+      state.orderRequest = action.payload;
     },
     resetOrderRequestToDefault: (state) => {
-      state.request.params = {
-        //TODO put actual get request param
+      state.orderRequest.params = {
+        pageIndex: 0,
+        pageSize: process.env.globalPageSize,
       };
     },
   },

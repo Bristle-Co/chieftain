@@ -22,7 +22,7 @@ body {
   --hover_shadow: #f2f2f2;
 }
 
-.ButtonContainer {
+.TopButtonContainer {
   height: 40px;
   position: absolute;
   top: 0;

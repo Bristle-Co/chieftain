@@ -4,7 +4,7 @@ import { IoIosAdd } from "react-icons/io";
 import SearchButton from "../../components/SearchButton/SearchButton.js";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import styles from "./customer_detail.module.css";
-import DataTableStyles from "../../styles/DataTable.module.css";
+import DataTableStyles from "./DataTable.module.css";
 import axios from "axios";
 import Link from "next/link";
 import {
@@ -70,7 +70,7 @@ import { IconContext } from "react-icons";
 const CustomerDetail = (props) => {
   const dispatch = useDispatch();
   const { customers } = useSelector((state) => state.customers);
-  const { request } = useSelector((state) => state.request);
+  const { customerRequest } = useSelector((state) => state.customerRequest);
 
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
   const customerDetailTopBarState = {
@@ -80,31 +80,22 @@ const CustomerDetail = (props) => {
 
   // state variable for search input fields
   const [customerIdSearch, setCustomerIdSearch] = useState(
-    request.params.customerId
+    customerRequest.params.customerId
   );
-  const [nameSearch, setNameSearch] = useState(request.params.name);
+  const [nameSearch, setNameSearch] = useState(customerRequest.params.name);
   const [contactNameSearch, setContactNameSearch] = useState(
-    request.params.contactName
+    customerRequest.params.contactName
   );
   const [contactNumberSearch, setContactNumberSearch] = useState(
-    request.params.contactNumber
+    customerRequest.params.contactNumber
   );
-  const [addressSearch, setAddressSearch] = useState(request.params.address);
+  const [addressSearch, setAddressSearch] = useState(
+    customerRequest.params.address
+  );
 
-  // This is the actual pageIndex of the current state, will always be valid
   const [pageIndexSearch, setPageIndexSearch] = useState(
-    request.params.pageIndex
+    customerRequest.params.pageIndex
   );
-
-  const [currentAxiosRequest, setCurrentAxiosRequest] = useState({
-    method: "get",
-    url: "/customer_detail/getCustomers",
-    baseURL: process.env.backendServerBaseURI,
-    params: {
-      pageIndex: 0,
-      pageSize: process.env.globalPageSize,
-    },
-  });
 
   const getNextPage = () => {
     if (customers.length < process.env.globalPageSize) {
@@ -124,8 +115,8 @@ const CustomerDetail = (props) => {
 
   const fetchCustomerWithCachedRequest = () => {
     console.log("getCustomers request sent, request:");
-    console.log(request);
-    axios(request)
+    console.log(customerRequest);
+    axios(customerRequest)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log(
@@ -147,9 +138,9 @@ const CustomerDetail = (props) => {
       return;
     }
     const newRequest = {
-      ...request,
+      ...customerRequest,
       params: {
-        ...request.params,
+        ...customerRequest.params,
         pageIndex: index,
       },
     };
@@ -174,7 +165,10 @@ const CustomerDetail = (props) => {
         // only update real page index if request is successful
         setPageIndexSearch(index);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log("getCustomers by pageIndex failed. result: ");
+        console.log(error);
+      });
   };
 
   const fetchCustomersByFilter = (event) => {
@@ -220,7 +214,7 @@ const CustomerDetail = (props) => {
       <IconContext.Provider
         value={{ color: "var(--brown)", height: "100%", width: "100%" }}
       >
-        <div key="test" className="ButtonContainer">
+        <div className="TopButtonContainer">
           <Pagination
             previous={() => getPreviousPage()}
             next={() => getNextPage()}
