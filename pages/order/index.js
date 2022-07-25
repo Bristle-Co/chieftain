@@ -81,42 +81,6 @@ const Order = () => {
       });
   };
 
-  const fetchOrdersByPageIndex = (index) => {
-    if (index < 0) {
-      alert("頁數不能為負數");
-      return;
-    }
-    const newRequest = {
-      ...orderRequest,
-      params: {
-        ...orderRequest.params,
-        pageIndex: index,
-      },
-    };
-    console.log("getOrders request sent, request:");
-
-    console.log(newRequest);
-    axios(newRequest)
-      .then((result) => {
-        if (result.data.data.length <= 0) {
-          console.log("empty result after fetch customer");
-          alert("超過最大頁數 這頁沒有資料囉");
-          return;
-        }
-        dispatch(setOrders(result.data.data));
-        console.log("getOrders by pageIndex success. result: ");
-        console.log(result.data.data);
-        // only update current axios request if request is successful
-        dispatch(setOrdersRequest(newRequest));
-
-        // only update real page index if request is successful
-        setPageIndexSearch(index);
-      })
-      .catch((error) => {
-        console.log("getOrders by pageIndex failed. result: ");
-        console.log(error);
-      });
-  };
   const validateSearchFields = (newParameters) => {
     // validate fields here
     if (orderIdSearch !== "") {
@@ -147,6 +111,59 @@ const Order = () => {
       newParameters.issuedAtTo = issuedAtToSearch;
     }
     return newParameters;
+  };
+
+  const getNextPage = () => {
+    if (orders.length < process.env.globalPageSize) {
+      alert("已經是最後一頁啦~");
+      return;
+    }
+    fetchOrdersByPageIndex(parseInt(pageIndexSearch) + 1);
+  };
+
+  const getPreviousPage = () => {
+    if (pageIndexSearch <= 0) {
+      alert("已經是第一頁啦~");
+      return;
+    }
+    fetchOrdersByPageIndex(parseInt(pageIndexSearch) - 1);
+  };
+
+  const fetchOrdersByPageIndex = (index) => {
+    if (index < 0) {
+      alert("頁數不能為負數");
+      return;
+    }
+    const newRequest = {
+      ...orderRequest,
+      params: {
+        ...orderRequest.params,
+        pageIndex: index,
+      },
+    };
+    console.log("getOrders request sent, request:");
+
+    console.log(newRequest);
+    axios(newRequest)
+      .then((result) => {
+        if (result.data.data.length <= 0) {
+          console.log("empty result after fetch customer");
+          alert("超過最大頁數 這頁沒有資料囉");
+          return;
+        }
+        dispatch(setOrders(result.data.data));
+        console.log("getOrders by pageIndex success. result: ");
+        console.log(result.data.data);
+        // only update current axios request if request is successful
+        dispatch(setOrderRequest(newRequest));
+
+        // only update real page index if request is successful
+        setPageIndexSearch(index);
+      })
+      .catch((error) => {
+        console.log("getOrders by pageIndex failed. result: ");
+        console.log(error);
+      });
   };
 
   const fetchOrdersByFilter = (event) => {
@@ -196,7 +213,7 @@ const Order = () => {
             previous={() => getPreviousPage()}
             next={() => getNextPage()}
             pageIndex={pageIndexSearch}
-            setPageIndex={(val) => setpageIndexSearch(val)}
+            setPageIndex={(val) => setPageIndexSearch(val)}
             onSubmit={(pageIndex) => fetchOrdersByPageIndex(pageIndex)}
           />
           <Link href="/order/add_order">
@@ -301,8 +318,24 @@ const Order = () => {
                 <td key="dueDate">{order.dueDate}</td>
                 <td key="models">
                   <div>
-                    {order.productEntries[0].model}
-                    <Link href={"/order/view_order/" + order.orderId}>
+                    <ul className={styles.ModelList}>
+                      {order.productEntries.map((entry) => {
+                        return (
+                          <li className={styles.ModelListItem}>
+                            {entry.model}
+                          </li>
+                        );
+                      })}
+                    </ul>
+
+                    <Link
+                      href={
+                        "/order/view_order/" +
+                        order.orderId +
+                        "?storedIndex=" +
+                        index
+                      }
+                    >
                       <ArrowButton type="button" />
                     </Link>
                   </div>

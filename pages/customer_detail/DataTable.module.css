@@ -67,6 +67,8 @@
 /* for data cells */
 .DataTable td {
   padding: 2px;
+  padding-left: 5px;
+
   border: 1.5px solid var(--brown);
 }
 

@@ -3,3 +3,17 @@
   margin-right: 1vw;
   margin-top: 3vh;
 }
+
+.ModelList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ModelListItem {
+  margin-bottom: 5px;
+  margin-top: 5px;
+
+  margin-left: 0px;
+  margin-right: 0px;
+}
