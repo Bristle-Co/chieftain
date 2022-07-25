@@ -28,24 +28,39 @@ const Order = () => {
   const { orders } = useSelector((state) => state.orders);
   const { orderRequest } = useSelector((state) => state.orderRequest);
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
-
   // state variable for search input fields
-  const [orderIdSearch, setOrderIdSearch] = useState("");
-  // request.params.orderId == null ? "" : request.params.orderId
-  const [customerOrderIdSearch, setCustomerOrderIdSearch] = useState("");
-  // request.params.customerOrderId == null ? "" : request.params.customerOrderId
-  const [customerIdSearch, setCustomerIdSearch] = useState("");
-  // request.params.customeId == null ? "" : request.params.customerId
-  const [dueDateFromSearch, setDueDateFromSearch] = useState("");
-  // request.params.dueDateFrom == null ? "" : request.params.dueDateFrom
-  const [dueDateToSearch, setDueDateToSearch] = useState("");
-  // request.params.dueDateTo == null ? "" : request.params.dueDateTo
-  const [issuedAtFromSearch, setIssuedAtFromSearch] = useState("");
-  // request.params.issuedAtFrom == null ? "" : request.params.issuedAtFrom
-  const [issuedAtToSearch, setIssuedAtToSearch] = useState("");
-  // request.params.issuedAtTo == null ? "" : request.params.issuedAtTo
-  const [pageIndexSearch, setPageIndexSearch] = useState("");
-  // request.params.pageIndex
+  const [orderIdSearch, setOrderIdSearch] = useState(
+    orderRequest.params.orderId == undefined ? "" : orderRequest.params.orderId
+  );
+
+  const [customerOrderIdSearch, setCustomerOrderIdSearch] = useState(
+    orderRequest.params.customerOrderId == undefined
+      ? ""
+      : orderRequest.params.customerOrderId
+  );
+  //
+  const [customerIdSearch, setCustomerIdSearch] = useState(
+    orderRequest.params.customeId == null ? "" : orderRequest.params.customerId
+  );
+  const [dueDateFromSearch, setDueDateFromSearch] = useState(
+    orderRequest.params.dueDateFrom == null
+      ? ""
+      : orderRequest.params.dueDateFrom
+  );
+  const [dueDateToSearch, setDueDateToSearch] = useState(
+    orderRequest.params.dueDateTo == null ? "" : orderRequest.params.dueDateTo
+  );
+  const [issuedAtFromSearch, setIssuedAtFromSearch] = useState(
+    orderRequest.params.issuedAtFrom == null
+      ? ""
+      : orderRequest.params.issuedAtFrom
+  );
+  const [issuedAtToSearch, setIssuedAtToSearch] = useState(
+    orderRequest.params.issuedAtTo == null ? "" : orderRequest.params.issuedAtTo
+  );
+  const [pageIndexSearch, setPageIndexSearch] = useState(
+    orderRequest.params.pageIndex
+  );
 
   const fetchOrdersWithCachedRequest = () => {
     console.log("getOrders request sent, request:");
@@ -72,9 +87,9 @@ const Order = () => {
       return;
     }
     const newRequest = {
-      ...request,
+      ...orderRequest,
       params: {
-        ...request.params,
+        ...orderRequest.params,
         pageIndex: index,
       },
     };
@@ -102,35 +117,66 @@ const Order = () => {
         console.log(error);
       });
   };
+  const validateSearchFields = (newParameters) => {
+    // validate fields here
+    if (orderIdSearch !== "") {
+      const parsed = parseInt(orderIdSearch);
+      if (!isNaN(parsed) && isFinite(parsed)) {
+        newParameters.orderId = parsed;
+      }
+    }
+    if (customerIdSearch !== "") {
+      newParameters.customerId = customerIdSearch;
+    }
+    if (customerOrderIdSearch !== "") {
+      newParameters.name = customerOrderIdSearch;
+    }
+    if (dueDateFromSearch !== "") {
+      newParameters.dueDateFrom = dueDateFromSearch;
+    }
+
+    if (dueDateToSearch !== "") {
+      newParnewParametersamters.dueDateTo = dueDateToSearch;
+    }
+
+    if (issuedAtFromSearch !== "") {
+      newParameters.issuedAtFrom = issuedAtFromSearch;
+    }
+
+    if (issuedAtToSearch !== "") {
+      newParameters.issuedAtTo = issuedAtToSearch;
+    }
+    return newParameters;
+  };
 
   const fetchOrdersByFilter = (event) => {
     event.preventDefault();
     //TODO validate serach fields
+    const newParameters = {
+      // when search with filter always reset page to first page
+      pageIndex: 0,
+      pageSize: process.env.globalPageSize,
+    };
 
     const newRequest = {
-      url: "/customer_detail",
+      url: "/order",
       baseURL: process.env.backendServerBaseURI,
-      params: {
-        customerId: customerIdSearch === "" ? null : customerIdSearch,
-        name: nameSearch === "" ? null : nameSearch,
-        contactName: contactNameSearch === "" ? null : contactNameSearch,
-        contactNumber: contactNumberSearch === "" ? null : contactNumberSearch,
-        address: addressSearch === "" ? null : addressSearch,
-        pageIndex: 0,
-        pageSize: process.env.globalPageSize,
-      },
+      params: validateSearchFields(newParameters),
     };
     axios(newRequest)
       .then((result) => {
-        dispatch(setCustomers(result.data.data));
-        console.log("getCustomers by filter from client side success");
+        dispatch(setOrders(result.data.data));
+        console.log("getOrders by filter from client side success");
         console.log(result.data.data);
 
         // only update current axios request if request is successful
-        dispatch(setCustomerRequest(newRequest));
+        dispatch(setOrderRequest(newRequest));
         setPageIndexSearch(0);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log("getOrders by filter failed");
+        console.log(error);
+      });
   };
 
   useEffect(() => {
@@ -193,38 +239,44 @@ const Order = () => {
               </th>
 
               <th key="issuedAtFromTo" style={{ width: "15%" }}>
-                <input
-                  type="date"
-                  placeholder=" 必須完全符合"
-                  value={issuedAtFromSearch}
-                  onChange={(e) => setIssuedAtFromSearch(e.target.value)}
-                />
-
-                <input
-                  type="date"
-                  placeholder=" 必須完全符合"
-                  value={issuedAtToSearch}
-                  onChange={(e) => setIssuedAtToSearch(e.target.value)}
-                />
+                <div>
+                  <input
+                    type="date"
+                    placeholder=" 必須完全符合"
+                    value={issuedAtFromSearch}
+                    onChange={(e) => setIssuedAtFromSearch(e.target.value)}
+                  />
+                  &nbsp;~&nbsp;
+                  <input
+                    type="date"
+                    placeholder=" 必須完全符合"
+                    value={issuedAtToSearch}
+                    onChange={(e) => setIssuedAtToSearch(e.target.value)}
+                  />
+                </div>
               </th>
 
               <th key="dueDateFromTo" style={{ width: "15%" }}>
-                <input
-                  type="date"
-                  placeholder=" 必須完全符合"
-                  value={dueDateFromSearch}
-                  onChange={(e) => setDueDateFromSearch(e.target.value)}
-                />
-
-                <input
-                  type="date"
-                  placeholder=" 必須完全符合"
-                  value={dueDateToSearch}
-                  onChange={(e) => setDueDateToSearch(e.target.value)}
-                />
+                <div>
+                  <input
+                    type="date"
+                    placeholder=" 必須完全符合"
+                    value={dueDateFromSearch}
+                    onChange={(e) => setDueDateFromSearch(e.target.value)}
+                  />
+                  &nbsp;~&nbsp;
+                  <input
+                    type="date"
+                    placeholder=" 必須完全符合"
+                    value={dueDateToSearch}
+                    onChange={(e) => setDueDateToSearch(e.target.value)}
+                  />
+                </div>
               </th>
               <th key="models" style={{ width: "40%" }}>
-                <SearchButton type="submit" />
+                <div>
+                  <SearchButton type="submit" />
+                </div>
               </th>
               {/* <div>
               </div> */}
@@ -235,7 +287,7 @@ const Order = () => {
               <th key="customerOrderId">客戶訂單號碼</th>
               <th key="customerId">客戶代號</th>
               <th key="issuedAt">開立時間</th>
-              <th key="dueDate">預計日期</th>
+              <th key="dueDate">預計交貨日期</th>
               <th key="models">品項</th>
             </tr>
           </thead>

@@ -19,7 +19,7 @@ const initialState = {
     },
   ],
   // request is kept in cache so pagination parameters are not lost after navigating to different pages
-  request: {
+  customerRequest: {
     method: "GET",
     url: "/customer_detail",
     baseURL: process.env.backendServerBaseURI,
@@ -46,10 +46,10 @@ export const customerSlice = createSlice({
       state.customers = [];
     },
     setCustomerRequest: (state, action) => {
-      state.request = action.payload;
+      state.customerRequest = action.payload;
     },
     resetCustomerRequestParamsToDefault: (state) => {
-      state.request.params = {
+      state.customerRequest.params = {
         customerId: "",
         name: "",
         contactName: "",

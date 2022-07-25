@@ -30,7 +30,6 @@ const initialState = {
     baseURL: process.env.backendServerBaseURI,
     params: {
       // this is an integer field
-
       pageIndex: 0,
       pageSize: process.env.globalPageSize,
     },
