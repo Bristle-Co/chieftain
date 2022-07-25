@@ -76,7 +76,7 @@ export async function getServerSideProps(context) {
 }
 const view_customer = (props) => {
   const dispatch = useDispatch();
-  const { request } = useSelector((state) => state.request);
+  const { customerRequest } = useSelector((state) => state.customerRequest);
   const [customer, setCustomer] = useState(props.data);
 
   const router = useRouter();
@@ -179,8 +179,8 @@ const view_customer = (props) => {
 
   const fetchCustomerWithCachedRequest = () => {
     console.log("getCustomers request sent, request:");
-    console.log(request);
-    axios(request)
+    console.log(customerRequest);
+    axios(customerRequest)
       .then((result) => {
         dispatch(setCustomers(result.data.data));
         console.log(
@@ -200,7 +200,7 @@ const view_customer = (props) => {
       <IconContext.Provider
         value={{ color: "var(--brown)", height: "100%", width: "100%" }}
       >
-        <div key="test" className="ButtonContainer">
+        <div key="test" className="TopButtonContainer">
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>
