@@ -200,7 +200,7 @@ const view_customer = (props) => {
       <IconContext.Provider
         value={{ color: "var(--brown)", height: "100%", width: "100%" }}
       >
-        <div key="test" className="TopButtonContainer">
+        <div className="TopButtonContainer">
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>

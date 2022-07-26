@@ -1,0 +1,59 @@
+.Container {
+  margin-left: 1vw;
+  margin-right: 1vw;
+  margin-top: 3vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+.BasicFieldsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.BasicFieldsList li {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+}
+.BasicFieldsList li .DataBlockContainer :only-child {
+  width: 100%;
+}
+.BasicFieldsList li .DataBlockContainer input {
+  width: 100%;
+  height: 100%;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+}
+
+.BasicFieldsList li .DataBlockContainer div {
+  width: 100%;
+  height: 100%;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.BasicFieldsList li .DataBlockContainer textarea {
+  display: inline-block;
+  height: 20vh;
+}
+
+.DataBlockContainer {
+  height: 1.5em;
+  display: inline-block;
+  background-color: antiquewhite;
+  width: 20vw;
+  margin-left: 5px;
+}
+
+.BasicFieldsContainer {
+}
+
+.ProductEntriesContainer {
+}
