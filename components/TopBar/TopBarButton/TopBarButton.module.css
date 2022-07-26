@@ -9,5 +9,5 @@
 }
 
 .Container:hover {
-  background-color: #c4c4c4;
+  background-color: var(--light_grey);
 }

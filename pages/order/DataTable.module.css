@@ -20,7 +20,7 @@
 /* for first 3 inpus in search bar, 訂單號碼 客戶地訂單號碼 客戶代號 */
 .DataTable thead tr:first-child th:nth-child(-n + 3) input {
   border: none;
-  border: solid 1px #957b5f;
+  border: solid 1px var(--brown);
   height: inherit;
   font-size: inherit;
   width: 100%;

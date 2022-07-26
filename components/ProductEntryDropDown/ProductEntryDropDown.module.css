@@ -1,0 +1,45 @@
+.Container {
+  width: 100%;
+  margin: 2px;
+}
+
+.ModelContainer {
+  font-size: 1em;
+  border-radius: 0.4em;
+  padding: 4px;
+  border: solid 1px var(--brown);
+}
+
+.ProductEntryFieldContainer {
+  border-radius: 0 0 0.5em 0.5em;
+  background-color: beige;
+}
+
+.ModelContainer:hover {
+  font-size: 1em;
+  border-radius: 0.4em;
+  padding: 4px;
+  border: solid 1px var(--brown);
+  background-color: var(--light_grey);
+}
+
+.ProductEntryFieldList {
+  margin: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 20px;
+  list-style: none;
+  text-align: left;
+}
+
+.ProductEntryFieldList li {
+  font-size: 0.8em;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.ProductEntryFieldList li div {
+  display: inline-block;
+  text-align: left;
+  /* 尚未開立工單 is six characters */
+}

@@ -1,11 +1,11 @@
 .Container {
   margin-left: 1vw;
   margin-right: 1vw;
-  margin-top: 3vh;
+  margin-top: 6vh;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  align-items: center;
+  align-items: flex-start;
 }
 .BasicFieldsList {
   margin: 0;
@@ -53,7 +53,16 @@
 }
 
 .BasicFieldsContainer {
+  background-color: aqua;
 }
 
 .ProductEntriesContainer {
+  background-color: azure;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  overflow: scroll;
+  height: 50vh;
+  width: 30vw;
 }

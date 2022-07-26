@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import styles from "./view_order.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
 import {
@@ -9,6 +9,7 @@ import {
   IoReturnUpBack,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
+import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
 
 export async function getServerSideProps(context) {
   const { orderId } = context.query;
@@ -77,6 +78,9 @@ const ViewOrder = (props) => {
   const [note, setNote] = useState(props.data.note);
   const [deliveredAt, setDeliveredAt] = useState(props.data.deliveredAt);
   const [issuedAt, setIssuedAt] = useState(props.data.issuedAt);
+  const [productEntries, setProductEntries] = useState(
+    props.data.productEntries
+  );
 
   const handleEditing = () => {
     if (!isEditing) {
@@ -169,7 +173,9 @@ const ViewOrder = (props) => {
                   onChange={(e) => setName(e.target.value)}
                 />
               ) : (
-                <div>{order.deliveredAt}</div>
+                <div>
+                  {order.deliveredAt == null ? "尚未交貨" : deliveredAt}
+                </div>
               )}
             </div>
           </li>
@@ -194,7 +200,10 @@ const ViewOrder = (props) => {
           </li>
         </ul>
       </div>
-      <div className={styles.ProductEntriesContainer}></div>
+      <div className={styles.ProductEntriesContainer}>
+        <ProductEntryDropDown data={productEntries[0]} />
+        <ProductEntryDropDown data={productEntries[1]} />
+      </div>
     </div>
   );
 };
