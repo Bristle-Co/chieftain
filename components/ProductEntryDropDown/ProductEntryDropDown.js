@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./ProductEntryDropDown.module.css";
+import { IoIosArrowForward } from "react-icons/io";
 
 const ProductEntryDropDown = (props) => {
   const [isActive, setIsActive] = useState(false);
@@ -10,6 +11,9 @@ const ProductEntryDropDown = (props) => {
         onClick={() => setIsActive(!isActive)}
       >
         {props.data.model}
+        <IoIosArrowForward
+          className={isActive ? styles.ArrowActivated : styles.Arrow}
+        />
       </div>
       {isActive ? (
         <div className={styles.ProductEntryFieldContainer}>

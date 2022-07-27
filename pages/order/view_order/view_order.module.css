@@ -4,7 +4,7 @@
   margin-top: 6vh;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: center;
   align-items: flex-start;
 }
 .BasicFieldsList {
@@ -47,22 +47,26 @@
 .DataBlockContainer {
   height: 1.5em;
   display: inline-block;
-  background-color: antiquewhite;
   width: 20vw;
   margin-left: 5px;
 }
 
 .BasicFieldsContainer {
-  background-color: aqua;
+  background-color: aliceblue;
+  margin-right: 5vw;
 }
 
 .ProductEntriesContainer {
-  background-color: azure;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   overflow: scroll;
   height: 50vh;
-  width: 30vw;
+  width: 40vw;
+  margin-left: 5vw;
+}
+
+.ProductEntriesTitle {
+  margin-bottom: 10px;
 }

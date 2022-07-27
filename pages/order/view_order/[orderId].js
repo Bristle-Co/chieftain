@@ -201,8 +201,10 @@ const ViewOrder = (props) => {
         </ul>
       </div>
       <div className={styles.ProductEntriesContainer}>
-        <ProductEntryDropDown data={productEntries[0]} />
-        <ProductEntryDropDown data={productEntries[1]} />
+        <div className={styles.ProductEntriesTitle}>訂單規格：</div>
+        {productEntries.map((item) => {
+          return <ProductEntryDropDown data={item} />;
+        })}
       </div>
     </div>
   );
