@@ -1,5 +1,11 @@
 import axios from "axios";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useState, useTransition } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setCachedProductEntries,
+  setCachedProductEntryByIndex,
+} from "../../../components/redux/order.js";
+
 import styles from "./view_order.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
 import {
@@ -67,8 +73,14 @@ const getOrderByIdRequest = (orderId) => ({
 });
 
 const ViewOrder = (props) => {
+  const dispatch = useDispatch();
+  const { cachedProductEntries } = useSelector(
+    (state) => state.cachedProductEntries
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [orderId, setOrderId] = useState(props.data.orderId);
+  // this order is always the same as what's in the backend database
+  // and this is the order that is displayed
   const [order, setOrder] = useState(props.data);
   const [customerOrderId, setCustomerOrderId] = useState(
     props.data.customerOrderId
@@ -78,9 +90,6 @@ const ViewOrder = (props) => {
   const [note, setNote] = useState(props.data.note);
   const [deliveredAt, setDeliveredAt] = useState(props.data.deliveredAt);
   const [issuedAt, setIssuedAt] = useState(props.data.issuedAt);
-  const [productEntries, setProductEntries] = useState(
-    props.data.productEntries
-  );
 
   const handleEditing = () => {
     if (!isEditing) {
@@ -94,6 +103,10 @@ const ViewOrder = (props) => {
   const udpateCustomer = () => {
     setIsEditing(false);
   };
+
+  useEffect(() => {
+    dispatch(setCachedProductEntries(props.data.productEntries));
+  }, []);
 
   return (
     <div className={styles.Container}>
@@ -202,8 +215,15 @@ const ViewOrder = (props) => {
       </div>
       <div className={styles.ProductEntriesContainer}>
         <div className={styles.ProductEntriesTitle}>訂單規格：</div>
-        {productEntries.map((item) => {
-          return <ProductEntryDropDown data={item} />;
+        {order.productEntries.map((item, index) => {
+          return (
+            <ProductEntryDropDown
+              isEditing={isEditing}
+              key={index}
+              index={index}
+              data={item}
+            />
+          );
         })}
       </div>
     </div>

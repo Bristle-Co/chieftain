@@ -23,6 +23,15 @@ const initialState = {
       ],
     },
   ],
+  cachedProductEntries: [
+    {
+      productEntryId: "無資料",
+      model: "無資料",
+      quantity: 0,
+      price: 0,
+      productTicket_id: "無資料",
+    },
+  ],
   // request is kept in cache so pagination parameters are not lost after navigating to different pages
   orderRequest: {
     method: "GET",
@@ -59,6 +68,14 @@ export const orderSlice = createSlice({
     clearOrders: (state) => {
       state.orders = [];
     },
+    setCachedProductEntries: (state, action) => {
+      state.cachedProductEntries = action.payload;
+    },
+    setCachedProductEntryByIndex: (state, action) => {
+      const newArray = [...state.cachedProductEntries];
+      newArray[action.payload.index] = action.payload.productEntry;
+      state.cachedProductEntries = newArray;
+    },
     setOrderRequest: (state, action) => {
       state.orderRequest = action.payload;
     },
@@ -75,6 +92,8 @@ export const orderSlice = createSlice({
 export const {
   setOrders,
   clearOrders,
+  setCachedProductEntries,
+  setCachedProductEntryByIndex,
   setOrderRequest,
   resetOrderRequestToDefault,
 } = orderSlice.actions;
