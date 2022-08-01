@@ -25,8 +25,8 @@ const orderTopBarState = {
 };
 const Order = () => {
   const dispatch = useDispatch();
-  const { orders } = useSelector((state) => state.orders);
-  const { orderRequest } = useSelector((state) => state.orderRequest);
+  const { orders } = useSelector((state) => state.order);
+  const { orderRequest } = useSelector((state) => state.order);
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
   // state variable for search input fields
   const [orderIdSearch, setOrderIdSearch] = useState(

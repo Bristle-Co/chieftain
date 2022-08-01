@@ -11,6 +11,7 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  display: inline-block;
 }
 .BasicFieldsList li {
   font-size: 1em;
@@ -19,7 +20,7 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
-  align-items: center;
+  align-items: flex-start;
 }
 .BasicFieldsList li .DataBlockContainer :only-child {
   width: 100%;
@@ -39,6 +40,10 @@
   justify-content: center;
 }
 
+.BasicFieldsList li:last-child .DataBlockContainer {
+  height: inherit;
+}
+
 .BasicFieldsList li .DataBlockContainer textarea {
   display: inline-block;
   height: 20vh;
@@ -53,7 +58,14 @@
 
 .BasicFieldsContainer {
   background-color: aliceblue;
-  margin-right: 5vw;
+  padding: 20px 20px 20px 30px;
+  margin-right: 3vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
+  border-radius: 0.2em;
+  border: solid 1px var(--brown);
 }
 
 .ProductEntriesContainer {
@@ -64,7 +76,7 @@
   overflow: scroll;
   height: 50vh;
   width: 45vw;
-  margin-left: 5vw;
+  margin-left: 3vw;
 }
 
 .ProductEntriesTitle {

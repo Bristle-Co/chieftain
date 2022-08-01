@@ -9,9 +9,7 @@ const store = configureStore({
     customers: customerReducer,
     customerRequest: customerReducer,
     pageMetaData: pageMetaDataReducer,
-    orders: orderReducer,
-    cachedProductEntries: orderReducer,
-    orderRequest: orderReducer,
+    order: orderReducer,
   },
 });
 

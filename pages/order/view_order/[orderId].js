@@ -1,10 +1,7 @@
 import axios from "axios";
-import React, { useEffect, useState, useTransition } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCachedProductEntries,
-  setCachedProductEntryByIndex,
-} from "../../../components/redux/order.js";
+import { setOrder } from "../../../components/redux/order.js";
 
 import styles from "./view_order.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
@@ -40,11 +37,11 @@ export async function getServerSideProps(context) {
           issuedAt: "錯誤",
           productEntries: [
             {
-              productEntryId: "無資料",
-              model: "無資料",
+              productEntryId: "錯誤",
+              model: "錯誤",
               quantity: 0,
               price: 0,
-              productTicket_id: "無資料",
+              productTicket_id: "錯誤",
             },
           ],
         },
@@ -74,14 +71,11 @@ const getOrderByIdRequest = (orderId) => ({
 
 const ViewOrder = (props) => {
   const dispatch = useDispatch();
-  const { cachedProductEntries } = useSelector(
-    (state) => state.cachedProductEntries
-  );
+  const { order } = useSelector((state) => state.order);
   const [isEditing, setIsEditing] = useState(false);
   const [orderId, setOrderId] = useState(props.data.orderId);
   // this order is always the same as what's in the backend database
   // and this is the order that is displayed
-  const [order, setOrder] = useState(props.data);
   const [customerOrderId, setCustomerOrderId] = useState(
     props.data.customerOrderId
   );
@@ -97,29 +91,27 @@ const ViewOrder = (props) => {
       return;
     }
     // TODO validate fields
-    udpateCustomer();
+    updateOrder();
   };
 
-  const udpateCustomer = () => {
+  const updateOrder = () => {
     setIsEditing(false);
   };
 
   useEffect(() => {
-    dispatch(setCachedProductEntries(props.data.productEntries));
+    dispatch(setOrder(props.data));
   }, []);
 
   return (
-    <div className={styles.Container}>
-      <IconContext.Provider
-        value={{ color: "var(--brown)", height: "100%", width: "100%" }}
-      >
+    <IconContext.Provider
+      value={{ color: "var(--brown)", height: "100%", width: "100%" }}
+    >
+      <div className={styles.Container}>
         <div key="test" className="TopButtonContainer">
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>
-          <TopBarButton onClick={() => handleEditing()}>
-            {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
-          </TopBarButton>
+
           <TopBarButton
             onClick={() => {
               deleteCustomerAndGoToMainPage();
@@ -128,105 +120,108 @@ const ViewOrder = (props) => {
             <IoTrashOutline />
           </TopBarButton>
         </div>
-      </IconContext.Provider>
-      <div className={styles.BasicFieldsContainer}>
-        <ul className={styles.BasicFieldsList}>
-          <li>
-            <span>訂單代號 :</span>
-            <div className={styles.DataBlockContainer}>
-              <div>{order.orderId}</div>
-            </div>
-          </li>
-          <li>
-            <span>客戶訂單代號 :</span>
-            <div className={styles.DataBlockContainer}>
-              {isEditing ? (
-                <input
-                  value={customerOrderId}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              ) : (
-                <div>{order.customerOrderId}</div>
-              )}
-            </div>
-          </li>
-          <li>
-            <span>客戶代號 :</span>
-            <div className={styles.DataBlockContainer}>
-              {isEditing ? (
-                <input
-                  value={customerId}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              ) : (
-                <div>{order.customerId}</div>
-              )}
-            </div>
-          </li>
-          <li>
-            <span>預計交貨日期 :</span>
-            <div className={styles.DataBlockContainer}>
-              {isEditing ? (
-                <input
-                  value={dueDate}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              ) : (
-                <div>{order.dueDate}</div>
-              )}
-            </div>
-          </li>
-          <li>
-            <span>實際交貨日期 :</span>
-            <div className={styles.DataBlockContainer}>
-              {isEditing ? (
-                <input
-                  type="date"
-                  value={deliveredAt}
-                  onChange={(e) => setName(e.target.value)}
-                />
-              ) : (
-                <div>
-                  {order.deliveredAt == null ? "尚未交貨" : deliveredAt}
-                </div>
-              )}
-            </div>
-          </li>
-          <li>
-            <span>開立時間 :</span>
-            <div className={styles.DataBlockContainer}>
-              <div>{order.issuedAt}</div>
-            </div>
-          </li>
-          <li>
-            <span>備註 :</span>
-            <div className={styles.DataBlockContainer}>
-              {isEditing ? (
-                <textarea
-                  defaultValue={note}
-                  onChange={(e) => setNote(e.target.value)}
-                />
-              ) : (
-                <div>{order.note}</div>
-              )}
-            </div>
-          </li>
-        </ul>
+        <div className={styles.BasicFieldsContainer}>
+          <ul className={styles.BasicFieldsList}>
+            <li>
+              <span>訂單代號 :</span>
+              <div className={styles.DataBlockContainer}>
+                <div>{order.orderId}</div>
+              </div>
+            </li>
+            <li>
+              <span>客戶訂單代號 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={customerOrderId}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                ) : (
+                  <div>{order.customerOrderId}</div>
+                )}
+              </div>
+            </li>
+            <li>
+              <span>客戶代號 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={customerId}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                ) : (
+                  <div>{order.customerId}</div>
+                )}
+              </div>
+            </li>
+            <li>
+              <span>預計交貨日期 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={dueDate}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                ) : (
+                  <div>{order.dueDate}</div>
+                )}
+              </div>
+            </li>
+            <li>
+              <span>實際交貨日期 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    type="date"
+                    value={deliveredAt}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                ) : (
+                  <div>
+                    {order.deliveredAt == null ? "尚未交貨" : deliveredAt}
+                  </div>
+                )}
+              </div>
+            </li>
+            <li>
+              <span>開立時間 :</span>
+              <div className={styles.DataBlockContainer}>
+                <div>{order.issuedAt}</div>
+              </div>
+            </li>
+            <li>
+              <span>備註 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <textarea
+                    defaultValue={note}
+                    onChange={(e) => setNote(e.target.value)}
+                  />
+                ) : (
+                  <div>{order.note}</div>
+                )}
+              </div>
+            </li>
+          </ul>
+          <TopBarButton onClick={() => handleEditing()}>
+            {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
+          </TopBarButton>
+        </div>
+        <div className={styles.ProductEntriesContainer}>
+          <div className={styles.ProductEntriesTitle}>訂單規格：</div>
+          {order.productEntries.map((item, index) => {
+            return (
+              <ProductEntryDropDown
+                isEditing={isEditing}
+                key={index}
+                index={index}
+                data={item}
+              />
+            );
+          })}
+        </div>
       </div>
-      <div className={styles.ProductEntriesContainer}>
-        <div className={styles.ProductEntriesTitle}>訂單規格：</div>
-        {order.productEntries.map((item, index) => {
-          return (
-            <ProductEntryDropDown
-              isEditing={isEditing}
-              key={index}
-              index={index}
-              data={item}
-            />
-          );
-        })}
-      </div>
-    </div>
+    </IconContext.Provider>
   );
 };
 

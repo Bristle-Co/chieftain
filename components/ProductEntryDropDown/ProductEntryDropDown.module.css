@@ -28,7 +28,10 @@
 }
 
 .ProductEntryFieldContainer {
-  border-radius: 0 0 0.5em 0.5em;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
 }
 
 .ModelContainer:hover {
@@ -40,6 +43,7 @@
 }
 
 .ProductEntryFieldList {
+  flex-grow: 1;
   margin: 0;
   padding-top: 5px;
   padding-bottom: 5px;

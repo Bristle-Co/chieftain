@@ -2,53 +2,41 @@ import React, { useEffect, useState } from "react";
 import styles from "./ProductEntryDropDown.module.css";
 import { IoIosArrowForward } from "react-icons/io";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCachedProductEntries,
-  setCachedProductEntryByIndex,
-} from "../redux/order.js";
+import { updateOrder } from "../redux/order.js";
+import { IoPencil, IoCheckmarkDoneOutline } from "react-icons/io5";
+import TopBarButton from "../TopBar/TopBarButton/TopBarButton.js";
 
-const ProductEntryDropDown = ({ index, isEditing, data }) => {
+const ProductEntryDropDown = ({ index, data }) => {
   const dispatch = useDispatch();
-  const { cachedProductEntries } = useSelector(
-    (state) => state.cachedProductEntries
-  );
+  const [isEditing, setIsEditing] = useState(false);
   const [isActive, setIsActive] = useState(false);
   const [model, setModel] = useState(data.model);
   const [quantity, setQuantity] = useState(data.quantity);
   const [price, setPrice] = useState(data.price);
   const [productTicketId, setProductTicketId] = useState(data.productTicket_id);
 
-  const isEqualProductEntry = (org, updated) => {
-    if (
-      org.model !== updated.model ||
-      org.productEntryId !== updated.productEntryId ||
-      org.quantity !== updated.quantity ||
-      org.price !== updated.price ||
-      org.productTicket_id !== updated.productTicket_id
-    ) {
-      return false;
-    }
-    return true;
-  };
-  const cacheProductEntry = (model, quantity, price, productTicketId) => {
-    // each productEntry gets synced when input loses focus
-    const updatedProductEntry = {
-      productEntryId: data.productEntryId,
-      model: model,
-      quantity: quantity,
-      price: price,
-      productTicketId: productTicketId,
-    };
-
-    if (!isEqualProductEntry(data, updatedProductEntry)) {
+  const handleEditing = () => {
+    if (isEditing === true) {
+      const updatedProductEntry = {
+        productEntryId: data.productEntryId,
+        model: model,
+        quantity: quantity,
+        price: price,
+        productTicketId: productTicketId,
+      };
       dispatch(
-        setCachedProductEntryByIndex({
-          index: index,
-          productEntry: updatedProductEntry,
+        updateOrder({
+          prodctEntrySlice: { productEntry: updatedProductEntry, index: index },
+          commonFieldSlice: null,
         })
       );
+
+      setIsEditing(false);
+    } else {
+      setIsEditing(true);
     }
   };
+
   return (
     <div className={styles.Container}>
       <div
@@ -56,18 +44,7 @@ const ProductEntryDropDown = ({ index, isEditing, data }) => {
         onClick={() => setIsActive(!isActive)}
       >
         {isEditing ? (
-          <input
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
-            onBlur={(e) =>
-              cacheProductEntry(
-                e.target.value,
-                quantity,
-                price,
-                productTicketId
-              )
-            }
-          />
+          <input value={model} onChange={(e) => setModel(e.target.value)} />
         ) : (
           <div> {data.model}</div>
         )}
@@ -85,14 +62,6 @@ const ProductEntryDropDown = ({ index, isEditing, data }) => {
                   <input
                     value={quantity}
                     onChange={(e) => setQuantity(e.target.value)}
-                    onBlur={(e) =>
-                      cacheProductEntry(
-                        model,
-                        e.target.value,
-                        price,
-                        productTicketId
-                      )
-                    }
                   />
                 ) : (
                   <div>{data.quantity}</div>
@@ -106,14 +75,6 @@ const ProductEntryDropDown = ({ index, isEditing, data }) => {
                   <input
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
-                    onBlur={(e) =>
-                      cacheProductEntry(
-                        model,
-                        quantity,
-                        e.target.value,
-                        productTicketId
-                      )
-                    }
                   />
                 ) : (
                   <div>{data.price}</div>
@@ -127,9 +88,6 @@ const ProductEntryDropDown = ({ index, isEditing, data }) => {
                   <input
                     value={productTicketId}
                     onChange={(e) => setProductTicketId(e.target.value)}
-                    onBlur={(e) =>
-                      cacheProductEntry(model, quantity, price, e.target.value)
-                    }
                   />
                 ) : (
                   <div>
@@ -141,6 +99,9 @@ const ProductEntryDropDown = ({ index, isEditing, data }) => {
               </div>
             </li>
           </ul>
+          <TopBarButton onClick={() => handleEditing()}>
+            {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
+          </TopBarButton>
         </div>
       ) : (
         <></>
