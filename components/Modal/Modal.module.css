@@ -1,0 +1,20 @@
+.OverLay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  background-color: #0000004d;
+  align-items: center;
+  z-index: 9000;
+}
+
+/* size of window depends on child */
+.Window {
+  background-color: white;
+}

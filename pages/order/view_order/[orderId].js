@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrder, updateOrder } from "../../../components/redux/order.js";
-
+import Modal from "../../../components/Modal/Modal.js";
 import styles from "./view_order.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
 import {
@@ -10,6 +10,7 @@ import {
   IoCheckmarkDoneOutline,
   IoTrashOutline,
   IoReturnUpBack,
+  IoAdd,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
@@ -62,6 +63,8 @@ export async function getServerSideProps(context) {
 const ViewOrder = (props) => {
   const dispatch = useDispatch();
   const { order } = useSelector((state) => state.order);
+
+  // for the order fields
   const [isEditing, setIsEditing] = useState(false);
   const [orderId, setOrderId] = useState(props.data.orderId);
   // this order is always the same as what's in the backend database
@@ -74,6 +77,13 @@ const ViewOrder = (props) => {
   const [note, setNote] = useState(props.data.note);
   const [deliveredAt, setDeliveredAt] = useState(props.data.deliveredAt);
   const [issuedAt, setIssuedAt] = useState(props.data.issuedAt);
+
+  // for the fields in Modal when adding product entry
+  const [isAddingProductEntry, setIsAddingProductEntry] = useState(true);
+  const [model, setModel] = useState("123");
+  const [quantity, setQuantity] = useState(0);
+  const [price, setPrice] = useState(0);
+  const [productTicketId, setProductTicketId] = useState("");
 
   const handleEditing = () => {
     if (!isEditing) {
@@ -119,6 +129,49 @@ const ViewOrder = (props) => {
       value={{ color: "var(--brown)", height: "100%", width: "100%" }}
     >
       <div className={styles.Container}>
+        <Modal isOpen={isAddingProductEntry}>
+          <div className={styles.ModalContainer}>
+            新增品項
+            <ul>
+              <li key="model">
+                <span>規格 :</span>
+                <div className={styles.DataBlockContainer}>
+                  <input
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                  />
+                </div>
+              </li>
+              <li key="quantity">
+                <span>數量 :</span>
+                <div className={styles.DataBlockContainer}>
+                  <input
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                  />
+                </div>
+              </li>
+              <li key="price">
+                <span>單價 :</span>
+                <div className={styles.DataBlockContainer}>
+                  <input
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                  />
+                </div>
+              </li>
+              <li key="productTicketId">
+                <span>對應工單號碼 :</span>
+                <div className={styles.DataBlockContainer}>
+                  <input
+                    value={productTicketId}
+                    onChange={(e) => setProductTicketId(e.target.value)}
+                  />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </Modal>
         <div key="test" className="TopButtonContainer">
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
@@ -221,16 +274,25 @@ const ViewOrder = (props) => {
         </div>
         <div className={styles.ProductEntriesContainer}>
           <div className={styles.ProductEntriesTitle}>訂單規格：</div>
-          {order.productEntries.map((item, index) => {
-            return (
-              <ProductEntryDropDown
-                isEditing={isEditing}
-                key={index}
-                index={index}
-                data={item}
-              />
-            );
-          })}
+          <ul className={styles.ProductEntriesList}>
+            {order.productEntries.map((item, index) => {
+              return (
+                <li key={index}>
+                  <ProductEntryDropDown
+                    isEditing={isEditing}
+                    key={index}
+                    index={index}
+                    data={item}
+                  />
+                </li>
+              );
+            })}
+            <li>
+              <div className={styles.AddProductEntryBTN}>
+                <IoAdd />
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </IconContext.Provider>
