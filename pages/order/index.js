@@ -11,13 +11,7 @@ import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
 import { IconContext } from "react-icons";
 import React, { useContext, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-import {
-  setOrders,
-  clearOrders,
-  setOrderRequest,
-  resetOrderRequestToDefault,
-} from "../../components/redux/order.js";
+import { setOrders, setOrderRequest } from "../../components/redux/order.js";
 
 const orderTopBarState = {
   pageName: "訂購單",

@@ -3,7 +3,11 @@ import styles from "./ProductEntryDropDown.module.css";
 import { IoIosArrowForward } from "react-icons/io";
 import { useDispatch } from "react-redux";
 import { updateOrder } from "../redux/order.js";
-import { IoPencil, IoCheckmarkDoneOutline } from "react-icons/io5";
+import {
+  IoPencil,
+  IoTrashOutline,
+  IoCheckmarkDoneOutline,
+} from "react-icons/io5";
 import TopBarButton from "../TopBar/TopBarButton/TopBarButton.js";
 
 const ProductEntryDropDown = ({ index, data }) => {
@@ -27,7 +31,6 @@ const ProductEntryDropDown = ({ index, data }) => {
       dispatch(
         updateOrder({
           prodctEntrySlice: { productEntry: updatedProductEntry, index: index },
-          commonFieldSlice: null,
         })
       );
 
@@ -41,7 +44,15 @@ const ProductEntryDropDown = ({ index, data }) => {
       setIsEditing(true);
     }
   };
-
+  const handleDeleting = (pIndex) => {
+    dispatch(
+      updateOrder({
+        deletedProductEntrySlice: {
+          index: pIndex,
+        },
+      })
+    );
+  };
   return (
     <div className={styles.Container}>
       <div
@@ -112,6 +123,9 @@ const ProductEntryDropDown = ({ index, data }) => {
           </ul>
           <TopBarButton onClick={() => handleEditing()}>
             {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
+          </TopBarButton>
+          <TopBarButton onClick={() => handleDeleting(index)}>
+            <IoTrashOutline />
           </TopBarButton>
         </div>
       ) : (

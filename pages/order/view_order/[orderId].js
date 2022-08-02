@@ -104,7 +104,6 @@ const ViewOrder = (props) => {
 
     dispatch(
       updateOrder({
-        prodctEntrySlice: null,
         commonFieldSlice: { order: updatedOrder },
       })
     );

@@ -76,18 +76,40 @@ const updateAndGetOrder = async (updatedOrder, thunkAPI) => {
 };
 export const updateOrder = createAsyncThunk(
   "order/updateOrder",
-  async ({ prodctEntrySlice, commonFieldSlice }, thunkAPI) => {
-    //prodctEntrySlice is not null when user edits one of the product entries and would like to update it
-    //commonFieldSlice is not null when user edits other fields other thant he product entries
-    //the logic for checking whether fields are updated or not are done here
+  async (
+    {
+      prodctEntrySlice,
+      commonFieldSlice,
+      addedNewProductEntrySlice,
+      deletedProductEntrySlice,
+    },
+    thunkAPI
+  ) => {
+    /* 
+    { // defined when updating a single product entry
+      prodctEntrySlice:{
+         productEntry: {}, // the updated product entry
+         index: 3 // index of the edited productEntry inside of the store
+    }, 
+    // defined when updating common fields of a order other than product entries
+    commonFieldSlice :{
+         order: {}
+     },
+     // defined when deleting an entire product entry
+     deletedProductEntrySlice: {
+      index: 3 // current index of the product entry we want to delete
+     },
+     // defined when adding a new product entry
+     addedNewProductEntrySlice: {
+      productEntry:{} // the added product entry
+     }
+    } 
+    */
 
-    if (prodctEntrySlice !== null && commonFieldSlice === null) {
-      // productEntrySlice stucture
-      // {
-      //   productEntry: {}; // the updated product entry
-      //   index: 3 // index of the edited productEntry inside of the store
-      // }
-      const orgOrder = thunkAPI.getState().order.order;
+    //the logic for checking whether fields are updated or not are done here
+    const orgOrder = thunkAPI.getState().order.order;
+
+    if (prodctEntrySlice !== undefined) {
       if (
         !isEqualProductEntry(
           orgOrder.productEntries[prodctEntrySlice.index],
@@ -105,13 +127,7 @@ export const updateOrder = createAsyncThunk(
       } else {
         return thunkAPI.fulfillWithValue({ noChange: true });
       }
-    } else if (prodctEntrySlice === null && commonFieldSlice !== null) {
-      // commonFieldSlice structure
-      // {
-      //   order: {}
-      // }
-      const orgOrder = thunkAPI.getState().order.order;
-
+    } else if (commonFieldSlice !== undefined) {
       const updatedOrder = {
         ...commonFieldSlice.order,
         productEntries: orgOrder.productEntries,
@@ -121,6 +137,33 @@ export const updateOrder = createAsyncThunk(
       } else {
         return thunkAPI.fulfillWithValue({ noChange: true });
       }
+    } else if (addedNewProductEntrySlice !== undefined) {
+      const updatedProductEntries = [
+        ...orgOrder.productEntries,
+        addedNewProductEntrySlice.productEntry,
+      ];
+      const updatedOrder = {
+        ...orgOrder,
+        productEntries: updatedProductEntries,
+      };
+      return updateAndGetOrder(updatedOrder, thunkAPI);
+    } else if (deletedProductEntrySlice !== undefined) {
+      if (deletedProductEntrySlice.index >= orgOrder.productEntries.length) {
+        return thunkAPI.rejectWithValue(
+          "index of deleting product entry is out of bound"
+        );
+      }
+      const index = deletedProductEntrySlice.index;
+      // don't use splice here, it mutates state and immer doesn't work well with it
+      const updatedProductEntries = [
+        ...orgOrder.productEntries.slice(0, index),
+        ...orgOrder.productEntries.slice(index + 1),
+      ];
+      const updatedOrder = {
+        ...orgOrder,
+        productEntries: updatedProductEntries,
+      };
+      return updateAndGetOrder(updatedOrder, thunkAPI);
     } else {
       console.log("updateOrder thunk error");
     }
