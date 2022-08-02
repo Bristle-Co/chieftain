@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styles from "./ProductEntryDropDown.module.css";
 import { IoIosArrowForward } from "react-icons/io";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { updateOrder } from "../redux/order.js";
 import { IoPencil, IoCheckmarkDoneOutline } from "react-icons/io5";
 import TopBarButton from "../TopBar/TopBarButton/TopBarButton.js";
@@ -13,10 +13,10 @@ const ProductEntryDropDown = ({ index, data }) => {
   const [model, setModel] = useState(data.model);
   const [quantity, setQuantity] = useState(data.quantity);
   const [price, setPrice] = useState(data.price);
-  const [productTicketId, setProductTicketId] = useState(data.productTicket_id);
+  const [productTicketId, setProductTicketId] = useState(data.productTicketId);
 
   const handleEditing = () => {
-    if (isEditing === true) {
+    if (isEditing) {
       const updatedProductEntry = {
         productEntryId: data.productEntryId,
         model: model,
@@ -33,6 +33,11 @@ const ProductEntryDropDown = ({ index, data }) => {
 
       setIsEditing(false);
     } else {
+      // sync the current value in redux store with useState variables for inputs
+      setModel(data.model);
+      setQuantity(data.quantity);
+      setPrice(data.price);
+      setProductTicketId(data.productTicketId);
       setIsEditing(true);
     }
   };
@@ -44,7 +49,13 @@ const ProductEntryDropDown = ({ index, data }) => {
         onClick={() => setIsActive(!isActive)}
       >
         {isEditing ? (
-          <input value={model} onChange={(e) => setModel(e.target.value)} />
+          <input
+            value={model}
+            onChange={(e) => setModel(e.target.value)}
+            onClick={(event) => {
+              event.stopPropagation();
+            }}
+          />
         ) : (
           <div> {data.model}</div>
         )}
@@ -91,9 +102,9 @@ const ProductEntryDropDown = ({ index, data }) => {
                   />
                 ) : (
                   <div>
-                    {data.productTicket_id == null
+                    {data.productTicketId == null
                       ? "尚未開立工單"
-                      : data.productTicket_id}
+                      : data.productTicketId}
                   </div>
                 )}
               </div>

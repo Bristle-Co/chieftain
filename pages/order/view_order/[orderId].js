@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOrder } from "../../../components/redux/order.js";
+import { setOrder, updateOrder } from "../../../components/redux/order.js";
 
 import styles from "./view_order.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
@@ -13,6 +13,7 @@ import {
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
+import { getOrderByIdRequest } from ".././../../components/AxiosRequestUtils.js";
 
 export async function getServerSideProps(context) {
   const { orderId } = context.query;
@@ -58,17 +59,6 @@ export async function getServerSideProps(context) {
   };
 }
 
-const getOrderByIdRequest = (orderId) => ({
-  method: "GET",
-  url: "/order",
-  baseURL: process.env.backendServerBaseURI,
-  params: {
-    orderId: orderId,
-    pageIndex: 0,
-    pageSize: process.env.globalPageSize,
-  },
-});
-
 const ViewOrder = (props) => {
   const dispatch = useDispatch();
   const { order } = useSelector((state) => state.order);
@@ -87,17 +77,40 @@ const ViewOrder = (props) => {
 
   const handleEditing = () => {
     if (!isEditing) {
+      // sync the order in redux with the fields in useState
+      setOrderId(order.orderId);
+      setCustomerOrderId(order.customerOrderId);
+      setCustomerId(order.customerId);
+      setDueDate(order.dueDate);
+      setNote(order.note);
+      setDeliveredAt(order.deliveredAt);
+      setIssuedAt(order.issuedAt);
       setIsEditing(true);
       return;
     }
     // TODO validate fields
-    updateOrder();
-  };
+    const updatedOrder = {
+      orderId: orderId,
+      customerOrderId: customerOrderId,
+      customerId: customerId,
+      dueDate: dueDate,
+      note: note,
+      deliveredAt: deliveredAt,
+      issuedAt: issuedAt,
+      // this productEntries field will get override once dispatched to redux thunk
+      // thus no need to initiate it
+      productEntries: [],
+    };
 
-  const updateOrder = () => {
+    dispatch(
+      updateOrder({
+        prodctEntrySlice: null,
+        commonFieldSlice: { order: updatedOrder },
+      })
+    );
+
     setIsEditing(false);
   };
-
   useEffect(() => {
     dispatch(setOrder(props.data));
   }, []);
@@ -134,7 +147,7 @@ const ViewOrder = (props) => {
                 {isEditing ? (
                   <input
                     value={customerOrderId}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setCustomerOrderId(e.target.value)}
                   />
                 ) : (
                   <div>{order.customerOrderId}</div>
@@ -147,7 +160,7 @@ const ViewOrder = (props) => {
                 {isEditing ? (
                   <input
                     value={customerId}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setCustomerId(e.target.value)}
                   />
                 ) : (
                   <div>{order.customerId}</div>
@@ -160,7 +173,7 @@ const ViewOrder = (props) => {
                 {isEditing ? (
                   <input
                     value={dueDate}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setDueDate(e.target.value)}
                   />
                 ) : (
                   <div>{order.dueDate}</div>
@@ -174,11 +187,11 @@ const ViewOrder = (props) => {
                   <input
                     type="date"
                     value={deliveredAt}
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setDeliveredAt(e.target.value)}
                   />
                 ) : (
                   <div>
-                    {order.deliveredAt == null ? "尚未交貨" : deliveredAt}
+                    {order.deliveredAt == null ? "尚未交貨" : order.deliveredAt}
                   </div>
                 )}
               </div>

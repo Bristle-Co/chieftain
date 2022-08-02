@@ -26,17 +26,15 @@ const isEqualOrder = (org, updated) => {
   ) {
     return false;
   }
-
   const unmatchedProductEntries = org.productEntries.filter(
-    item,
-    (index) => !isEqualProductEntry(item, updated.productEntries[index])
+    (item, index) => !isEqualProductEntry(item, updated.productEntries[index])
   );
   if (unmatchedProductEntries.length !== 0) {
     return false;
   }
-
   return true;
 };
+
 const updateAndGetOrder = async (updatedOrder, thunkAPI) => {
   try {
     console.log("sending PUT request to update single order");
@@ -64,11 +62,11 @@ const updateAndGetOrder = async (updatedOrder, thunkAPI) => {
       },
     });
     console.log("GET request to get a single order sent successfully");
-    console.log(getRequestResponse);
+    console.log(getRequestResponse.data);
 
     // response.data is the ResponseWrapper entity from backend
     // response.data.data should contain an order
-    return thunkAPI.fulfillWithValue(getRequestResponse);
+    return thunkAPI.fulfillWithValue(getRequestResponse.data);
   } catch (error) {
     console.log("GET or PUT request to update order failed");
     console.log(error);
@@ -112,7 +110,6 @@ export const updateOrder = createAsyncThunk(
       // {
       //   order: {}
       // }
-
       const orgOrder = thunkAPI.getState().order.order;
 
       const updatedOrder = {
@@ -120,7 +117,7 @@ export const updateOrder = createAsyncThunk(
         productEntries: orgOrder.productEntries,
       };
       if (!isEqualOrder(orgOrder, updatedOrder)) {
-        return updateAndGetOrder(updatedOrder);
+        return updateAndGetOrder(updatedOrder, thunkAPI);
       } else {
         return thunkAPI.fulfillWithValue({ noChange: true });
       }
@@ -231,13 +228,15 @@ export const orderSlice = createSlice({
       .addCase(updateOrder.fulfilled, (state, action) => {
         if (action.payload.noChange === true) {
           console.log("No fields in this order is changed");
+          return;
         }
-        // thunkAPI.fulfilledWithValue('123) makes action.payload === '123'
-        console.log(action.payload.data.data);
+        // thunkAPI.fulfilledWithValue('123') makes action.payload === '123'
+        console.log("state.order set to following");
+        console.log(action.payload.data[0]);
 
         state.status = "success";
         // action.payload is the ResponseWrapper returned from second argument of createAsycThunk
-        state.order = action.payload.data.data[0];
+        state.order = action.payload.data[0];
       })
       .addCase(updateOrder.pending, (state, action) => {
         // note that the status and error field is global relative to the state structure!!!!!

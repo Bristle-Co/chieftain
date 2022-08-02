@@ -77,6 +77,11 @@
   height: 50vh;
   width: 45vw;
   margin-left: 3vw;
+
+  border-radius: 0.2em;
+  border: solid 1px var(--brown);
+  background-color: #d5eade;
+  padding: 20px 20px 20px 30px;
 }
 
 .ProductEntriesTitle {
