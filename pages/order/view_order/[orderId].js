@@ -80,7 +80,7 @@ const ViewOrder = (props) => {
   const [issuedAt, setIssuedAt] = useState(props.data.issuedAt);
 
   // for the fields in Modal when adding product entry
-  const [isAddingProductEntry, setIsAddingProductEntry] = useState(true);
+  const [isAddingProductEntry, setIsAddingProductEntry] = useState(false);
   const [model, setModel] = useState("123");
   const [quantity, setQuantity] = useState(0);
   const [price, setPrice] = useState(0);
@@ -120,6 +120,25 @@ const ViewOrder = (props) => {
     );
 
     setIsEditing(false);
+  };
+
+  const handleAddNewProductEntry = () => {
+    // TODO validate fieds
+    const newProductEntry = {
+      productEntryId: null,
+      model: model,
+      quantity: quantity,
+      price: price,
+      productTicketId: productTicketId,
+    };
+    dispatch(
+      updateOrder({
+        addedNewProductEntrySlice: {
+          productEntry: newProductEntry,
+        },
+      })
+    );
+    setIsAddingProductEntry(false);
   };
   useEffect(() => {
     dispatch(setOrder(props.data));
@@ -168,7 +187,12 @@ const ViewOrder = (props) => {
                   onChange={(e) => setProductTicketId(e.target.value)}
                 />
               </li>
-              <div className={styles.ConfirmBTN}>確定</div>
+              <div
+                className={styles.ConfirmBTN}
+                onClick={() => handleAddNewProductEntry()}
+              >
+                確定
+              </div>
             </ul>
           </div>
         </Modal>

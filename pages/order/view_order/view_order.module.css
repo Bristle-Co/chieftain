@@ -27,14 +27,14 @@
   margin: 0;
   list-style: none;
   margin-top: 15px;
-  width: min-content;
+  width: 25vw;
 }
 
 .ModalContainer ul li {
-  display: inline-block;
+  display: inline-flex;
   margin-top: 4px;
   margin-bottom: 4px;
-  width: max-content;
+  width: 100%;
 }
 
 .ModalContainer ul li input {
@@ -42,15 +42,25 @@
   border-radius: 0.2em;
   font-size: 1em;
   margin-left: 6px;
+  flex-grow: 1;
 }
 
 .ConfirmBTN {
+  user-select: none;
+  font-size: 1em;
+  height: 2em;
   margin-top: 20px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: var(--yellow);
   border-radius: 0.2em;
   color: var(--brown);
   border: solid 1px var(--brown);
+}
+
+.ConfirmBTN:hover {
+  background-color: var(--yellow_shade);
 }
 
 .BasicFieldsList {
@@ -137,7 +147,6 @@
 .ProductEntriesList {
   list-style-type: none;
   width: 100%;
-  background-color: rebeccapurple;
   padding: 0px;
   margin: 0px;
 }
