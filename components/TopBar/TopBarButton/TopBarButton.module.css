@@ -6,6 +6,7 @@
   align-items: center;
   cursor: pointer;
   height: 40px;
+  width: 40px;
 }
 
 .Container:hover {

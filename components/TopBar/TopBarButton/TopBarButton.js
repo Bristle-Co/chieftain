@@ -1,10 +1,10 @@
 import styles from "./TopBarButton.module.css";
 
 // should pass an image icon as children
-const TopBarButton = ({ children, onClick }) => {
+const TopBarButton = (props) => {
   return (
-    <div onClick={onClick} className={styles.Container}>
-      {children}
+    <div {...props} onClick={props.onClick} className={styles.Container}>
+      {props.children}
     </div>
   );
 };

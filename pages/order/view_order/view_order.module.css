@@ -9,11 +9,48 @@
 }
 
 .ModalContainer {
+  position: relative;
+  padding: 20px;
+  border: solid 1px var(--brown);
+  border-radius: 20px;
+  background-color: white;
+  width: min-content;
+}
+#ModalCloseBTN {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  border-radius: 20px;
 }
 .ModalContainer ul {
   padding: 0;
   margin: 0;
   list-style: none;
+  margin-top: 15px;
+  width: min-content;
+}
+
+.ModalContainer ul li {
+  display: inline-block;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: max-content;
+}
+
+.ModalContainer ul li input {
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+  font-size: 1em;
+  margin-left: 6px;
+}
+
+.ConfirmBTN {
+  margin-top: 20px;
+  text-align: center;
+  background-color: var(--yellow);
+  border-radius: 0.2em;
+  color: var(--brown);
+  border: solid 1px var(--brown);
 }
 
 .BasicFieldsList {

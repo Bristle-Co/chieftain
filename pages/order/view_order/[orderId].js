@@ -11,6 +11,7 @@ import {
   IoTrashOutline,
   IoReturnUpBack,
   IoAdd,
+  IoCloseOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
@@ -131,47 +132,43 @@ const ViewOrder = (props) => {
       <div className={styles.Container}>
         <Modal isOpen={isAddingProductEntry}>
           <div className={styles.ModalContainer}>
-            <TopBarButton>
-              <IoAdd />
+            <TopBarButton
+              id={styles.ModalCloseBTN}
+              onClick={() => setIsAddingProductEntry(false)}
+            >
+              <IoCloseOutline />
             </TopBarButton>
             新增品項
             <ul>
               <li key="model">
                 <span>規格 :</span>
-                <div className={styles.DataBlockContainer}>
-                  <input
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                  />
-                </div>
+                <input
+                  value={model}
+                  onChange={(e) => setModel(e.target.value)}
+                />
               </li>
               <li key="quantity">
                 <span>數量 :</span>
-                <div className={styles.DataBlockContainer}>
-                  <input
-                    value={quantity}
-                    onChange={(e) => setQuantity(e.target.value)}
-                  />
-                </div>
+                <input
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
               </li>
               <li key="price">
                 <span>單價 :</span>
-                <div className={styles.DataBlockContainer}>
-                  <input
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
+                <input
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
               </li>
               <li key="productTicketId">
                 <span>對應工單號碼 :</span>
-                <div className={styles.DataBlockContainer}>
-                  <input
-                    value={productTicketId}
-                    onChange={(e) => setProductTicketId(e.target.value)}
-                  />
-                </div>
+                <input
+                  value={productTicketId}
+                  onChange={(e) => setProductTicketId(e.target.value)}
+                />
               </li>
+              <div className={styles.ConfirmBTN}>確定</div>
             </ul>
           </div>
         </Modal>
@@ -291,7 +288,10 @@ const ViewOrder = (props) => {
               );
             })}
             <li>
-              <div className={styles.AddProductEntryBTN}>
+              <div
+                className={styles.AddProductEntryBTN}
+                onClick={() => setIsAddingProductEntry(true)}
+              >
                 <IoAdd />
               </div>
             </li>
