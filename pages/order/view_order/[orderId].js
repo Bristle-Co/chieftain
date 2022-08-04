@@ -131,6 +131,9 @@ const ViewOrder = (props) => {
       <div className={styles.Container}>
         <Modal isOpen={isAddingProductEntry}>
           <div className={styles.ModalContainer}>
+            <TopBarButton>
+              <IoAdd />
+            </TopBarButton>
             新增品項
             <ul>
               <li key="model">
