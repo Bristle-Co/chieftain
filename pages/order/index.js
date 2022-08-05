@@ -192,10 +192,8 @@ const Order = () => {
 
   useEffect(() => {
     setTopBarState(orderTopBarState);
-    //only fetch customers on first time load when there is no customers fetched in redux store
-    if (orders[0].orderId === 0) {
-      fetchOrdersWithCachedRequest();
-    }
+    //fetch list of customers everytime since we are not keeping track of what's being updated or not
+    fetchOrdersWithCachedRequest();
   }, []);
   return (
     <div className={styles.Container}>

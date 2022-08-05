@@ -1,6 +1,5 @@
 import { TopBarStateContext } from "../../../components/context.js";
 import React, { useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import Modal from "../../../components/Modal/Modal.js";
 import styles from "./add_order.module.css";
 import axios from "axios";
@@ -13,7 +12,10 @@ import {
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
-
+import {
+  getOrderByIdRequest,
+  postOrderRequest,
+} from "../../../components/AxiosRequestUtils.js";
 import { useRouter } from "next/router";
 
 const orderTopBarState = {
@@ -21,30 +23,91 @@ const orderTopBarState = {
   buttons: [],
 };
 
-const AddOrder = () => {
-  const router = useRouter();
-  const { copying } = router.query;
-  const dispatch = useDispatch();
-  const cachedOrdr = useSelector((state) => state.order.order);
+export async function getServerSideProps(context) {
+  const { orderId } = context.query;
+  // http://localhost:3000/order/add_order?orderId= -> orderId === null
+  // http://localhost:3000/order/add_order? -> orderId === undefined
+  if (orderId !== undefined && orderId !== null) {
+    let order;
 
+    try {
+      const result = await axios(getOrderByIdRequest(orderId));
+      order = result.data.data[0];
+    } catch (error) {
+      console.log(error.response);
+      console.log("fetch order from server side failed");
+
+      return {
+        props: {
+          data: {
+            orderId: null,
+            customerOrderId: "",
+            customerId: "",
+            dueDate: "",
+            note: "",
+            deliveredAt: "",
+            issuedAt: null,
+            productEntries: [
+              {
+                productEntryId: null,
+                model: "",
+                quantity: 0,
+                price: 0,
+                productTicket_id: "",
+              },
+            ],
+          },
+        },
+      };
+    }
+    console.log("fetch order from server side success");
+    console.log(order);
+
+    // make sure all the produc entry ids are null or else it'll conflict with the order that it's copied from
+    order.productEntries.map((element) => (element.productEntryId = null));
+    return {
+      props: {
+        data: order,
+      },
+    };
+  } else {
+    return {
+      props: {
+        data: {
+          orderId: null,
+          customerOrderId: "eee",
+          customerId: "",
+          dueDate: "",
+          note: "",
+          deliveredAt: "",
+          issuedAt: null,
+          productEntries: [
+            {
+              productEntryId: null,
+              model: "",
+              quantity: 0,
+              price: 0,
+              productTicket_id: "",
+            },
+          ],
+        },
+      },
+    };
+  }
+}
+
+const AddOrder = ({ data }) => {
+  const router = useRouter();
   const [topBarState, setTopBarState] = useContext(TopBarStateContext);
 
-  const [orderId, setOrderId] = useState(copying ? cachedOrdr.orderId : "");
-  const [customerOrderId, setCustomerOrderId] = useState(
-    copying ? cachedOrdr.customerOrderId : ""
-  );
-  const [customerId, setCustomerId] = useState(
-    copying ? cachedOrdr.customerId : ""
-  );
-  const [dueDate, setDueDate] = useState(copying ? cachedOrdr.dueDate : "");
-  const [note, setNote] = useState(copying ? cachedOrdr.note : "");
+  const [customerOrderId, setCustomerOrderId] = useState(data.customerOrderId);
+  const [customerId, setCustomerId] = useState(data.customerId);
+  const [dueDate, setDueDate] = useState(data.dueDate);
+  const [note, setNote] = useState(data.note);
   const [deliveredAt, setDeliveredAt] = useState(
-    copying ? cachedOrdr.deliveredAt.replace(" ", "T") : ""
+    data.deliveredAt == null ? "" : data.deliveredAt.replace(" ", "T")
   );
-  const [issuedAt, setIssuedAt] = useState(copying ? cachedOrdr.issuedAt : "");
-  const [productEntries, setProductEntries] = useState(
-    copying ? cachedOrdr.productEntries : []
-  );
+  const [productEntries, setProductEntries] = useState(data.productEntries);
 
   // for the fields in Modal when adding product entry
   const [isAddingProductEntry, setIsAddingProductEntry] = useState(false);
@@ -75,7 +138,31 @@ const AddOrder = () => {
     }
   };
 
-  const PostNewOrder = () => {};
+  const PostNewOrder = () => {
+    axios(
+      postOrderRequest({
+        orderId: null,
+        customerOrderId: customerOrderId,
+        customerId: customerId,
+        dueDate: dueDate === "" ? null : dueDate,
+        note: note,
+        deliveredAt: deliveredAt === "" ? deliveredAt.replace("T", " ") : null,
+        issuedAt: null,
+        productEntries: productEntries,
+      })
+    )
+      .then((result) => {
+        alert("新增訂購單成功！");
+        console.log("post order success");
+        console.log(result.data.data);
+        router.replace("/order");
+      })
+      .catch((error) => {
+        alert("新增訂購單失敗 聯絡鞍！");
+        console.log("post order failed");
+        console.log(error.response.data);
+      });
+  };
   useEffect(() => {
     setTopBarState(orderTopBarState);
   }, []);

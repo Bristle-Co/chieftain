@@ -16,8 +16,12 @@ import {
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
-import { getOrderByIdRequest } from ".././../../components/AxiosRequestUtils.js";
+import {
+  getOrderByIdRequest,
+  deleteOrderRequest,
+} from "../../../components/AxiosRequestUtils.js";
 import Link from "next/link.js";
+import { useRouter } from "next/router";
 
 export async function getServerSideProps(context) {
   const { orderId } = context.query;
@@ -66,7 +70,7 @@ export async function getServerSideProps(context) {
 const ViewOrder = (props) => {
   const dispatch = useDispatch();
   const { order } = useSelector((state) => state.order);
-
+  const router = useRouter();
   // for the order fields
   const [isEditing, setIsEditing] = useState(false);
   const [orderId, setOrderId] = useState(props.data.orderId);
@@ -88,6 +92,20 @@ const ViewOrder = (props) => {
   const [price, setPrice] = useState("");
   const [productTicketId, setProductTicketId] = useState("");
 
+  const handleDeleting = () => {
+    axios(deleteOrderRequest(orderId))
+      .then((result) => {
+        alert("刪除訂購單成功！");
+        console.log("delete order success");
+        console.log(result.data.data);
+        router.replace("/order");
+      })
+      .catch((error) => {
+        alert("刪除訂購單失敗 聯絡鞍！");
+        console.log("delete order failed");
+        console.log(error.response.data);
+      });
+  };
   const handleEditing = () => {
     if (!isEditing) {
       // sync the order in redux with the fields in useState
@@ -217,14 +235,14 @@ const ViewOrder = (props) => {
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>
-          <Link href={"/order/add_order?copying=true"}>
+          <Link href={"/order/add_order?orderId=" + order.orderId}>
             <TopBarButton>
               <IoCopyOutline />
             </TopBarButton>
           </Link>
           <TopBarButton
             onClick={() => {
-              deleteCustomerAndGoToMainPage();
+              handleDeleting();
             }}
           >
             <IoTrashOutline />

@@ -9,3 +9,19 @@ export const getOrderByIdRequest = (orderId) => ({
     pageSize: process.env.globalPageSize,
   },
 });
+
+export const postOrderRequest = (order) => ({
+  method: "POST",
+  url: "/order",
+  baseURL: process.env.backendServerBaseURI,
+  data: { ...order, orderId: null, issuedAt: null },
+});
+
+export const deleteOrderRequest = (orderId) => ({
+  method: "DELETE",
+  url: "/order",
+  baseURL: process.env.backendServerBaseURI,
+  params: {
+    orderId: orderId,
+  },
+});
