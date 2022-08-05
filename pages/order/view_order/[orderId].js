@@ -12,10 +12,12 @@ import {
   IoReturnUpBack,
   IoAdd,
   IoCloseOutline,
+  IoCopyOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
 import ProductEntryDropDown from "../../../components/ProductEntryDropDown/ProductEntryDropDown.js";
 import { getOrderByIdRequest } from ".././../../components/AxiosRequestUtils.js";
+import Link from "next/link.js";
 
 export async function getServerSideProps(context) {
   const { orderId } = context.query;
@@ -81,9 +83,9 @@ const ViewOrder = (props) => {
 
   // for the fields in Modal when adding product entry
   const [isAddingProductEntry, setIsAddingProductEntry] = useState(false);
-  const [model, setModel] = useState("123");
-  const [quantity, setQuantity] = useState(0);
-  const [price, setPrice] = useState(0);
+  const [model, setModel] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [price, setPrice] = useState("");
   const [productTicketId, setProductTicketId] = useState("");
 
   const handleEditing = () => {
@@ -106,12 +108,14 @@ const ViewOrder = (props) => {
       customerId: customerId,
       dueDate: dueDate,
       note: note,
-      deliveredAt: deliveredAt,
+      deliveredAt: deliveredAt.replace("T", " "),
       issuedAt: issuedAt,
       // this productEntries field will get override once dispatched to redux thunk
       // thus no need to initiate it
       productEntries: [],
     };
+    console.log("yee");
+    console.log(deliveredAt);
 
     dispatch(
       updateOrder({
@@ -123,22 +127,30 @@ const ViewOrder = (props) => {
   };
 
   const handleAddNewProductEntry = () => {
-    // TODO validate fieds
-    const newProductEntry = {
-      productEntryId: null,
-      model: model,
-      quantity: quantity,
-      price: price,
-      productTicketId: productTicketId,
-    };
-    dispatch(
-      updateOrder({
-        addedNewProductEntrySlice: {
-          productEntry: newProductEntry,
-        },
-      })
-    );
-    setIsAddingProductEntry(false);
+    if (!isAddingProductEntry) {
+      setModel("");
+      setQuantity("");
+      setPrice("");
+      setProductTicketId("");
+      setIsAddingProductEntry(true);
+    } else {
+      // TODO validate fieds
+      const newProductEntry = {
+        productEntryId: null,
+        model: model,
+        quantity: quantity,
+        price: price,
+        productTicketId: productTicketId,
+      };
+      dispatch(
+        updateOrder({
+          addedNewProductEntrySlice: {
+            productEntry: newProductEntry,
+          },
+        })
+      );
+      setIsAddingProductEntry(false);
+    }
   };
   useEffect(() => {
     dispatch(setOrder(props.data));
@@ -154,6 +166,7 @@ const ViewOrder = (props) => {
             <TopBarButton
               id={styles.ModalCloseBTN}
               onClick={() => setIsAddingProductEntry(false)}
+              isRound={true}
             >
               <IoCloseOutline />
             </TopBarButton>
@@ -164,6 +177,7 @@ const ViewOrder = (props) => {
                 <input
                   value={model}
                   onChange={(e) => setModel(e.target.value)}
+                  type="text"
                 />
               </li>
               <li key="quantity">
@@ -171,6 +185,7 @@ const ViewOrder = (props) => {
                 <input
                   value={quantity}
                   onChange={(e) => setQuantity(e.target.value)}
+                  type="number"
                 />
               </li>
               <li key="price">
@@ -178,6 +193,7 @@ const ViewOrder = (props) => {
                 <input
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                  type="number"
                 />
               </li>
               <li key="productTicketId">
@@ -185,6 +201,7 @@ const ViewOrder = (props) => {
                 <input
                   value={productTicketId}
                   onChange={(e) => setProductTicketId(e.target.value)}
+                  type="text"
                 />
               </li>
               <div
@@ -200,7 +217,11 @@ const ViewOrder = (props) => {
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>
-
+          <Link href={"/order/add_order?copying=true"}>
+            <TopBarButton>
+              <IoCopyOutline />
+            </TopBarButton>
+          </Link>
           <TopBarButton
             onClick={() => {
               deleteCustomerAndGoToMainPage();
@@ -257,11 +278,11 @@ const ViewOrder = (props) => {
               </div>
             </li>
             <li>
-              <span>實際交貨日期 :</span>
+              <span>實際交貨時間 :</span>
               <div className={styles.DataBlockContainer}>
                 {isEditing ? (
                   <input
-                    type="date"
+                    type="datetime-local"
                     value={deliveredAt}
                     onChange={(e) => setDeliveredAt(e.target.value)}
                   />
@@ -292,7 +313,7 @@ const ViewOrder = (props) => {
               </div>
             </li>
           </ul>
-          <TopBarButton onClick={() => handleEditing()}>
+          <TopBarButton onClick={() => handleEditing()} isRound={true}>
             {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
           </TopBarButton>
         </div>
@@ -302,19 +323,14 @@ const ViewOrder = (props) => {
             {order.productEntries.map((item, index) => {
               return (
                 <li key={index}>
-                  <ProductEntryDropDown
-                    isEditing={isEditing}
-                    key={index}
-                    index={index}
-                    data={item}
-                  />
+                  <ProductEntryDropDown key={index} index={index} data={item} />
                 </li>
               );
             })}
             <li>
               <div
                 className={styles.AddProductEntryBTN}
-                onClick={() => setIsAddingProductEntry(true)}
+                onClick={() => handleAddNewProductEntry()}
               >
                 <IoAdd />
               </div>

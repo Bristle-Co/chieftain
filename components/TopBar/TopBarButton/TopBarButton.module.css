@@ -9,6 +9,22 @@
   width: 40px;
 }
 
+.Container_Round {
+  height: inherit;
+  aspect-ratio: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  border-radius: 20px;
+}
+
 .Container:hover {
+  background-color: var(--light_grey);
+}
+
+.Container_Round:hover {
   background-color: var(--light_grey);
 }

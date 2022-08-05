@@ -1,0 +1,179 @@
+.Container {
+  margin-left: 1vw;
+  margin-right: 1vw;
+  margin-top: 6vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.ModalContainer {
+  position: relative;
+  padding: 20px;
+  border: solid 1px var(--brown);
+  border-radius: 20px;
+  background-color: white;
+  width: min-content;
+}
+#ModalCloseBTN {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+.ModalContainer ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  margin-top: 15px;
+  width: 25vw;
+}
+
+.ModalContainer ul li {
+  display: inline-flex;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  width: 100%;
+}
+
+.ModalContainer ul li input {
+  -webkit-appearance: none;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+  font-size: 1em;
+  margin-left: 6px;
+  flex-grow: 1;
+}
+
+.ModalContainer ul li input::-webkit-outer-spin-button,
+.ModalContainer ul li input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.ConfirmBTN {
+  user-select: none;
+  font-size: 1em;
+  height: 2em;
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--yellow);
+  border-radius: 0.2em;
+  color: var(--brown);
+  border: solid 1px var(--brown);
+}
+
+.ConfirmBTN:hover {
+  background-color: var(--yellow_shade);
+}
+
+.BasicFieldsList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: inline-block;
+}
+.BasicFieldsList li {
+  font-size: 1em;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+.BasicFieldsList li .DataBlockContainer :only-child {
+  width: 100%;
+}
+.BasicFieldsList li .DataBlockContainer input {
+  height: 100%;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+}
+
+.BasicFieldsList li .DataBlockContainer div {
+  width: 100%;
+  height: 100%;
+  flex-grow: 1;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.BasicFieldsList li:last-child .DataBlockContainer {
+  height: inherit;
+}
+
+.BasicFieldsList li .DataBlockContainer textarea {
+  display: inline-block;
+  height: 20vh;
+}
+
+.DataBlockContainer {
+  height: 1.5em;
+  display: inline-block;
+  width: 20vw;
+  margin-left: 5px;
+}
+
+.BasicFieldsContainer {
+  background-color: aliceblue;
+  padding: 20px 30px 20px 30px;
+  margin-right: 3vw;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: flex-start;
+  border-radius: 0.2em;
+  border: solid 1px var(--brown);
+}
+
+.ProductEntriesContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: scroll;
+  height: 50vh;
+  width: 45vw;
+  margin-left: 3vw;
+  border-radius: 0.2em;
+  border: solid 1px var(--brown);
+  background-color: #d5eade;
+  padding: 20px 20px 20px 30px;
+}
+
+.ProductEntriesTitle {
+  margin-bottom: 10px;
+}
+
+.ProductEntriesList {
+  list-style-type: none;
+  width: 100%;
+  padding: 0px;
+  margin: 0px;
+}
+
+.ProductEntriesList li {
+  margin: 2px 0px 2px 0px;
+}
+
+.AddProductEntryBTN {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2px;
+  margin-bottom: 2px;
+  border-radius: 0.5em 0.5em 0.5em 0.5em;
+  background-color: white;
+  border: solid 1px var(--brown);
+  padding: 4px 0px 4px 0px;
+
+  font-size: 1em;
+}
+
+.AddProductEntryBTN:hover {
+  background-color: var(--light_grey);
+}

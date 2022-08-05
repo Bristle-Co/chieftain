@@ -322,14 +322,7 @@ const Order = () => {
                       })}
                     </ul>
 
-                    <Link
-                      href={
-                        "/order/view_order/" +
-                        order.orderId +
-                        "?storedIndex=" +
-                        index
-                      }
-                    >
+                    <Link href={"/order/view_order/" + order.orderId}>
                       <ArrowButton type="button" />
                     </Link>
                   </div>
