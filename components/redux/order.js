@@ -182,8 +182,6 @@ export const getOrders = createAsyncThunk(
             params: requestParams,
           };
 
-    console.log("request");
-    console.log(newRequest);
     try {
       console.log("getOrders request sent, request:");
       console.log(newRequest);

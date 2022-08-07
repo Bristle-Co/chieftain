@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./ProductEntryDropDown.module.css";
 import { IoIosArrowForward } from "react-icons/io";
 import { useDispatch } from "react-redux";
@@ -53,6 +53,11 @@ const ProductEntryDropDown = ({ index, data }) => {
       })
     );
   };
+
+  // TODO buggy behavior when fetch from API and the order of product entries change, it opens and close the wrong one
+  useEffect(() => {
+    setIsActive(false);
+  }, [data]);
   return (
     <div className={styles.Container}>
       <div

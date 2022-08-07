@@ -1,7 +1,9 @@
 .Container {
+  background: none;
+  border: none;
   height: inherit;
   aspect-ratio: 1;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;
@@ -10,9 +12,11 @@
 }
 
 .Container_Round {
+  background: none;
+  border: none;
   height: inherit;
   aspect-ratio: 1;
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
   cursor: pointer;

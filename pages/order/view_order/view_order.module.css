@@ -52,6 +52,7 @@
 }
 
 .ConfirmBTN {
+  width: 100%;
   user-select: none;
   font-size: 1em;
   height: 2em;

@@ -133,8 +133,6 @@ const ViewOrder = (props) => {
       // thus no need to initiate it
       productEntries: [],
     };
-    console.log("yee");
-    console.log(deliveredAt);
 
     dispatch(
       updateOrder({
@@ -191,44 +189,43 @@ const ViewOrder = (props) => {
             </TopBarButton>
             新增品項
             <ul>
-              <li key="model">
-                <span>規格 :</span>
-                <input
-                  value={model}
-                  onChange={(e) => setModel(e.target.value)}
-                  type="text"
-                />
-              </li>
-              <li key="quantity">
-                <span>數量 :</span>
-                <input
-                  value={quantity}
-                  onChange={(e) => setQuantity(e.target.value)}
-                  type="number"
-                />
-              </li>
-              <li key="price">
-                <span>單價 :</span>
-                <input
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
-                  type="number"
-                />
-              </li>
-              <li key="productTicketId">
-                <span>對應工單號碼 :</span>
-                <input
-                  value={productTicketId}
-                  onChange={(e) => setProductTicketId(e.target.value)}
-                  type="text"
-                />
-              </li>
-              <div
-                className={styles.ConfirmBTN}
-                onClick={() => handleAddNewProductEntry()}
-              >
-                確定
-              </div>
+              <form onSubmit={() => handleAddNewProductEntry()}>
+                <li key="model">
+                  <span>規格 :</span>
+                  <input
+                    value={model}
+                    onChange={(e) => setModel(e.target.value)}
+                    type="text"
+                  />
+                </li>
+                <li key="quantity">
+                  <span>數量 :</span>
+                  <input
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
+                    type="number"
+                  />
+                </li>
+                <li key="price">
+                  <span>單價 :</span>
+                  <input
+                    value={price}
+                    onChange={(e) => setPrice(e.target.value)}
+                    type="number"
+                  />
+                </li>
+                <li key="productTicketId">
+                  <span>對應工單號碼 :</span>
+                  <input
+                    value={productTicketId}
+                    onChange={(e) => setProductTicketId(e.target.value)}
+                    type="text"
+                  />
+                </li>
+                <button type="sumbit" className={styles.ConfirmBTN}>
+                  確定
+                </button>
+              </form>
             </ul>
           </div>
         </Modal>
