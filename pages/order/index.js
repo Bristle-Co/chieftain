@@ -11,7 +11,7 @@ import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
 import { IconContext } from "react-icons";
 import React, { useContext, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setOrders, setOrderRequest } from "../../components/redux/order.js";
+import { getOrders } from "../../components/redux/order.js";
 
 const orderTopBarState = {
   pageName: "訂購單",
@@ -57,22 +57,8 @@ const Order = () => {
   );
 
   const fetchOrdersWithCachedRequest = () => {
-    console.log("getOrders request sent, request:");
-    console.log(orderRequest);
-    axios(orderRequest)
-      .then((result) => {
-        dispatch(setOrders(result.data.data));
-        console.log(
-          "getOrders by existing request from client side success. result: "
-        );
-        console.log(result.data.data);
-      })
-      .catch((error) => {
-        console.log(
-          "getOrders by existing request from client side failed. error: "
-        );
-        console.log(error);
-      });
+    // send empty params means send another get request with what params we have in the redux store
+    dispatch(getOrders());
   };
 
   const validateSearchFields = (newParameters) => {
@@ -87,14 +73,14 @@ const Order = () => {
       newParameters.customerId = customerIdSearch;
     }
     if (customerOrderIdSearch !== "") {
-      newParameters.name = customerOrderIdSearch;
+      newParameters.customerOrderId = customerOrderIdSearch;
     }
     if (dueDateFromSearch !== "") {
       newParameters.dueDateFrom = dueDateFromSearch;
     }
 
     if (dueDateToSearch !== "") {
-      newParnewParametersamters.dueDateTo = dueDateToSearch;
+      newParameters.dueDateTo = dueDateToSearch;
     }
 
     if (issuedAtFromSearch !== "") {
@@ -112,15 +98,15 @@ const Order = () => {
       alert("已經是最後一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(parseInt(pageIndexSearch) + 1);
+    fetchOrdersByPageIndex(parseInt(orderRequest.params.pageIndex) + 1);
   };
 
-  const getPreviousPage = () => {
-    if (pageIndexSearch <= 0) {
+  const getPreviousPage = (index) => {
+    if (index <= 0) {
       alert("已經是第一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(parseInt(pageIndexSearch) - 1);
+    fetchOrdersByPageIndex(parseInt(orderRequest.params.pageIndex) - 1);
   };
 
   const fetchOrdersByPageIndex = (index) => {
@@ -128,36 +114,13 @@ const Order = () => {
       alert("頁數不能為負數");
       return;
     }
-    const newRequest = {
-      ...orderRequest,
-      params: {
+
+    dispatch(
+      getOrders({
         ...orderRequest.params,
         pageIndex: index,
-      },
-    };
-    console.log("getOrders request sent, request:");
-
-    console.log(newRequest);
-    axios(newRequest)
-      .then((result) => {
-        if (result.data.data.length <= 0) {
-          console.log("empty result after fetch customer");
-          alert("超過最大頁數 這頁沒有資料囉");
-          return;
-        }
-        dispatch(setOrders(result.data.data));
-        console.log("getOrders by pageIndex success. result: ");
-        console.log(result.data.data);
-        // only update current axios request if request is successful
-        dispatch(setOrderRequest(newRequest));
-
-        // only update real page index if request is successful
-        setPageIndexSearch(index);
       })
-      .catch((error) => {
-        console.log("getOrders by pageIndex failed. result: ");
-        console.log(error);
-      });
+    );
   };
 
   const fetchOrdersByFilter = (event) => {
@@ -169,25 +132,9 @@ const Order = () => {
       pageSize: process.env.globalPageSize,
     };
 
-    const newRequest = {
-      url: "/order",
-      baseURL: process.env.backendServerBaseURI,
-      params: validateSearchFields(newParameters),
-    };
-    axios(newRequest)
-      .then((result) => {
-        dispatch(setOrders(result.data.data));
-        console.log("getOrders by filter from client side success");
-        console.log(result.data.data);
-
-        // only update current axios request if request is successful
-        dispatch(setOrderRequest(newRequest));
-        setPageIndexSearch(0);
-      })
-      .catch((error) => {
-        console.log("getOrders by filter failed");
-        console.log(error);
-      });
+    dispatch(getOrders(validateSearchFields(newParameters)));
+    console.log("eeeeeeeee");
+    console.log(newParameters);
   };
 
   useEffect(() => {
@@ -195,6 +142,47 @@ const Order = () => {
     //fetch list of customers everytime since we are not keeping track of what's being updated or not
     fetchOrdersWithCachedRequest();
   }, []);
+  useEffect(() => {
+    console.log("invoked useEffect");
+    console.log(orderRequest.params.customerId);
+
+    setOrderIdSearch(
+      orderRequest.params.orderId == undefined
+        ? ""
+        : orderRequest.params.orderId
+    );
+    setCustomerOrderIdSearch(
+      orderRequest.params.customerOrderId == undefined
+        ? ""
+        : orderRequest.params.customerOrderId
+    );
+    setCustomerIdSearch(
+      orderRequest.params.customerId == null
+        ? ""
+        : orderRequest.params.customerId
+    );
+    setDueDateFromSearch(
+      orderRequest.params.dueDateFrom == null
+        ? ""
+        : orderRequest.params.dueDateFrom
+    );
+    setDueDateToSearch(
+      orderRequest.params.dueDateTo == null ? "" : orderRequest.params.dueDateTo
+    );
+    setIssuedAtFromSearch(
+      orderRequest.params.issuedAtFrom == null
+        ? ""
+        : orderRequest.params.issuedAtFrom
+    );
+
+    setIssuedAtToSearch(
+      orderRequest.params.issuedAtTo == null
+        ? ""
+        : orderRequest.params.issuedAtTo
+    );
+
+    setPageIndexSearch(orderRequest.params.pageIndex);
+  }, [orderRequest.params]);
   return (
     <div className={styles.Container}>
       <IconContext.Provider
@@ -202,9 +190,9 @@ const Order = () => {
       >
         <div className="TopButtonContainer">
           <Pagination
-            previous={() => getPreviousPage()}
+            previous={() => getPreviousPage(orderRequest.params.pageIndex)}
             next={() => getNextPage()}
-            pageIndex={pageIndexSearch}
+            pageIndex={orderRequest.params.pageIndex}
             setPageIndex={(val) => setPageIndexSearch(val)}
             onSubmit={(pageIndex) => fetchOrdersByPageIndex(pageIndex)}
           />
@@ -241,7 +229,7 @@ const Order = () => {
               <th key="customerId" style={{ width: "10%" }}>
                 <input
                   type="text"
-                  placeholder=" 必須完全符合"
+                  placeholder=" 類似即可"
                   value={customerIdSearch}
                   onChange={(e) => setCustomerIdSearch(e.target.value)}
                 />

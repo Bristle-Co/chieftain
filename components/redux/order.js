@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+const isEqualRequestParams = (org, updated) => {};
 const isEqualProductEntry = (org, updated) => {
   if (
     org.model !== updated.model ||
@@ -69,9 +70,9 @@ const updateAndGetOrder = async (updatedOrder, thunkAPI) => {
     return thunkAPI.fulfillWithValue(getRequestResponse.data);
   } catch (error) {
     console.log("GET or PUT request to update order failed");
-    console.log(error);
+    console.log(error.response.data);
 
-    return thunkAPI.rejectWithValue(error);
+    return thunkAPI.rejectWithValue(error.response.data);
   }
 };
 export const updateOrder = createAsyncThunk(
@@ -108,7 +109,6 @@ export const updateOrder = createAsyncThunk(
 
     //the logic for checking whether fields are updated or not are done here
     const orgOrder = thunkAPI.getState().order.order;
-
     if (prodctEntrySlice !== undefined) {
       if (
         !isEqualProductEntry(
@@ -170,6 +170,44 @@ export const updateOrder = createAsyncThunk(
   }
 );
 
+export const getOrders = createAsyncThunk(
+  "order/getOrders",
+  async (requestParams, thunkAPI) => {
+    const orgRequest = thunkAPI.getState().order.orderRequest;
+    const newRequest =
+      requestParams === undefined
+        ? orgRequest
+        : {
+            ...orgRequest,
+            params: requestParams,
+          };
+
+    console.log("request");
+    console.log(newRequest);
+    try {
+      console.log("getOrders request sent, request:");
+      console.log(newRequest);
+      const getRequestResponse = await axios(newRequest);
+      if (getRequestResponse.data.data.length <= 0) {
+        console.log("empty result after getOrders");
+        alert("沒有資料囉");
+        return thunkAPI.fulfillWithValue({ noContent: true });
+      }
+      console.log("getOrders by pageIndex success. result: ");
+      console.log(getRequestResponse.data);
+
+      return thunkAPI.fulfillWithValue({
+        orders: getRequestResponse.data.data,
+        request: newRequest,
+      });
+    } catch (error) {
+      console.log("getOrders failed");
+      console.log(error.response.data);
+
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
 // must have a initial state else next.js will encounter html component mismatch
 // see: https://stackoverflow.com/questions/47017424/warning-did-not-expect-server-html-to-contain-a-li-in-ul-in-react-redux-se
 const initialState = {
@@ -290,6 +328,29 @@ export const orderSlice = createSlice({
         // the value I passed in ("123") gets passed to action.payload
         // if I return a promise in the thunk 2nd argument callback and it failed
         // the error will be in action.error
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      .addCase(getOrders.fulfilled, (state, action) => {
+        state.status = "success";
+        if (action.payload.noContent === true) {
+          console.log("Request success but no more data available");
+          return;
+        }
+        console.log("state.orders set to following");
+        console.log(action.payload.orders);
+
+        state.orders = action.payload.orders;
+
+        console.log("state.orderRequest set to following");
+        console.log(action.payload.request);
+
+        state.orderRequest = action.payload.request;
+      })
+      .addCase(getOrders.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(getOrders.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

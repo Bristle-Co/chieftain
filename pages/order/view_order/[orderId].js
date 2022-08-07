@@ -119,6 +119,7 @@ const ViewOrder = (props) => {
       setIsEditing(true);
       return;
     }
+    console.log(deliveredAt);
     // TODO validate fields
     const updatedOrder = {
       orderId: orderId,
@@ -126,7 +127,7 @@ const ViewOrder = (props) => {
       customerId: customerId,
       dueDate: dueDate,
       note: note,
-      deliveredAt: deliveredAt.replace("T", " "),
+      deliveredAt: deliveredAt === null ? null : deliveredAt.replace("T", " "),
       issuedAt: issuedAt,
       // this productEntries field will get override once dispatched to redux thunk
       // thus no need to initiate it

@@ -4,7 +4,7 @@ import { IoIosSearch } from "react-icons/io";
 
 const SearchButton = (props) => {
   return (
-    <button {...props} className={styles.SearchButton} type="submit">
+    <button {...props} className={styles.SearchButton}>
       <IoIosSearch className={styles.SearchIcon} />
     </button>
   );
