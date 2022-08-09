@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import customerReducer from "./customers.js";
 import pageMetaDataReducer from "./pageMetaData.js";
 import orderReducer from "./order.js";
+import productionTicketReducer from "./productionTicket.js";
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     customerRequest: customerReducer,
     pageMetaData: pageMetaDataReducer,
     order: orderReducer,
+    productionTicket: productionTicketReducer,
   },
 });
 

@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const isEqualRequestParams = (org, updated) => {};
 const isEqualProductEntry = (org, updated) => {
   if (
     org.model !== updated.model ||
