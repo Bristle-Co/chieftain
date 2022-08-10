@@ -31,34 +31,79 @@ const ProductionTicket = () => {
       : productionTicketRequest.params.ticketId
   );
 
-  const [customerOrderIdSearch, setCustomerOrderIdSearch] = useState(
-    orderRequest.params.customerOrderId == undefined
-      ? ""
-      : orderRequest.params.customerOrderId
-  );
-  //
   const [customerIdSearch, setCustomerIdSearch] = useState(
-    orderRequest.params.customeId == null ? "" : orderRequest.params.customerId
+    productionTicketRequest.params.customerId == null
+      ? ""
+      : productionTicketRequest.params.customerId
+  );
+  const [bristleTypeSearch, setBristleTypeSearch] = useState(
+    productionTicketRequest.params.bristleType == null
+      ? ""
+      : productionTicketRequest.params.bristleType
+  );
+  const [modelSearch, setModelSearch] = useState(
+    productionTicketRequest.params.model == null
+      ? ""
+      : productionTicketRequest.params.model
+  );
+  const [productNameSearch, setProductNameSearch] = useState(
+    productionTicketRequest.params.productName == null
+      ? ""
+      : productionTicketRequest.params.productName
   );
   const [dueDateFromSearch, setDueDateFromSearch] = useState(
-    orderRequest.params.dueDateFrom == null
+    productionTicketRequest.params.dueDateFrom == null
       ? ""
-      : orderRequest.params.dueDateFrom
+      : productionTicketRequest.params.dueDateFrom
   );
   const [dueDateToSearch, setDueDateToSearch] = useState(
-    orderRequest.params.dueDateTo == null ? "" : orderRequest.params.dueDateTo
-  );
-  const [issuedAtFromSearch, setIssuedAtFromSearch] = useState(
-    orderRequest.params.issuedAtFrom == null
+    productionTicketRequest.params.dueDateTo == null
       ? ""
-      : orderRequest.params.issuedAtFrom
-  );
-  const [issuedAtToSearch, setIssuedAtToSearch] = useState(
-    orderRequest.params.issuedAtTo == null ? "" : orderRequest.params.issuedAtTo
+      : productionTicketRequest.params.dueDateTo
   );
   const [pageIndexSearch, setPageIndexSearch] = useState(
-    orderRequest.params.pageIndex
+    productionTicketRequest.params.pageIndex
   );
+
+  const updateSearchFields = () => {
+    setProductionTicketIdSearch(
+      productionTicketRequest.params.ticketId == undefined
+        ? ""
+        : productionTicketRequest.params.ticketId
+    );
+
+    setCustomerIdSearch(
+      productionTicketRequest.params.customerId == null
+        ? ""
+        : productionTicketRequest.params.customerId
+    );
+    setBristleTypeSearch(
+      productionTicketRequest.params.bristleType == null
+        ? ""
+        : productionTicketRequest.params.bristleType
+    );
+    setModelSearch(
+      productionTicketRequest.params.model == null
+        ? ""
+        : productionTicketRequest.params.model
+    );
+    setProductNameSearch(
+      productionTicketRequest.params.productName == null
+        ? ""
+        : productionTicketRequest.params.productName
+    );
+    setDueDateFromSearch(
+      productionTicketRequest.params.dueDateFrom == null
+        ? ""
+        : productionTicketRequest.params.dueDateFrom
+    );
+    setDueDateToSearch(
+      productionTicketRequest.params.dueDateTo == null
+        ? ""
+        : productionTicketRequest.params.dueDateTo
+    );
+    setPageIndexSearch(productionTicketRequest.params.pageIndex);
+  };
   const fetchProductionTicketsWithCachedRequest = () => {
     // send empty params means send another get request with what params we have in the redux store
     dispatch(getProductionTickets());
@@ -66,18 +111,26 @@ const ProductionTicket = () => {
 
   const validateSearchFields = (newParameters) => {
     // validate fields here
-    if (orderIdSearch !== "") {
+    if (productionTicketIdSearch !== "") {
       const parsed = parseInt(orderIdSearch);
       if (!isNaN(parsed) && isFinite(parsed)) {
-        newParameters.orderId = parsed;
+        newParameters.ticketId = parsed;
       }
     }
     if (customerIdSearch !== "") {
       newParameters.customerId = customerIdSearch;
     }
-    if (customerOrderIdSearch !== "") {
-      newParameters.customerOrderId = customerOrderIdSearch;
+    if (bristleTypeSearch !== "") {
+      newParameters.bristleType = bristleTypeSearch;
     }
+    if (modelSearch !== "") {
+      newParameters.model = modelSearch;
+    }
+
+    if (productNameSearch !== "") {
+      newParameters.productName = productNameSearch;
+    }
+
     if (dueDateFromSearch !== "") {
       newParameters.dueDateFrom = dueDateFromSearch;
     }
@@ -85,23 +138,17 @@ const ProductionTicket = () => {
     if (dueDateToSearch !== "") {
       newParameters.dueDateTo = dueDateToSearch;
     }
-
-    if (issuedAtFromSearch !== "") {
-      newParameters.issuedAtFrom = issuedAtFromSearch;
-    }
-
-    if (issuedAtToSearch !== "") {
-      newParameters.issuedAtTo = issuedAtToSearch;
-    }
     return newParameters;
   };
 
   const getNextPage = () => {
-    if (orders.length < process.env.globalPageSize) {
+    if (productionTickets.length < process.env.globalPageSize) {
       alert("已經是最後一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(parseInt(orderRequest.params.pageIndex) + 1);
+    fetchOrdersByPageIndex(
+      parseInt(productionTicketRequest.params.pageIndex) + 1
+    );
   };
 
   const getPreviousPage = (index) => {
@@ -109,7 +156,9 @@ const ProductionTicket = () => {
       alert("已經是第一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(parseInt(orderRequest.params.pageIndex) - 1);
+    fetchOrdersByPageIndex(
+      parseInt(productionTicketRequest.params.pageIndex) - 1
+    );
   };
 
   const fetchOrdersByPageIndex = (index) => {
@@ -119,8 +168,8 @@ const ProductionTicket = () => {
     }
 
     dispatch(
-      getOrders({
-        ...orderRequest.params,
+      getProductionTickets({
+        ...productionTicketRequest.params,
         pageIndex: index,
       })
     );
@@ -141,7 +190,7 @@ const ProductionTicket = () => {
   };
 
   useEffect(() => {
-    setTopBarState(orderTopBarState);
+    setTopBarState(topBarState);
     //fetch list of customers everytime since we are not keeping track of what's being updated or not
     // fetchOrdersWithCachedRequest();
   }, []);
@@ -153,9 +202,11 @@ const ProductionTicket = () => {
       >
         <div className="TopButtonContainer">
           <Pagination
-            previous={() => getPreviousPage(orderRequest.params.pageIndex)}
+            previous={() =>
+              getPreviousPage(productionTicketRequest.params.pageIndex)
+            }
             next={() => getNextPage()}
-            pageIndex={orderRequest.params.pageIndex}
+            pageIndex={productionTicketRequest.params.pageIndex}
             setPageIndex={(val) => setPageIndexSearch(val)}
             onSubmit={(pageIndex) => fetchOrdersByPageIndex(pageIndex)}
           />
@@ -173,22 +224,15 @@ const ProductionTicket = () => {
             <tr key="searchBar">
               {/* set the column width here inline by percentage
           all other child elements should have width:100% to fill all available space in a cell*/}
-              <th key="orderId" style={{ width: "10%" }}>
+              <th key="productionTicketId" style={{ width: "10%" }}>
                 <input
                   type="text"
                   placeholder=" 必須完全符合"
-                  value={orderIdSearch}
-                  onChange={(e) => setOrderIdSearch(e.target.value)}
+                  value={productionTicketIdSearch}
+                  onChange={(e) => setProductionTicketIdSearch(e.target.value)}
                 />
               </th>
-              <th key="customerOrderId" style={{ width: "10%" }}>
-                <input
-                  type="text"
-                  placeholder=" 必須完全符合"
-                  value={customerOrderIdSearch}
-                  onChange={(e) => setCustomerOrderIdSearch(e.target.value)}
-                />
-              </th>
+
               <th key="customerId" style={{ width: "10%" }}>
                 <input
                   type="text"
@@ -197,26 +241,34 @@ const ProductionTicket = () => {
                   onChange={(e) => setCustomerIdSearch(e.target.value)}
                 />
               </th>
-
-              <th key="issuedAtFromTo" style={{ width: "15%" }}>
-                <div>
-                  <input
-                    type="date"
-                    placeholder=" 必須完全符合"
-                    value={issuedAtFromSearch}
-                    onChange={(e) => setIssuedAtFromSearch(e.target.value)}
-                  />
-                  &nbsp;~&nbsp;
-                  <input
-                    type="date"
-                    placeholder=" 必須完全符合"
-                    value={issuedAtToSearch}
-                    onChange={(e) => setIssuedAtToSearch(e.target.value)}
-                  />
-                </div>
+              <th key="bristleType" style={{ width: "10%" }}>
+                <input
+                  type="text"
+                  placeholder=" 類似即可"
+                  value={bristleTypeSearch}
+                  onChange={(e) => setBristleTypeSearch(e.target.value)}
+                />
               </th>
 
-              <th key="dueDateFromTo" style={{ width: "15%" }}>
+              <th key="model" style={{ width: "10%" }}>
+                <input
+                  type="text"
+                  placeholder=" 類似即可"
+                  value={modelSearch}
+                  onChange={(e) => setModelSearch(e.target.value)}
+                />
+              </th>
+
+              <th key="productName" style={{ width: "10%" }}>
+                <input
+                  type="text"
+                  placeholder=" 類似即可"
+                  value={productNameSearch}
+                  onChange={(e) => setProductNameSearch(e.target.value)}
+                />
+              </th>
+
+              <th key="dueDate" style={{ width: "15%" }}>
                 <div>
                   <input
                     type="date"
@@ -232,46 +284,38 @@ const ProductionTicket = () => {
                     onChange={(e) => setDueDateToSearch(e.target.value)}
                   />
                 </div>
-              </th>
-              <th key="models" style={{ width: "40%" }}>
                 <div>
                   <SearchButton type="submit" />
                 </div>
               </th>
-              {/* <div>
-              </div> */}
             </tr>
 
             <tr key="titleBar">
-              <th key="orderId">訂單號碼</th>
-              <th key="customerOrderId">客戶訂單號碼</th>
-              <th key="customerId">客戶代號</th>
-              <th key="issuedAt">開立時間</th>
-              <th key="dueDate">預計交貨日期</th>
-              <th key="models">品項</th>
+              <th key="productionTicketId">工單號碼</th>
+              <th key="customerOrderId">客戶代號</th>
+              <th key="customerId">目數</th>
+              <th key="issuedAt">規格</th>
+              <th key="productName">產品名稱</th>
+              <th key="dueDate">交貨日期</th>
             </tr>
           </thead>
           <tbody>
-            {orders.map((order, index) => (
+            {productionTickets.map((ticket, index) => (
               <tr key={index}>
-                <td key="orderId">{order.orderId}</td>
-                <td key="customerOrderId">{order.customerOrderId}</td>
-                <td key="customerId">{order.customerId}</td>
-                <td key="issuedAt">{order.issuedAt}</td>
-                <td key="dueDate">{order.dueDate}</td>
-                <td key="models">
+                <td key="productionTicketId">{ticket.ticketId}</td>
+                <td key="customerOrderId">{ticket.customerId}</td>
+                <td key="customerId">{ticket.bristleType}</td>
+                <td key="issuedAt">{ticket.model}</td>
+                <td key="productName">{ticket.productName}</td>
+                <td key="dueDate">
                   <div>
-                    <ul className={styles.ModelList}>
-                      {order.productEntries.map((entry) => {
-                        return (
-                          <li className={styles.ModelListItem}>
-                            {entry.model}
-                          </li>
-                        );
-                      })}
-                    </ul>
-
-                    <Link href={"/order/view_order/" + order.orderId}>
+                    {ticket.dueDate}
+                    <Link
+                      href={
+                        "/production_ticket/view_production_ticket/" +
+                        ticket.ticketId
+                      }
+                    >
                       <ArrowButton type="button" />
                     </Link>
                   </div>

@@ -33,7 +33,7 @@ const Order = () => {
   );
   //
   const [customerIdSearch, setCustomerIdSearch] = useState(
-    orderRequest.params.customeId == null ? "" : orderRequest.params.customerId
+    orderRequest.params.customerId == null ? "" : orderRequest.params.customerId
   );
   const [dueDateFromSearch, setDueDateFromSearch] = useState(
     orderRequest.params.dueDateFrom == null
