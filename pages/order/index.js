@@ -4,7 +4,6 @@ import SearchButton from "../../components/SearchButton/SearchButton.js";
 import ArrowButton from "../../components/ArrowButton/ArrowButton";
 import styles from "./order.module.css";
 import DataTableStyles from "./DataTable.module.css";
-import axios from "axios";
 import Link from "next/link";
 import Pagination from "../../components/Pagination/Pagination.js";
 import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
@@ -143,9 +142,6 @@ const Order = () => {
     fetchOrdersWithCachedRequest();
   }, []);
   useEffect(() => {
-    console.log("invoked useEffect");
-    console.log(orderRequest.params.customerId);
-
     setOrderIdSearch(
       orderRequest.params.orderId == undefined
         ? ""
