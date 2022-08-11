@@ -3,6 +3,7 @@
   border-collapse: collapse;
   table-layout: fixed;
   font-size: 1em;
+  /* Note that the height of the search bar is manually set to 2em and it doesn't inherit font size from here */
   width: 100%;
   overflow-wrap: break-word;
 }
@@ -13,7 +14,7 @@
   padding-bottom: 10px;
 }
 
-.DataTable thead tr:first-child th input {
+.DataTable thead tr:first-child th input:only-child {
   height: 2em;
   border: none;
   border: solid 1px #957b5f;
@@ -33,10 +34,21 @@
 }
 
 /* for the first row search bar last cell div container with search button */
+.DataTable thead tr:first-child th:last-child input {
+  height: 100%;
+  height: 2em;
+  border: none;
+  border: solid 1px #957b5f;
+  border-radius: 0.3em;
+  flex-grow: 1;
+  padding: 0 0 0 0;
+}
+
+/* for the first row search bar last cell div container with search button */
 .DataTable thead tr:first-child th:last-child div {
-  display: flex;
+  display: inline-flex;
   flex-direction: row;
-  justify-content: flex-end;
+  align-items: center;
   width: 100%;
 }
 .DataTable thead tr:first-child th:last-child div button {

@@ -43,7 +43,6 @@
 .DataTable thead tr:first-child th:nth-child(5) input {
   height: 100%;
   font-size: inherit;
-
   border: none;
   border: solid 1px #957b5f;
   flex-grow: 1;

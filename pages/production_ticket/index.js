@@ -250,7 +250,7 @@ const ProductionTicket = () => {
                 />
               </th>
 
-              <th key="model" style={{ width: "10%" }}>
+              <th key="model" style={{ width: "25%" }}>
                 <input
                   type="text"
                   placeholder=" 類似即可"
@@ -259,7 +259,7 @@ const ProductionTicket = () => {
                 />
               </th>
 
-              <th key="productName" style={{ width: "10%" }}>
+              <th key="productName" style={{ width: "20%" }}>
                 <input
                   type="text"
                   placeholder=" 類似即可"
@@ -268,23 +268,19 @@ const ProductionTicket = () => {
                 />
               </th>
 
-              <th key="dueDate" style={{ width: "15%" }}>
+              <th key="dueDate" style={{ width: "25%" }}>
                 <div>
                   <input
                     type="date"
-                    placeholder=" 必須完全符合"
                     value={dueDateFromSearch}
                     onChange={(e) => setDueDateFromSearch(e.target.value)}
                   />
                   &nbsp;~&nbsp;
                   <input
                     type="date"
-                    placeholder=" 必須完全符合"
                     value={dueDateToSearch}
                     onChange={(e) => setDueDateToSearch(e.target.value)}
                   />
-                </div>
-                <div>
                   <SearchButton type="submit" />
                 </div>
               </th>
