@@ -65,7 +65,8 @@ export const updateProductionTicket = createAsyncThunk(
 export const getProductionTickets = createAsyncThunk(
   "productionTicket/getProductionTickets",
   async (requestParams, thunkAPI) => {
-    const orgRequest = thunkAPI.getState().productionTicket.productionTickets;
+    const orgRequest =
+      thunkAPI.getState().productionTicket.productionTicketRequest;
     const newRequest =
       requestParams === undefined
         ? orgRequest
@@ -91,7 +92,7 @@ export const getProductionTickets = createAsyncThunk(
       });
     } catch (error) {
       console.log("getProductionTickets failed");
-      console.log(error.response.data);
+      console.log(error);
 
       return thunkAPI.rejectWithValue(error.response.data);
     }

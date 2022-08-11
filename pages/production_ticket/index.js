@@ -10,12 +10,11 @@ import TopBarButton from "../../components/TopBar/TopBarButton/TopBarButton.js";
 import { IconContext } from "react-icons";
 import React, { useContext, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getOrders } from "../../components/redux/order.js";
 import { getProductionTickets } from "../../components/redux/productionTicket.js";
 
 const productionTicketTopBarState = {
   pageName: "製造工單",
-  button: [],
+  buttons: [],
 };
 const ProductionTicket = () => {
   const dispatch = useDispatch();
@@ -112,7 +111,7 @@ const ProductionTicket = () => {
   const validateSearchFields = (newParameters) => {
     // validate fields here
     if (productionTicketIdSearch !== "") {
-      const parsed = parseInt(orderIdSearch);
+      const parsed = parseInt(productionTicketIdSearch);
       if (!isNaN(parsed) && isFinite(parsed)) {
         newParameters.ticketId = parsed;
       }
@@ -146,7 +145,7 @@ const ProductionTicket = () => {
       alert("已經是最後一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(
+    fetchProductionTicketsByIndex(
       parseInt(productionTicketRequest.params.pageIndex) + 1
     );
   };
@@ -156,12 +155,12 @@ const ProductionTicket = () => {
       alert("已經是第一頁啦~");
       return;
     }
-    fetchOrdersByPageIndex(
+    fetchProductionTicketsByIndex(
       parseInt(productionTicketRequest.params.pageIndex) - 1
     );
   };
 
-  const fetchOrdersByPageIndex = (index) => {
+  const fetchProductionTicketsByIndex = (index) => {
     if (index < 0) {
       alert("頁數不能為負數");
       return;
@@ -175,7 +174,7 @@ const ProductionTicket = () => {
     );
   };
 
-  const fetchOrdersByFilter = (event) => {
+  const fetchProductionTicketsByFilter = (event) => {
     event.preventDefault();
     //TODO validate serach fields
     const newParameters = {
@@ -184,15 +183,13 @@ const ProductionTicket = () => {
       pageSize: process.env.globalPageSize,
     };
 
-    dispatch(getOrders(validateSearchFields(newParameters)));
-    console.log("eeeeeeeee");
-    console.log(newParameters);
+    dispatch(getProductionTickets(validateSearchFields(newParameters)));
   };
 
   useEffect(() => {
-    setTopBarState(topBarState);
+    setTopBarState(productionTicketTopBarState);
     //fetch list of customers everytime since we are not keeping track of what's being updated or not
-    // fetchOrdersWithCachedRequest();
+    fetchProductionTicketsWithCachedRequest();
   }, []);
   useEffect(() => {}, [productionTicketRequest.params]);
   return (
@@ -208,9 +205,9 @@ const ProductionTicket = () => {
             next={() => getNextPage()}
             pageIndex={productionTicketRequest.params.pageIndex}
             setPageIndex={(val) => setPageIndexSearch(val)}
-            onSubmit={(pageIndex) => fetchOrdersByPageIndex(pageIndex)}
+            onSubmit={(pageIndex) => fetchProductionTicketsByIndex(pageIndex)}
           />
-          <Link href="/order/add_order">
+          <Link href="/production_ticket/add_production_ticket">
             <TopBarButton>
               <IoIosAdd style={{ fontSize: "1.4em" }} />
             </TopBarButton>
@@ -218,7 +215,10 @@ const ProductionTicket = () => {
         </div>
       </IconContext.Provider>
       {/* form is only allowed to wrap entire table */}
-      <form className={styles.SearchForm} onSubmit={fetchOrdersByFilter}>
+      <form
+        className={styles.SearchForm}
+        onSubmit={fetchProductionTicketsByFilter}
+      >
         <table className={DataTableStyles.DataTable}>
           <thead>
             <tr key="searchBar">
@@ -288,8 +288,8 @@ const ProductionTicket = () => {
 
             <tr key="titleBar">
               <th key="productionTicketId">工單號碼</th>
-              <th key="customerOrderId">客戶代號</th>
-              <th key="customerId">目數</th>
+              <th key="customerId">客戶代號</th>
+              <th key="bristleType">目數</th>
               <th key="issuedAt">規格</th>
               <th key="productName">產品名稱</th>
               <th key="dueDate">交貨日期</th>
@@ -299,9 +299,9 @@ const ProductionTicket = () => {
             {productionTickets.map((ticket, index) => (
               <tr key={index}>
                 <td key="productionTicketId">{ticket.ticketId}</td>
-                <td key="customerOrderId">{ticket.customerId}</td>
-                <td key="customerId">{ticket.bristleType}</td>
-                <td key="issuedAt">{ticket.model}</td>
+                <td key="customerId">{ticket.customerId}</td>
+                <td key="bristleType">{ticket.bristleType}</td>
+                <td key="issumodeledAt">{ticket.model}</td>
                 <td key="productName">{ticket.productName}</td>
                 <td key="dueDate">
                   <div>

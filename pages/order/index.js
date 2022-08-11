@@ -132,8 +132,6 @@ const Order = () => {
     };
 
     dispatch(getOrders(validateSearchFields(newParameters)));
-    console.log("eeeeeeeee");
-    console.log(newParameters);
   };
 
   useEffect(() => {
