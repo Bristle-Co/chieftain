@@ -1,4 +1,6 @@
 // functions in this file are used to generate axios config json for different API requests
+
+////// order //////
 export const getOrderByIdRequest = (orderId) => ({
   method: "GET",
   url: "/order",
@@ -6,7 +8,6 @@ export const getOrderByIdRequest = (orderId) => ({
   params: {
     orderId: orderId,
     pageIndex: 0,
-    pageSize: process.env.globalPageSize,
   },
 });
 
@@ -23,5 +24,26 @@ export const deleteOrderRequest = (orderId) => ({
   baseURL: process.env.backendServerBaseURI,
   params: {
     orderId: orderId,
+  },
+});
+
+////// production tickets //////
+export const getProductionTicketByIdRequest = (ticketId) => ({
+  method: "GET",
+  url: "/production_ticket",
+  baseURL: process.env.backendServerBaseURI,
+  params: {
+    orderId: ticketId,
+    pageIndex: 0,
+  },
+});
+
+export const deleteProductionTicketByIdRequest = (ticketId) => ({
+  method: "DELETE",
+  url: "/production_ticket",
+  baseURL: process.env.backendServerBaseURI,
+  params: {
+    orderId: ticketId,
+    pageIndex: 0,
   },
 });

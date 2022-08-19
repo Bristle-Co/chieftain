@@ -2,8 +2,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOrder, updateOrder } from "../../../components/redux/order.js";
-import Modal from "../../../components/Modal/Modal.js";
 import styles from "./view_order.module.css";
+import Modal from "../../../components/Modal/Modal.js";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
 import {
   IoPencil,
@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
     const result = await axios(getOrderByIdRequest(orderId));
     order = result.data.data[0];
   } catch (error) {
-    console.log(error.response);
+    console.log(error.response.data);
     console.log("fetch order from server side failed");
 
     return {
