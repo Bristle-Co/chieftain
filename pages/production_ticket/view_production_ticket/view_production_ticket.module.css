@@ -1,0 +1,18 @@
+.GridContainer {
+  display: flex;
+  height: 50vh;
+  width: 100vw;
+  background-color: red;
+}
+
+.GridContainer {
+  display: grid;
+}
+
+.LeftExtraInfoList {
+  list-style: none;
+}
+
+.RightExtraInfoList {
+  list-style: none;
+}

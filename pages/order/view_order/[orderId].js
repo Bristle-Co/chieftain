@@ -119,7 +119,6 @@ const ViewOrder = (props) => {
       setIsEditing(true);
       return;
     }
-    console.log(deliveredAt);
     // TODO validate fields
     const updatedOrder = {
       orderId: orderId,

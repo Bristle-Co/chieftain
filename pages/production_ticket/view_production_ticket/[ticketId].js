@@ -146,30 +146,64 @@ const ViewProductionTicket = (props) => {
   };
   const handleEditing = () => {
     if (!isEditing) {
-      // sync the order in redux with the fields in useState
-      setOrderId(order.orderId);
-      setCustomerOrderId(order.customerOrderId);
-      setCustomerId(order.customerId);
-      setDueDate(order.dueDate);
-      setNote(order.note);
-      setDeliveredAt(order.deliveredAt);
-      setIssuedAt(order.issuedAt);
+      // Values in useState variables are only used when input is showing,
+      // thus we need to sync the useState variables with redux state when input is about to show
+      setTicketId(ticket.ticketId);
+      setCustomerId(ticket.customerId);
+      setProductName(ticket.productName);
+      setBristleType(ticket.bristleType);
+      setModel(ticket.model);
+      setInnerTubeType(ticket.innerTubeType);
+      setBristleDiameter(ticket.bristleDiameter);
+      setQuantity(ticket.quantity);
+      setAlumTubeType(ticket.alumTubeType);
+      setAlumRimType(ticket.alumRimType);
+      setModelNote(ticket.modelNote);
+      setDonePreparingAt(ticket.donePreparingAt);
+      setPreparedBy(ticket.preparedBy);
+      setTwinedBy(ticket.twinedBy);
+      setDoneTrimmingAt(ticket.doneTrimmingAt);
+      setTrimmedBy(ticket.trimmedBy);
+      setPackagedBy(ticket.packagedBy);
+      setProductionNote1(ticket.productionNote1);
+      setProductionNote2(ticket.productionNote2);
+      setProductionNote3(ticket.productionNote3);
+      setProductionNote4(ticket.productionNote4);
+      setProductionNote5(ticket.productionNote5);
+      setProductionNote6(ticket.productionNote6);
+
       setIsEditing(true);
       return;
     }
-    console.log(deliveredAt);
     // TODO validate fields
-    const updatedOrder = {
-      orderId: orderId,
-      customerOrderId: customerOrderId,
-      customerId: customerId,
-      dueDate: dueDate,
-      note: note,
-      deliveredAt: deliveredAt === null ? null : deliveredAt.replace("T", " "),
-      issuedAt: issuedAt,
-      // this productEntries field will get override once dispatched to redux thunk
-      // thus no need to initiate it
-      productEntries: [],
+    const updatedProductionTicket = {
+      ticketId: ticketId,
+      customerId: "千得4",
+      dueDate: "2022-03-04",
+      productName: "尼龍刷倫",
+      bristleType: "目數4",
+      model: '5-5/8"*705/620*2"',
+      innerTubeType: "內管4",
+      bristleDiameter: 20.4,
+      quantity: 3,
+      alumTubeType: '4"*601mm',
+      alumRimType: "45號",
+      modelNote: "model備註4",
+      donePreparingAt: null,
+      preparedBy: null,
+      doneTwiningAt: null,
+      twinedBy: null,
+      doneTrimmingAt: null,
+      trimmedBy: null,
+      donePackagingAt: null,
+      packagedBy: null,
+      issuedAt: "2022-08-08 21:26",
+      productionNote1: "備註1",
+      productionNote2: "備註2",
+      productionNote3: "備註3",
+      productionNote4: "備註4",
+      productionNote5: "備註5",
+      productionNote6: "備註6",
     };
 
     dispatch(
@@ -202,6 +236,10 @@ const ViewProductionTicket = (props) => {
               <IoCopyOutline />
             </TopBarButton>
           </Link>
+          <TopBarButton onClick={() => handleEditing()} isRound={true}>
+            {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
+          </TopBarButton>
+
           <TopBarButton
             onClick={() => {
               handleDeleting();
@@ -210,7 +248,37 @@ const ViewProductionTicket = (props) => {
             <IoTrashOutline />
           </TopBarButton>
         </div>
-        test
+        <div className={styles.ExtraInfoContainer}>
+          <ul className={styles.LeftExtraInfoList}>
+            {isEditing ? (
+              <li>
+                <label for="cars">Choose a car:</label>
+
+                <select name="cars" id="cars">
+                  <option value="volvo">Volvo</option>
+                  <option value="saab">Saab</option>
+                  <option value="mercedes">Mercedes</option>
+                  <option value="audi">Audi</option>
+                </select>
+              </li>
+            ) : (
+              <li key="orderId">
+                <span>訂購單號碼 :</span>
+              </li>
+            )}
+          </ul>
+          <ul className={styles.RightExtraInfoList}>
+            <li key="ticketId">
+              <span>工單號碼 :</span>
+              <input
+                value={productionTicket.ticketId}
+                onChange={(e) => setTicketId(e.target.value)}
+                type="text"
+              />
+            </li>
+          </ul>
+        </div>
+        <div className={styles.GridContainer}></div>
       </div>
     </IconContext.Provider>
   );
