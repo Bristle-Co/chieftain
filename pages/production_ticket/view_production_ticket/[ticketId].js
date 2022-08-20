@@ -17,7 +17,7 @@ import { IconContext } from "react-icons";
 import {
   getProductionTicketByIdRequest,
   deleteProductionTicketByIdRequest,
-} from "../../../components/AxiosRequestUtils.js";
+} from "../../../utils/AxiosRequestUtils.js";
 import Link from "next/link.js";
 import { useRouter } from "next/router";
 import {
@@ -80,6 +80,9 @@ export async function getServerSideProps(context) {
   };
 }
 
+const dateTimeNullCheck = (dateTime) => {
+  return dateTime === null ? null : dateTime.replace("T", " ");
+};
 const ViewProductionTicket = (props) => {
   const dispatch = useDispatch();
   const { productionTicket } = useSelector((state) => state.productionTicket);
@@ -178,39 +181,35 @@ const ViewProductionTicket = (props) => {
     // TODO validate fields
     const updatedProductionTicket = {
       ticketId: ticketId,
-      customerId: "千得4",
-      dueDate: "2022-03-04",
-      productName: "尼龍刷倫",
-      bristleType: "目數4",
-      model: '5-5/8"*705/620*2"',
-      innerTubeType: "內管4",
-      bristleDiameter: 20.4,
-      quantity: 3,
-      alumTubeType: '4"*601mm',
-      alumRimType: "45號",
-      modelNote: "model備註4",
-      donePreparingAt: null,
-      preparedBy: null,
-      doneTwiningAt: null,
-      twinedBy: null,
-      doneTrimmingAt: null,
-      trimmedBy: null,
-      donePackagingAt: null,
-      packagedBy: null,
-      issuedAt: "2022-08-08 21:26",
-      productionNote1: "備註1",
-      productionNote2: "備註2",
-      productionNote3: "備註3",
-      productionNote4: "備註4",
-      productionNote5: "備註5",
-      productionNote6: "備註6",
+      customerId: customerId,
+      dueDate: dueDate === null ? null : dueDate,
+      productName: productName,
+      bristleType: bristleType,
+      model: model,
+      innerTubeType: innerTubeType,
+      bristleDiameter: parseFloat(bristleDiameter),
+      quantity: parseInt(quantity),
+      alumTubeType: alumRimType,
+      alumRimType: alumRimType,
+      modelNote: modelNote,
+      donePreparingAt: dateTimeNullCheck(donePreparingAt),
+      preparedBy: preparedBy,
+      doneTwiningAt: dateTimeNullCheck(doneTwiningAt),
+      twinedBy: twinedBy,
+      doneTrimmingAt: dateTimeNullCheck(doneTrimmingAt),
+      trimmedBy: trimmedBy,
+      donePackagingAt: dateTimeNullCheck(donePackagingAt),
+      packagedBy: packagedBy,
+      issuedAt: dateTimeNullCheck(issuedAt),
+      productionNote1: productionNote1,
+      productionNote2: productionNote2,
+      productionNote3: productionNote3,
+      productionNote4: productionNote4,
+      productionNote5: productionNote5,
+      productionNote6: productionNote6,
     };
 
-    dispatch(
-      updateOrder({
-        commonFieldSlice: { order: updatedOrder },
-      })
-    );
+    dispatch(updateOrder(updatedProductionTicket));
     setIsEditing(false);
   };
 

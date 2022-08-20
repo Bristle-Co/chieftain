@@ -19,7 +19,7 @@ import ProductEntryDropDown from "../../../components/ProductEntryDropDown/Produ
 import {
   getOrderByIdRequest,
   deleteOrderRequest,
-} from "../../../components/AxiosRequestUtils.js";
+} from "../../../utils/AxiosRequestUtils.js";
 import Link from "next/link.js";
 import { useRouter } from "next/router";
 

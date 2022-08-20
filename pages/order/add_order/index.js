@@ -15,7 +15,7 @@ import ProductEntryDropDown from "../../../components/ProductEntryDropDown/Produ
 import {
   getOrderByIdRequest,
   postOrderRequest,
-} from "../../../components/AxiosRequestUtils.js";
+} from "../../../utils/AxiosRequestUtils.js";
 import { useRouter } from "next/router";
 
 const orderTopBarState = {
