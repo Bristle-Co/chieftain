@@ -27,7 +27,13 @@ const Layout = ({ children }) => {
   // };
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100vh",
+      }}
+    >
       <TopBarStateContext.Provider value={[topBarState, setTopBarState]}>
         <TopBar />
         {/*  this is a dummy div to move actual page content down cuz topbar is floating*/}

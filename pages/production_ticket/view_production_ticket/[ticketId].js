@@ -21,8 +21,8 @@ import {
 import Link from "next/link.js";
 import { useRouter } from "next/router";
 import {
+  updateProductionTicket,
   setProductionTicket,
-  setProductionTicketRequest,
 } from "../../../components/redux/productionTicket.js";
 
 export async function getServerSideProps(context) {
@@ -93,6 +93,7 @@ const ViewProductionTicket = (props) => {
 
   const [ticketId, setTicketId] = useState(props.data.ticketId);
   const [customerId, setCustomerId] = useState(props.data.customerId);
+  const [dueDate, setDueDate] = useState(props.data.dueDate);
   const [productName, setProductName] = useState(props.data.productName);
   const [bristleType, setBristleType] = useState(props.data.bristleType);
   const [model, setModel] = useState(props.data.model);
@@ -108,12 +109,17 @@ const ViewProductionTicket = (props) => {
     props.data.donePreparingAt
   );
   const [preparedBy, setPreparedBy] = useState(props.data.preparedBy);
+  const [doneTwiningAt, setDoneTwiningAt] = useState(props.data.doneTwiningAt);
   const [twinedBy, setTwinedBy] = useState(props.data.twinedBy);
   const [doneTrimmingAt, setDoneTrimmingAt] = useState(
     props.data.doneTrimmingAt
   );
   const [trimmedBy, setTrimmedBy] = useState(props.data.trimmedBy);
+  const [donePackagingAt, setDonePackagingAt] = useState(
+    props.data.doneTrimmingAt
+  );
   const [packagedBy, setPackagedBy] = useState(props.data.packagedBy);
+  const [issuedAt, setIssuedAt] = useState(props.data.issuedAt);
   const [productionNote1, setProductionNote1] = useState(
     props.data.productionNote1
   );
@@ -151,29 +157,32 @@ const ViewProductionTicket = (props) => {
     if (!isEditing) {
       // Values in useState variables are only used when input is showing,
       // thus we need to sync the useState variables with redux state when input is about to show
-      setTicketId(ticket.ticketId);
-      setCustomerId(ticket.customerId);
-      setProductName(ticket.productName);
-      setBristleType(ticket.bristleType);
-      setModel(ticket.model);
-      setInnerTubeType(ticket.innerTubeType);
-      setBristleDiameter(ticket.bristleDiameter);
-      setQuantity(ticket.quantity);
-      setAlumTubeType(ticket.alumTubeType);
-      setAlumRimType(ticket.alumRimType);
-      setModelNote(ticket.modelNote);
-      setDonePreparingAt(ticket.donePreparingAt);
-      setPreparedBy(ticket.preparedBy);
-      setTwinedBy(ticket.twinedBy);
-      setDoneTrimmingAt(ticket.doneTrimmingAt);
-      setTrimmedBy(ticket.trimmedBy);
-      setPackagedBy(ticket.packagedBy);
-      setProductionNote1(ticket.productionNote1);
-      setProductionNote2(ticket.productionNote2);
-      setProductionNote3(ticket.productionNote3);
-      setProductionNote4(ticket.productionNote4);
-      setProductionNote5(ticket.productionNote5);
-      setProductionNote6(ticket.productionNote6);
+      setTicketId(productionTicket.ticketId);
+      setCustomerId(productionTicket.customerId);
+      setDueDate(productionTicket.dueDate);
+      setProductName(productionTicket.productName);
+      setBristleType(productionTicket.bristleType);
+      setModel(productionTicket.model);
+      setInnerTubeType(productionTicket.innerTubeType);
+      setBristleDiameter(productionTicket.bristleDiameter);
+      setQuantity(productionTicket.quantity);
+      setAlumTubeType(productionTicket.alumTubeType);
+      setAlumRimType(productionTicket.alumRimType);
+      setModelNote(productionTicket.modelNote);
+      setPreparedBy(productionTicket.preparedBy);
+      setDonePreparingAt(productionTicket.donePreparingAt);
+      setTwinedBy(productionTicket.twinedBy);
+      setDoneTwiningAt(productionTicket.doneTwiningAt);
+      setTrimmedBy(productionTicket.trimmedBy);
+      setDoneTrimmingAt(productionTicket.doneTrimmingAt);
+      setPackagedBy(productionTicket.packagedBy);
+      setDonePackagingAt(productionTicket.donePackagingAt);
+      setProductionNote1(productionTicket.productionNote1);
+      setProductionNote2(productionTicket.productionNote2);
+      setProductionNote3(productionTicket.productionNote3);
+      setProductionNote4(productionTicket.productionNote4);
+      setProductionNote5(productionTicket.productionNote5);
+      setProductionNote6(productionTicket.productionNote6);
 
       setIsEditing(true);
       return;
@@ -189,7 +198,7 @@ const ViewProductionTicket = (props) => {
       innerTubeType: innerTubeType,
       bristleDiameter: parseFloat(bristleDiameter),
       quantity: parseInt(quantity),
-      alumTubeType: alumRimType,
+      alumTubeType: alumTubeType,
       alumRimType: alumRimType,
       modelNote: modelNote,
       donePreparingAt: dateTimeNullCheck(donePreparingAt),
@@ -209,7 +218,7 @@ const ViewProductionTicket = (props) => {
       productionNote6: productionNote6,
     };
 
-    dispatch(updateOrder(updatedProductionTicket));
+    dispatch(updateProductionTicket(updatedProductionTicket));
     setIsEditing(false);
   };
 
@@ -249,35 +258,87 @@ const ViewProductionTicket = (props) => {
         </div>
         <div className={styles.ExtraInfoContainer}>
           <ul className={styles.LeftExtraInfoList}>
-            {isEditing ? (
-              <li>
-                <label for="cars">Choose a car:</label>
-
-                <select name="cars" id="cars">
+            <li>
+              <span>客戶名稱 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={customerId}
+                    onChange={(e) => setCustomerId(e.target.value)}
+                  />
+                ) : (
+                  <span>{productionTicket.customerId}</span>
+                )}
+              </div>
+            </li>
+            <li>
+              <span>工單交貨日期 :</span>
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={dueDate}
+                    type="date"
+                    onChange={(e) => setDueDate(e.target.value)}
+                  />
+                ) : (
+                  <span>{productionTicket.dueDate}</span>
+                )}
+              </div>
+            </li>
+          </ul>
+          <ul className={styles.RightExtraInfoList}>
+            <li>
+              <label for="orderId">訂購單號碼 :</label>
+              <div className={styles.DataBlockContainer}>
+                <select
+                  name="unAssignedProductEntries"
+                  id="unAssignedProductEntries"
+                >
                   <option value="volvo">Volvo</option>
                   <option value="saab">Saab</option>
                   <option value="mercedes">Mercedes</option>
                   <option value="audi">Audi</option>
                 </select>
-              </li>
-            ) : (
-              <li key="orderId">
-                <span>訂購單號碼 :</span>
-              </li>
-            )}
-          </ul>
-          <ul className={styles.RightExtraInfoList}>
+              </div>
+            </li>
             <li key="ticketId">
               <span>工單號碼 :</span>
-              <input
-                value={productionTicket.ticketId}
-                onChange={(e) => setTicketId(e.target.value)}
-                type="text"
-              />
+
+              <div className={styles.DataBlockContainer}>
+                {isEditing ? (
+                  <input
+                    value={ticketId}
+                    onChange={(e) => setTicketId(e.target.value)}
+                    type="text"
+                  />
+                ) : (
+                  <span>{productionTicket.ticketId}</span>
+                )}
+              </div>
             </li>
           </ul>
         </div>
-        <div className={styles.GridContainer}></div>
+        <div className={styles.GridContainer}>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+          <div>test</div>
+        </div>
+        <ul className={styles.progressRecordList}></ul>
       </div>
     </IconContext.Provider>
   );
