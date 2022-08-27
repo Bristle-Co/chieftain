@@ -33,7 +33,7 @@ export const getProductionTicketByIdRequest = (ticketId) => ({
   url: "/production_ticket",
   baseURL: process.env.backendServerBaseURI,
   params: {
-    orderId: ticketId,
+    ticketId: ticketId,
     pageIndex: 0,
   },
 });

@@ -28,6 +28,7 @@ import {
 export async function getServerSideProps(context) {
   const { ticketId } = context.query;
   let productionTicket;
+  console.log(ticketId);
 
   try {
     const result = await axios(getProductionTicketByIdRequest(ticketId));
@@ -319,26 +320,78 @@ const ViewProductionTicket = (props) => {
           </ul>
         </div>
         <div className={styles.GridContainer}>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
-          <div>test</div>
+          <div>目數</div>
+          <div>規格(外徑*總長度/有效長度*內徑)</div>
+          <div>數量</div>
+          <div>內管</div>
+          <div>刷毛</div>
+          <div>備註</div>
+          <div>{productionTicket.bristleType}</div>
+          <div>{productionTicket.model}</div>
+          <div>{productionTicket.quantity}</div>
+          <div>{productionTicket.innerTubeType}</div>
+          <div>{productionTicket.bristleType}</div>
+          <div>{productionTicket.modelNote}</div>
+          <div>{productionTicket.alumTubeType}</div>
+          <div>/</div>
+          <div>{productionTicket.alumRimType}</div>
+          <div>備註1</div>
+          <div>{productionTicket.productionNote1}</div>
+          <div>備註2</div>
+          <div>{productionTicket.productionNote2}</div>
+          <div>備註3</div>
+          <div>{productionTicket.productionNote3}</div>
+          <div>備註4</div>
+          <div>{productionTicket.productionNote4}</div>
+          <div>備註5</div>
+          <div>{productionTicket.productionNote5}</div>
+          <div>備註6</div>
+          <div>{productionTicket.productionNote6}</div>
         </div>
-        <ul className={styles.progressRecordList}></ul>
+        <div className={styles.progressRecordListContainer}>
+          <ul className={styles.progressRecordList}>
+            <div>
+              <span>備料</span>
+              <select name="employees" id="employees">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+              </select>
+              <input type="datetime-local" />
+            </div>
+            <div>
+              <span>纏繞</span>
+              <select name="employees" id="employees">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+              </select>
+              <input type="datetime-local" />
+            </div>
+            <div>
+              <span>修剪</span>
+              <select name="employees" id="employees">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+              </select>
+              <input type="datetime-local" />
+            </div>
+            <div>
+              <span>包裝</span>
+              <select name="employees" id="employees">
+                <option value="volvo">Volvo</option>
+                <option value="saab">Saab</option>
+                <option value="mercedes">Mercedes</option>
+                <option value="audi">Audi</option>
+              </select>
+              <input type="datetime-local" />
+            </div>
+          </ul>
+        </div>
       </div>
     </IconContext.Provider>
   );
