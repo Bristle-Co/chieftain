@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import _ from "lodash";
 
 const isEqualProductionTicket = (org, updated) => {
-  return true;
+  return _.isEqual(org, updated);
 };
 
 export const updateProductionTicket = createAsyncThunk(
@@ -19,45 +20,52 @@ export const updateProductionTicket = createAsyncThunk(
         "updateProdu thunk error, updatedProductionTicket is undefined"
       );
     }
+    if (
+      !isEqualProductionTicket(orgProductionTicket, updatedProductionTicket)
+    ) {
+      try {
+        console.log("sending PUT request to update single production ticket");
+        console.log(updatedProductionTicket);
+        const putRequestResponse = await axios({
+          method: "PUT",
+          url: "/production_ticket",
+          baseURL: process.env.backendServerBaseURI,
+          data: updatedProductionTicket,
+        });
+        // response.data is the ResponseWrapper entity from backend
+        // ignore putRequestResponse as long as it's successful
+        console.log(
+          "PUT request to update production ticket sent successfully"
+        );
+        console.log(putRequestResponse);
 
-    try {
-      console.log("sending PUT request to update single production ticket");
-      console.log(updateAndGetProductionTicket);
-      const putRequestResponse = await axios({
-        method: "PUT",
-        url: "/production_ticket",
-        baseURL: process.env.backendServerBaseURI,
-        data: updatedProductionTicket,
-      });
-      // response.data is the ResponseWrapper entity from backend
-      // ignore putRequestResponse as long as it's successful
-      console.log("PUT request to update production ticket sent successfully");
-      console.log(putRequestResponse);
+        const getRequestResponse = await axios({
+          method: "GET",
+          url: "/production_ticket",
+          baseURL: process.env.backendServerBaseURI,
+          params: {
+            productTicketId: updatedProductionTicket.productTicketId,
+            pageIndex: 0,
+            // there should only be one productionTicket
+            pageSize: 1,
+          },
+        });
+        console.log(
+          "GET request to get a single production ticket sent successfully"
+        );
+        console.log(getRequestResponse.data);
 
-      const getRequestResponse = await axios({
-        method: "GET",
-        url: "/production_ticket",
-        baseURL: process.env.backendServerBaseURI,
-        params: {
-          productTicketId: updatedProductionTicket.productTicketId,
-          pageIndex: 0,
-          // there should only be one productionTicket
-          pageSize: 1,
-        },
-      });
-      console.log(
-        "GET request to get a single production ticket sent successfully"
-      );
-      console.log(getRequestResponse.data);
+        // response.data is the ResponseWrapper entity from backend
+        // response.data.data should contain an productionTicket
+        return thunkAPI.fulfillWithValue(getRequestResponse.data);
+      } catch (error) {
+        console.log("GET or PUT request to update production ticket failed");
+        console.log(error.response.data);
 
-      // response.data is the ResponseWrapper entity from backend
-      // response.data.data should contain an productionTicket
-      return thunkAPI.fulfillWithValue(getRequestResponse.data);
-    } catch (error) {
-      console.log("GET or PUT request to update production ticket failed");
-      console.log(error.response.data);
-
-      return thunkAPI.rejectWithValue(error.response.data);
+        return thunkAPI.rejectWithValue(error.response.data);
+      }
+    } else {
+      return thunkAPI.fulfillWithValue({ noChange: true });
     }
   }
 );
@@ -225,6 +233,7 @@ export const productionTicketSlice = createSlice({
           console.log("No fields in this production ticket is changed");
           return;
         }
+
         // thunkAPI.fulfilledWithValue('123') makes action.payload === '123'
         console.log("state.productionTicket set to following");
         console.log(action.payload.data[0]);

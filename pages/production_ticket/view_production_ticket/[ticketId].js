@@ -242,7 +242,7 @@ const ViewProductionTicket = (props) => {
               <IoCopyOutline />
             </TopBarButton>
           </Link>
-          <TopBarButton onClick={() => handleEditing()} isRound={true}>
+          <TopBarButton onClick={() => handleEditing()} isRound={false}>
             {isEditing ? <IoCheckmarkDoneOutline /> : <IoPencil />}
           </TopBarButton>
 
@@ -258,15 +258,9 @@ const ViewProductionTicket = (props) => {
           <ul className={styles.LeftExtraInfoList}>
             <li>
               <span>客戶名稱 :</span>
+              {/* cusomterId should not be editable since it is already defined when order is issued */}
               <div className={styles.DataBlockContainer}>
-                {isEditing ? (
-                  <input
-                    value={customerId}
-                    onChange={(e) => setCustomerId(e.target.value)}
-                  />
-                ) : (
-                  <span>{productionTicket.customerId}</span>
-                )}
+                <span>{productionTicket.customerId}</span>
               </div>
             </li>
             <li>
@@ -289,6 +283,7 @@ const ViewProductionTicket = (props) => {
               <label for="orderId">訂購單號碼 :</label>
               <div className={styles.DataBlockContainer}>
                 <select
+                  onSubmit={() => {}}
                   name="unAssignedProductEntries"
                   id="unAssignedProductEntries"
                 >
@@ -323,28 +318,170 @@ const ViewProductionTicket = (props) => {
           <div>內管</div>
           <div>刷毛</div>
           <div>備註</div>
-          <div>{productionTicket.bristleType}</div>
-          <div>{productionTicket.model}</div>
-          <div>{productionTicket.quantity}</div>
-          <div>{productionTicket.innerTubeType}</div>
-          <div>{productionTicket.bristleType}</div>
-          <div>{productionTicket.modelNote}</div>
-          <div>{productionTicket.alumTubeType}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={bristleType}
+                onChange={(e) => setBristleType(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.bristleType}</>
+            )}
+          </div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.model}</>
+            )}
+          </div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.quantity}</>
+            )}
+          </div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={innerTubeType}
+                onChange={(e) => setInnerTubeType(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.innerTubeType}</>
+            )}
+          </div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={bristleDiameter}
+                onChange={(e) => setBristleDiameter(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.bristleDiameter}</>
+            )}
+          </div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={modelNote}
+                onChange={(e) => setModelNote(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.modelNote}</>
+            )}
+          </div>
+          <div>
+            {" "}
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={alumTubeType}
+                onChange={(e) => setAlumTubeType(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.alumTubeType}</>
+            )}
+          </div>
           <div>/</div>
-          <div>{productionTicket.alumRimType}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={alumRimType}
+                onChange={(e) => setAlumRimType(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.alumRimType}</>
+            )}
+          </div>
           <div>備註1</div>
-          <div>{productionTicket.productionNote1}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote1}
+                onChange={(e) => setProductionNote1(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote1}</>
+            )}
+          </div>
           <div>備註2</div>
-          <div>{productionTicket.productionNote2}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote2}
+                onChange={(e) => setProductionNote2(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote2}</>
+            )}
+          </div>
           <div>備註3</div>
-          <div>{productionTicket.productionNote3}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote3}
+                onChange={(e) => setProductionNote3(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote3}</>
+            )}
+          </div>
           <div>備註4</div>
-          <div>{productionTicket.productionNote4}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote4}
+                onChange={(e) => setProductionNote4(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote4}</>
+            )}
+          </div>
           <div>備註5</div>
-          <div>{productionTicket.productionNote5}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote5}
+                onChange={(e) => setProductionNote5(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote5}</>
+            )}
+          </div>
           <div>備註6</div>
-          <div>{productionTicket.productionNote6}</div>
+          <div>
+            {isEditing ? (
+              <input
+                className={styles.GridInput}
+                value={productionNote6}
+                onChange={(e) => setProductionNote6(e.target.value)}
+              />
+            ) : (
+              <> {productionTicket.productionNote6}</>
+            )}
+          </div>
         </div>
+
         <div className={styles.progressRecordListContainer}>
           <div className={styles.progressRecord}>
             <div>備料</div>
