@@ -47,3 +47,10 @@ export const deleteProductionTicketByIdRequest = (ticketId) => ({
     pageIndex: 0,
   },
 });
+
+////// users //////
+export const getAllUsersRequest = () => ({
+  method: "GET",
+  url: "/user",
+  baseURL: process.env.backendServerBaseURI,
+});

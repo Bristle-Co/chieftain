@@ -161,16 +161,18 @@
 
 .progressRecordAssigneeContainer select {
   flex-grow: 1;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
 }
 
 .progressRecordTimeContainer {
   display: flex;
   margin-top: 5px;
+  font-size: 0.8em;
 }
 
 .progressRecordTimeContainer input {
   /* for some reason this width attribute is needed to make flex-grow:1 work */
-  width: 20px;
   flex-grow: 1;
   border: 1px var(--brown) solid;
   border-radius: 0.2em;

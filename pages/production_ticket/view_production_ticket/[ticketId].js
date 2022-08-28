@@ -14,6 +14,7 @@ import { IconContext } from "react-icons";
 import {
   getProductionTicketByIdRequest,
   deleteProductionTicketByIdRequest,
+  getAllUsersRequest,
 } from "../../../utils/AxiosRequestUtils.js";
 import Link from "next/link.js";
 import { useRouter } from "next/router";
@@ -21,11 +22,16 @@ import {
   updateProductionTicket,
   setProductionTicket,
 } from "../../../components/redux/productionTicket.js";
-import SelectDropDown from "../../../components/SelectDropDown/SelectDropDown.js";
+import {
+  dateTimeNullCheckAndInsertT,
+  dateTimeNullCheckAndRemoveT,
+} from "../../../utils/UtilFunctions.js";
+
 export async function getServerSideProps(context) {
   const { ticketId } = context.query;
   let productionTicket;
-  console.log(ticketId);
+  let users;
+  const response = { props: {} };
 
   try {
     const result = await axios(getProductionTicketByIdRequest(ticketId));
@@ -34,54 +40,78 @@ export async function getServerSideProps(context) {
     console.log(error.response.data);
     console.log("fetch production ticket from server side failed");
 
-    return {
-      props: {
-        data: {
-          ticketId: 0,
-          customerId: "錯誤",
-          dueDate: null,
-          productName: "錯誤",
-          bristleType: "錯誤",
-          model: "錯誤",
-          innerTubeType: "錯誤",
-          bristleDiameter: 0,
-          quantity: 0,
-          alumTubeType: "錯誤",
-          alumRimType: "錯誤",
-          modelNote: "錯誤",
-          donePreparingAt: null,
-          preparedBy: "錯誤",
-          doneTwiningAt: null,
-          twinedBy: "錯誤",
-          doneTrimmingAt: null,
-          trimmedBy: "錯誤",
-          donePackagingAt: null,
-          packagedBy: "錯誤",
-          issuedAt: null,
-          productionNote1: "錯誤",
-          productionNote2: "錯誤",
-          productionNote3: "錯誤",
-          productionNote4: "錯誤",
-          productionNote5: "錯誤",
-          productionNote6: "錯誤",
-        },
-      },
+    response.props.data = {
+      ticketId: 0,
+      customerId: "錯誤",
+      dueDate: null,
+      productName: "錯誤",
+      bristleType: "錯誤",
+      model: "錯誤",
+      innerTubeType: "錯誤",
+      bristleDiameter: 0,
+      quantity: 0,
+      alumTubeType: "錯誤",
+      alumRimType: "錯誤",
+      modelNote: "錯誤",
+      donePreparingAt: null,
+      preparedBy: "錯誤",
+      doneTwiningAt: null,
+      twinedBy: "錯誤",
+      doneTrimmingAt: null,
+      trimmedBy: "錯誤",
+      donePackagingAt: null,
+      packagedBy: "錯誤",
+      issuedAt: null,
+      productionNote1: "錯誤",
+      productionNote2: "錯誤",
+      productionNote3: "錯誤",
+      productionNote4: "錯誤",
+      productionNote5: "錯誤",
+      productionNote6: "錯誤",
     };
   }
-  console.log("fetch production ticket from server side success");
+
+  try {
+    const result = await axios(getAllUsersRequest());
+    users = result.data.data;
+  } catch (error) {
+    console.log(error.response.data);
+    console.log("fetch users from server side failed");
+  }
+  console.log("all server side requests success");
   console.log(productionTicket);
+  console.log(users);
 
   return {
     props: {
       data: productionTicket,
+      users: users,
     },
   };
 }
+const userUuidToName = (userArray, uuid) => {
+  let name = undefined;
+  userArray.map((user) => {
+    if (user.userId === uuid) {
+      name = user.name;
+    }
+  });
 
-const dateTimeNullCheck = (dateTime) => {
-  return dateTime === null ? null : dateTime.replace("T", " ");
+  if (name === undefined) {
+    return "錯誤";
+  }
+
+  return name;
 };
+
 const ViewProductionTicket = (props) => {
+  const usersDropDownOptions = [
+    {
+      userId: null,
+      name: "未完成",
+    },
+    ...props.users,
+  ];
   const dispatch = useDispatch();
   const { productionTicket } = useSelector((state) => state.productionTicket);
   const router = useRouter();
@@ -199,15 +229,15 @@ const ViewProductionTicket = (props) => {
       alumTubeType: alumTubeType,
       alumRimType: alumRimType,
       modelNote: modelNote,
-      donePreparingAt: dateTimeNullCheck(donePreparingAt),
+      donePreparingAt: dateTimeNullCheckAndRemoveT(donePreparingAt),
       preparedBy: preparedBy,
-      doneTwiningAt: dateTimeNullCheck(doneTwiningAt),
+      doneTwiningAt: dateTimeNullCheckAndRemoveT(doneTwiningAt),
       twinedBy: twinedBy,
-      doneTrimmingAt: dateTimeNullCheck(doneTrimmingAt),
+      doneTrimmingAt: dateTimeNullCheckAndRemoveT(doneTrimmingAt),
       trimmedBy: trimmedBy,
-      donePackagingAt: dateTimeNullCheck(donePackagingAt),
+      donePackagingAt: dateTimeNullCheckAndRemoveT(donePackagingAt),
       packagedBy: packagedBy,
-      issuedAt: dateTimeNullCheck(issuedAt),
+      issuedAt: dateTimeNullCheckAndRemoveT(issuedAt),
       productionNote1: productionNote1,
       productionNote2: productionNote2,
       productionNote3: productionNote3,
@@ -298,15 +328,7 @@ const ViewProductionTicket = (props) => {
               <span>工單號碼 :</span>
 
               <div className={styles.DataBlockContainer}>
-                {isEditing ? (
-                  <input
-                    value={ticketId}
-                    onChange={(e) => setTicketId(e.target.value)}
-                    type="text"
-                  />
-                ) : (
-                  <span>{productionTicket.ticketId}</span>
-                )}
+                <span>{"BR " + productionTicket.ticketId}</span>
               </div>
             </li>
           </ul>
@@ -487,18 +509,46 @@ const ViewProductionTicket = (props) => {
             <div>備料</div>
             <div className={styles.progressRecordAssigneeContainer}>
               {isEditing ? (
-                <SelectDropDown options={[1, 2]} />
+                <select
+                  name="users"
+                  onChange={(event) => {
+                    setPreparedBy(
+                      usersDropDownOptions[parseInt(event.target.value)].userId
+                    );
+                  }}
+                >
+                  {usersDropDownOptions.map((user, index) => {
+                    if (user.userId == productionTicket.preparedBy) {
+                      // if this progress is not done yet, preparedBy == null
+                      // which should coorsponds to the "未完成" option
+                      return (
+                        <option value={index} selected>
+                          {user.name}
+                        </option>
+                      );
+                    } else {
+                      return <option value={index}>{user.name}</option>;
+                    }
+                  })}
+                </select>
               ) : (
                 <>
-                  {productionTicket.preparedBy == null
-                    ? "未完成"
-                    : productionTicket.preparedBy}
+                  {userUuidToName(
+                    usersDropDownOptions,
+                    productionTicket.preparedBy
+                  )}
                 </>
               )}
             </div>
             <div className={styles.progressRecordTimeContainer}>
               {isEditing ? (
-                <input type="datetime-local" />
+                <input
+                  type="datetime-local"
+                  value={dateTimeNullCheckAndInsertT(donePreparingAt)}
+                  onChange={(event) => {
+                    setDonePreparingAt(event.target.value);
+                  }}
+                />
               ) : (
                 <>{productionTicket.donePreparingAt}</>
               )}
@@ -508,20 +558,46 @@ const ViewProductionTicket = (props) => {
             <div>纏繞</div>
             <div className={styles.progressRecordAssigneeContainer}>
               {isEditing ? (
-                <SelectDropDown options={[1, 2]} />
+                <select
+                  name="users"
+                  onChange={(event) => {
+                    setTwinedBy(
+                      usersDropDownOptions[parseInt(event.target.value)].userId
+                    );
+                  }}
+                >
+                  {usersDropDownOptions.map((user, index) => {
+                    if (user.userId == productionTicket.twinedBy) {
+                      return (
+                        <option value={index} selected>
+                          {user.name}
+                        </option>
+                      );
+                    } else {
+                      return <option value={index}>{user.name}</option>;
+                    }
+                  })}
+                </select>
               ) : (
                 <>
-                  {productionTicket.preparedBy == null
-                    ? "未完成"
-                    : productionTicket.preparedBy}
+                  {userUuidToName(
+                    usersDropDownOptions,
+                    productionTicket.twinedBy
+                  )}
                 </>
               )}
             </div>
             <div className={styles.progressRecordTimeContainer}>
               {isEditing ? (
-                <input type="datetime-local" />
+                <input
+                  type="datetime-local"
+                  value={dateTimeNullCheckAndInsertT(doneTwiningAt)}
+                  onChange={(event) => {
+                    setDoneTwiningAt(event.target.value);
+                  }}
+                />
               ) : (
-                <>{productionTicket.donePreparingAt}</>
+                <>{productionTicket.doneTwiningAt}</>
               )}
             </div>
           </div>
@@ -529,20 +605,46 @@ const ViewProductionTicket = (props) => {
             <div>修剪</div>
             <div className={styles.progressRecordAssigneeContainer}>
               {isEditing ? (
-                <SelectDropDown options={[1, 2]} />
+                <select
+                  name="users"
+                  onChange={(event) => {
+                    setTrimmedBy(
+                      usersDropDownOptions[parseInt(event.target.value)].userId
+                    );
+                  }}
+                >
+                  {usersDropDownOptions.map((user, index) => {
+                    if (user.userId == productionTicket.trimmedBy) {
+                      return (
+                        <option value={index} selected>
+                          {user.name}
+                        </option>
+                      );
+                    } else {
+                      return <option value={index}>{user.name}</option>;
+                    }
+                  })}
+                </select>
               ) : (
                 <>
-                  {productionTicket.preparedBy == null
-                    ? "未完成"
-                    : productionTicket.preparedBy}
+                  {userUuidToName(
+                    usersDropDownOptions,
+                    productionTicket.trimmedBy
+                  )}
                 </>
               )}
             </div>
             <div className={styles.progressRecordTimeContainer}>
               {isEditing ? (
-                <input type="datetime-local" />
+                <input
+                  type="datetime-local"
+                  value={dateTimeNullCheckAndInsertT(doneTrimmingAt)}
+                  onChange={(event) => {
+                    setDoneTrimmingAt(event.target.value);
+                  }}
+                />
               ) : (
-                <>{productionTicket.donePreparingAt}</>
+                <>{productionTicket.doneTrimmingAt}</>
               )}
             </div>
           </div>
@@ -550,20 +652,46 @@ const ViewProductionTicket = (props) => {
             <div>打包</div>
             <div className={styles.progressRecordAssigneeContainer}>
               {isEditing ? (
-                <SelectDropDown options={[1, 2]} />
+                <select
+                  name="users"
+                  onChange={(event) => {
+                    setPackagedBy(
+                      usersDropDownOptions[parseInt(event.target.value)].userId
+                    );
+                  }}
+                >
+                  {usersDropDownOptions.map((user, index) => {
+                    if (user.userId == productionTicket.packagedBy) {
+                      return (
+                        <option value={index} selected>
+                          {user.name}
+                        </option>
+                      );
+                    } else {
+                      return <option value={index}>{user.name}</option>;
+                    }
+                  })}
+                </select>
               ) : (
                 <>
-                  {productionTicket.preparedBy == null
-                    ? "未完成"
-                    : productionTicket.preparedBy}
+                  {userUuidToName(
+                    usersDropDownOptions,
+                    productionTicket.packagedBy
+                  )}
                 </>
               )}
             </div>
             <div className={styles.progressRecordTimeContainer}>
               {isEditing ? (
-                <input type="datetime-local" />
+                <input
+                  type="datetime-local"
+                  value={dateTimeNullCheckAndInsertT(donePackagingAt)}
+                  onChange={(event) => {
+                    setDonePackagingAt(event.target.value);
+                  }}
+                />
               ) : (
-                <>{productionTicket.donePreparingAt}</>
+                <>{productionTicket.donePackagingAt}</>
               )}
             </div>
           </div>
