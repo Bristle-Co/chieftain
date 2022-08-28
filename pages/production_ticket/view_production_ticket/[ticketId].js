@@ -1,7 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Modal from "../../../components/Modal/Modal.js";
 import styles from "./view_production_ticket.module.css";
 import TopBarButton from "../../../components/TopBar/TopBarButton/TopBarButton.js";
 import {
@@ -9,8 +8,6 @@ import {
   IoCheckmarkDoneOutline,
   IoTrashOutline,
   IoReturnUpBack,
-  IoAdd,
-  IoCloseOutline,
   IoCopyOutline,
 } from "react-icons/io5";
 import { IconContext } from "react-icons";
@@ -24,7 +21,7 @@ import {
   updateProductionTicket,
   setProductionTicket,
 } from "../../../components/redux/productionTicket.js";
-
+import SelectDropDown from "../../../components/SelectDropDown/SelectDropDown.js";
 export async function getServerSideProps(context) {
   const { ticketId } = context.query;
   let productionTicket;
@@ -349,48 +346,90 @@ const ViewProductionTicket = (props) => {
           <div>{productionTicket.productionNote6}</div>
         </div>
         <div className={styles.progressRecordListContainer}>
-          <ul className={styles.progressRecordList}>
-            <div>
-              <span>備料</span>
-              <select name="employees" id="employees">
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-              </select>
-              <input type="datetime-local" />
+          <div className={styles.progressRecord}>
+            <div>備料</div>
+            <div className={styles.progressRecordAssigneeContainer}>
+              {isEditing ? (
+                <SelectDropDown options={[1, 2]} />
+              ) : (
+                <>
+                  {productionTicket.preparedBy == null
+                    ? "未完成"
+                    : productionTicket.preparedBy}
+                </>
+              )}
             </div>
-            <div>
-              <span>纏繞</span>
-              <select name="employees" id="employees">
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-              </select>
-              <input type="datetime-local" />
+            <div className={styles.progressRecordTimeContainer}>
+              {isEditing ? (
+                <input type="datetime-local" />
+              ) : (
+                <>{productionTicket.donePreparingAt}</>
+              )}
             </div>
-            <div>
-              <span>修剪</span>
-              <select name="employees" id="employees">
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-              </select>
-              <input type="datetime-local" />
+          </div>
+          <div className={styles.progressRecord}>
+            <div>纏繞</div>
+            <div className={styles.progressRecordAssigneeContainer}>
+              {isEditing ? (
+                <SelectDropDown options={[1, 2]} />
+              ) : (
+                <>
+                  {productionTicket.preparedBy == null
+                    ? "未完成"
+                    : productionTicket.preparedBy}
+                </>
+              )}
             </div>
-            <div>
-              <span>包裝</span>
-              <select name="employees" id="employees">
-                <option value="volvo">Volvo</option>
-                <option value="saab">Saab</option>
-                <option value="mercedes">Mercedes</option>
-                <option value="audi">Audi</option>
-              </select>
-              <input type="datetime-local" />
+            <div className={styles.progressRecordTimeContainer}>
+              {isEditing ? (
+                <input type="datetime-local" />
+              ) : (
+                <>{productionTicket.donePreparingAt}</>
+              )}
             </div>
-          </ul>
+          </div>
+          <div className={styles.progressRecord}>
+            <div>修剪</div>
+            <div className={styles.progressRecordAssigneeContainer}>
+              {isEditing ? (
+                <SelectDropDown options={[1, 2]} />
+              ) : (
+                <>
+                  {productionTicket.preparedBy == null
+                    ? "未完成"
+                    : productionTicket.preparedBy}
+                </>
+              )}
+            </div>
+            <div className={styles.progressRecordTimeContainer}>
+              {isEditing ? (
+                <input type="datetime-local" />
+              ) : (
+                <>{productionTicket.donePreparingAt}</>
+              )}
+            </div>
+          </div>
+          <div className={styles.progressRecord}>
+            <div>打包</div>
+            <div className={styles.progressRecordAssigneeContainer}>
+              {isEditing ? (
+                <SelectDropDown options={[1, 2]} />
+              ) : (
+                <>
+                  {productionTicket.preparedBy == null
+                    ? "未完成"
+                    : productionTicket.preparedBy}
+                </>
+              )}
+            </div>
+            <div className={styles.progressRecordTimeContainer}>
+              {isEditing ? (
+                <input type="datetime-local" />
+              ) : (
+                <>{productionTicket.donePreparingAt}</>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </IconContext.Provider>

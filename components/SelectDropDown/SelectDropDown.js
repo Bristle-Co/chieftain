@@ -1,12 +1,14 @@
 import React from "react";
+import styles from "./SelectDropDown.module.css";
 
-const SelectDropDown = () => {
+const SelectDropDown = (props) => {
   return (
-    <select name="unAssignedProductEntries" id="unAssignedProductEntries">
-      <option value="volvo">Volvo</option>
-      <option value="saab">Saab</option>
-      <option value="mercedes">Mercedes</option>
-      <option value="audi">Audi</option>
+    <select name="unAssignedProductEntries" className={styles.Select}>
+      {props.options == undefined ? (
+        <></>
+      ) : (
+        props.options.map((item) => <option value={item}>{item}</option>)
+      )}
     </select>
   );
 };
