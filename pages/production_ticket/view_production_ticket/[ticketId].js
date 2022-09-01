@@ -42,6 +42,8 @@ export async function getServerSideProps(context) {
 
     response.props.data = {
       ticketId: 0,
+      orderId: 0,
+      productEntryId: "錯誤",
       customerId: "錯誤",
       dueDate: null,
       productName: "錯誤",
@@ -120,6 +122,10 @@ const ViewProductionTicket = (props) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const [ticketId, setTicketId] = useState(props.data.ticketId);
+  const [orderId, setOrderId] = useState(props.data.orderId);
+  const [productEntryId, setProductEntryId] = useState(
+    props.data.productEntryId
+  );
   const [customerId, setCustomerId] = useState(props.data.customerId);
   const [dueDate, setDueDate] = useState(props.data.dueDate);
   const [productName, setProductName] = useState(props.data.productName);
@@ -186,6 +192,8 @@ const ViewProductionTicket = (props) => {
       // Values in useState variables are only used when input is showing,
       // thus we need to sync the useState variables with redux state when input is about to show
       setTicketId(productionTicket.ticketId);
+      setOrderId(productionTicket.orderId);
+      setProductEntryId(productionTicket.productEntryId);
       setCustomerId(productionTicket.customerId);
       setDueDate(productionTicket.dueDate);
       setProductName(productionTicket.productName);
@@ -218,6 +226,8 @@ const ViewProductionTicket = (props) => {
     // TODO validate fields
     const updatedProductionTicket = {
       ticketId: ticketId,
+      orderId: orderId,
+      productEntryId: productEntryId,
       customerId: customerId,
       dueDate: dueDate === null ? null : dueDate,
       productName: productName,
