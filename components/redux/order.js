@@ -3,6 +3,7 @@ import axios from "axios";
 
 const isEqualProductEntry = (org, updated) => {
   if (
+    org.orderId !== updated.orderId ||
     org.model !== updated.model ||
     org.quantity !== updated.quantity ||
     org.price !== updated.price ||

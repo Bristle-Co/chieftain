@@ -126,7 +126,7 @@ const ViewOrder = (props) => {
       customerId: customerId,
       dueDate: dueDate,
       note: note,
-      deliveredAt: deliveredAt === null ? null : deliveredAt.replace("T", " "),
+      deliveredAt: deliveredAt,
       issuedAt: issuedAt,
       // this productEntries field will get override once dispatched to redux thunk
       // thus no need to initiate it
@@ -152,6 +152,7 @@ const ViewOrder = (props) => {
     } else {
       // TODO validate fieds
       const newProductEntry = {
+        orderId: orderId,
         productEntryId: null,
         model: model,
         quantity: quantity,

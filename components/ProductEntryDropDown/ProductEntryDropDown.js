@@ -22,6 +22,7 @@ const ProductEntryDropDown = ({ index, data }) => {
   const handleEditing = () => {
     if (isEditing) {
       const updatedProductEntry = {
+        orderId: data.orderId,
         productEntryId: data.productEntryId,
         model: model,
         quantity: quantity,
