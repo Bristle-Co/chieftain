@@ -38,13 +38,14 @@ export const updateProductionTicket = createAsyncThunk(
           "PUT request to update production ticket sent successfully"
         );
         console.log(putRequestResponse);
+        console.log(updatedProductionTicket.ticketId);
 
         const getRequestResponse = await axios({
           method: "GET",
           url: "/production_ticket",
           baseURL: process.env.backendServerBaseURI,
           params: {
-            productTicketId: updatedProductionTicket.productTicketId,
+            ticketId: updatedProductionTicket.ticketId,
             pageIndex: 0,
             // there should only be one productionTicket
             pageSize: 1,
