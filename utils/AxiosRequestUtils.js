@@ -27,6 +27,24 @@ export const deleteOrderRequest = (orderId) => ({
   },
 });
 
+export const getUnAssignedProductEntryRequest = () => ({
+  method: "GET",
+  url: "/order/product_entries",
+  baseURL: process.env.backendServerBaseURI,
+  params: {
+    isUnAssigned: true,
+  },
+});
+
+export const getProductEntryById = (productEntryId) => ({
+  method: "GET",
+  url: "/order/product_entries",
+  baseURL: process.env.backendServerBaseURI,
+  params: {
+    productEntryId: productEntryId,
+  },
+});
+
 ////// production tickets //////
 export const getProductionTicketByIdRequest = (ticketId) => ({
   method: "GET",
@@ -43,8 +61,7 @@ export const deleteProductionTicketByIdRequest = (ticketId) => ({
   url: "/production_ticket",
   baseURL: process.env.backendServerBaseURI,
   params: {
-    orderId: ticketId,
-    pageIndex: 0,
+    ticketId: ticketId,
   },
 });
 

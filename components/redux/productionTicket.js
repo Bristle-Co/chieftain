@@ -24,7 +24,10 @@ export const updateProductionTicket = createAsyncThunk(
       !isEqualProductionTicket(orgProductionTicket, updatedProductionTicket)
     ) {
       try {
-        console.log("sending PUT request to update single production ticket");
+        console.log(
+          "sending PUT request to update single production ticket, ticketId: " +
+            updatedProductionTicket.ticketId
+        );
         console.log(updatedProductionTicket);
         const putRequestResponse = await axios({
           method: "PUT",
@@ -35,10 +38,10 @@ export const updateProductionTicket = createAsyncThunk(
         // response.data is the ResponseWrapper entity from backend
         // ignore putRequestResponse as long as it's successful
         console.log(
-          "PUT request to update production ticket sent successfully"
+          "PUT request to update production ticket sent successfully, ticketId: " +
+            updatedProductionTicket.ticketId
         );
         console.log(putRequestResponse);
-        console.log(updatedProductionTicket.ticketId);
 
         const getRequestResponse = await axios({
           method: "GET",

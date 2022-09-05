@@ -15,6 +15,8 @@ import {
   getProductionTicketByIdRequest,
   deleteProductionTicketByIdRequest,
   getAllUsersRequest,
+  getUnAssignedProductEntryRequest,
+  getProductEntryById,
 } from "../../../utils/AxiosRequestUtils.js";
 import Link from "next/link.js";
 import { useRouter } from "next/router";
@@ -31,7 +33,8 @@ export async function getServerSideProps(context) {
   const { ticketId } = context.query;
   let productionTicket;
   let users;
-  const response = { props: {} };
+  let unAssignedProductEntries;
+  let existingProductEntry;
 
   try {
     const result = await axios(getProductionTicketByIdRequest(ticketId));
@@ -40,7 +43,7 @@ export async function getServerSideProps(context) {
     console.log(error.response.data);
     console.log("fetch production ticket from server side failed");
 
-    response.props.data = {
+    productionTicket = {
       ticketId: 0,
       orderId: 0,
       productEntryId: "錯誤",
@@ -77,17 +80,75 @@ export async function getServerSideProps(context) {
     const result = await axios(getAllUsersRequest());
     users = result.data.data;
   } catch (error) {
+    users = {
+      userId: "error",
+      name: "error",
+    };
     console.log(error.response.data);
     console.log("fetch users from server side failed");
   }
-  console.log("all server side requests success");
-  console.log(productionTicket);
-  console.log(users);
 
+  try {
+    const result = await axios(getUnAssignedProductEntryRequest());
+    unAssignedProductEntries = result.data.data;
+  } catch (error) {
+    unAssignedProductEntries = [
+      {
+        productEntryId: "error",
+        model: "error",
+        quantity: 0,
+        price: 0,
+        productTicketId: "error",
+        orderId: 0,
+      },
+    ];
+    console.log(error.response.data);
+    console.log("fetch unassigned product entries from server side failed");
+  }
+
+  try {
+    const result = await axios(
+      getProductEntryById(productionTicket.productEntryId)
+    );
+    existingProductEntry =
+      result.data.data.length === 0
+        ? {
+            productEntryId: productionTicket.productEntryId,
+            model: productionTicket.model,
+            quantity: productionTicket.quantity,
+            price: 0,
+            productTicketId: productionTicket.ticketId,
+            orderId: productionTicket.orderId,
+          }
+        : result.data.data[0];
+  } catch (error) {
+    (existingProductEntry = {
+      productEntryId: productionTicket.productEntryId,
+      model: productionTicket.model,
+      quantity: productionTicket.quantity,
+      price: 0,
+      productTicketId: productionTicket.ticketId,
+      orderId: productionTicket.orderId,
+    }),
+      console.log(error.response.data);
+    console.log("fetch existed product entry by id from server side failed");
+  }
+
+  console.log("all server side requests finished");
+  console.log("Production Ticket with id: " + ticketId);
+  console.log(productionTicket);
+  console.log("All available users");
+  console.log(users);
+  console.log("All unassigned product entries");
+  console.log(unAssignedProductEntries);
+  console.log("Product entry assigned to current production ticket");
+  console.log(existingProductEntry);
   return {
     props: {
       data: productionTicket,
       users: users,
+      unAssignedProductEntries: unAssignedProductEntries,
+      existingProductEntry: existingProductEntry,
     },
   };
 }
@@ -174,7 +235,7 @@ const ViewProductionTicket = (props) => {
   );
 
   const handleDeleting = () => {
-    axios(deleteOrderRequest(orderId))
+    axios(deleteProductionTicketByIdRequest(orderId))
       .then((result) => {
         alert("刪除訂購單成功！");
         console.log("delete order success");
@@ -324,13 +385,30 @@ const ViewProductionTicket = (props) => {
               <div className={styles.DataBlockContainer}>
                 <select
                   onSubmit={() => {}}
-                  name="unAssignedProductEntries"
-                  id="unAssignedProductEntries"
+                  name="availableProductEntries"
+                  id="availableProductEntries"
                 >
-                  <option value="volvo">Volvo</option>
-                  <option value="saab">Saab</option>
-                  <option value="mercedes">Mercedes</option>
-                  <option value="audi">Audi</option>
+                  <option
+                    value={props.existingProductEntry.productEntryId}
+                    selected
+                  >
+                    {"訂單號碼: " +
+                      props.existingProductEntry.orderId +
+                      " 規格: " +
+                      props.existingProductEntry.model +
+                      " 數量: " +
+                      props.existingProductEntry.quantity}
+                  </option>
+                  {props.unAssignedProductEntries.map((item) => (
+                    <option value={item.productEntryId}>
+                      {"訂單號碼: " +
+                        item.orderId +
+                        " 規格: " +
+                        item.model +
+                        " 數量: " +
+                        item.quantity}
+                    </option>
+                  ))}
                 </select>
               </div>
             </li>
