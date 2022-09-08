@@ -80,10 +80,12 @@ export async function getServerSideProps(context) {
     const result = await axios(getAllUsersRequest());
     users = result.data.data;
   } catch (error) {
-    users = {
-      userId: "error",
-      name: "error",
-    };
+    users = [
+      {
+        userId: "error",
+        name: "error",
+      },
+    ];
     console.log(error.response.data);
     console.log("fetch users from server side failed");
   }
@@ -110,6 +112,7 @@ export async function getServerSideProps(context) {
             price: 0,
             productTicketId: productionTicket.ticketId,
             orderId: productionTicket.orderId,
+            customerId: productionTicket.customerId,
           }
         : result.data.data[0];
   } catch (error) {
@@ -230,15 +233,20 @@ const ViewProductionTicket = (props) => {
     props.unAssignedProductEntries
   );
   const handleProductEntryChange = (index) => {
+    console.log(index);
     const selectedProductEntry =
-      index == -1
-        ? props.existingProductEntry
-        : props.unAssignedProductEntries[index];
+      index == -1 ? existingProductEntry : unAssignedProductEntries[index];
+    console.log("now prouct entry");
+    console.log(selectedProductEntry);
+    setProductEntryId(selectedProductEntry.productEntryId);
     setModel(selectedProductEntry.model);
     setOrderId(selectedProductEntry.orderId);
+    setCustomerId(selectedProductEntry.customerId);
+    setQuantity(selectedProductEntry.quantity);
   };
+  ``;
   const refetchAvailableProductEntries = () => {
-    axios(getProductEntryById(props.data.productEntryId))
+    axios(getProductEntryById(productionTicket.productEntryId))
       .then((result) => {
         console.log("fetch existing product entry success");
         console.log(result.data);
@@ -364,7 +372,7 @@ const ViewProductionTicket = (props) => {
   }, []);
   useEffect(() => {
     refetchAvailableProductEntries();
-  }, [productionTicket.orderId, productionTicket.productEntryId]);
+  }, [productionTicket.productEntryId]);
   return (
     <IconContext.Provider
       value={{ color: "var(--brown)", height: "100%", width: "100%" }}
@@ -402,7 +410,9 @@ const ViewProductionTicket = (props) => {
               <span>客戶名稱 :</span>
               {/* cusomterId should not be editable since it is already defined when order is issued */}
               <div className={styles.DataBlockContainer}>
-                <span>{productionTicket.customerId}</span>
+                <span>
+                  {isEditing ? customerId : productionTicket.customerId}
+                </span>
               </div>
             </li>
             <li>
@@ -436,6 +446,8 @@ const ViewProductionTicket = (props) => {
                     <option value={-1} selected>
                       {"訂單號碼: " +
                         existingProductEntry.orderId +
+                        " 客戶代號: " +
+                        existingProductEntry.customerId +
                         " 規格: " +
                         existingProductEntry.model +
                         " 數量: " +
@@ -445,6 +457,8 @@ const ViewProductionTicket = (props) => {
                       <option value={index}>
                         {"訂單號碼: " +
                           item.orderId +
+                          " 客戶代號: " +
+                          item.customerId +
                           " 規格: " +
                           item.model +
                           " 數量: " +
