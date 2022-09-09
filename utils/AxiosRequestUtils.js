@@ -65,6 +65,13 @@ export const deleteProductionTicketByIdRequest = (ticketId) => ({
   },
 });
 
+export const createProductionTicketRequest = (productionTicket) => ({
+  method: "POST",
+  url: "/production_ticket",
+  baseURL: process.env.backendServerBaseURI,
+  data: productionTicket,
+});
+
 ////// users //////
 export const getAllUsersRequest = () => ({
   method: "GET",

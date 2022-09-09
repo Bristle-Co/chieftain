@@ -378,7 +378,7 @@ const ViewProductionTicket = (props) => {
       value={{ color: "var(--brown)", height: "100%", width: "100%" }}
     >
       <div className={styles.Container}>
-        <div key="test" className="TopButtonContainer">
+        <div className="TopButtonContainer">
           <TopBarButton onClick={() => window.history.back()}>
             <IoReturnUpBack />
           </TopBarButton>
@@ -515,6 +515,7 @@ const ViewProductionTicket = (props) => {
                 className={styles.GridInput}
                 value={quantity}
                 onChange={(e) => setQuantity(e.target.value)}
+                type="number"
               />
             ) : (
               <> {productionTicket.quantity}</>
@@ -537,6 +538,8 @@ const ViewProductionTicket = (props) => {
                 className={styles.GridInput}
                 value={bristleDiameter}
                 onChange={(e) => setBristleDiameter(e.target.value)}
+                type="number"
+                step="0.1"
               />
             ) : (
               <> {productionTicket.bristleDiameter}</>

@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import _ from "lodash";
+import { createProductionTicketRequest } from "../../utils/AxiosRequestUtils.js";
 
 const isEqualProductionTicket = (org, updated) => {
   return _.isEqual(org, updated);
@@ -70,6 +71,29 @@ export const updateProductionTicket = createAsyncThunk(
       }
     } else {
       return thunkAPI.fulfillWithValue({ noChange: true });
+    }
+  }
+);
+
+export const createProductionTicket = createAsyncThunk(
+  "productionTicket/postProductionTicket",
+  async (createdProductionTicket, thunkAPI) => {
+    try {
+      console.log(createdProductionTicket);
+      const postRequestResponse = await axios(
+        createProductionTicketRequest(createdProductionTicket)
+      );
+      console.log("POST request to create production ticket sent successfully");
+      console.log(postRequestResponse.data);
+
+      // response.data is the ResponseWrapper entity from backend
+      // response.data.data should contain an productionTicket
+      return thunkAPI.fulfillWithValue(postRequestResponse.data);
+    } catch (error) {
+      console.log("POST request to create production ticket failed");
+      console.log(error.response.data);
+
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -280,6 +304,19 @@ export const productionTicketSlice = createSlice({
       .addCase(getProductionTickets.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
+      })
+      .addCase(createProductionTicket.fulfilled, (state, action) => {
+        state.status = "success";
+        alert("成功新增製造工單");
+        window.history.replace("/production_ticket");
+      })
+      .addCase(createProductionTicket.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+        alert("新增製造工單失敗, 聯絡鞍");
+      })
+      .addCase(createProductionTicket.pending, (state, action) => {
+        state.status = "loading";
       });
   },
 });

@@ -1,0 +1,225 @@
+.Container {
+  margin-left: 3vw;
+  margin-right: 3vw;
+  margin-top: 1vh;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.GridContainer {
+  display: grid;
+  background-color: var(--brown);
+  grid-auto-rows: minmax(30px, auto);
+  grid-template-columns: 10% auto 7% 10% 10% 10%;
+  grid-row-gap: 2px;
+  grid-column-gap: 2px;
+  padding: 2px;
+}
+
+.GridContainer div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+
+  /* break-work don't work with flexbox */
+  /* but mom's data is most likely not going to exceed max width, so we choose to scroll if it goes over */
+  /* overflow-wrap: break-word; */
+  text-align: center;
+  align-items: center;
+}
+
+.GridInput {
+  height: 100%;
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0%;
+}
+
+.GridContainer div:nth-child(13) {
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.GridContainer div:nth-child(14) {
+  grid-column-start: 3;
+  grid-column-end: 4;
+}
+
+.GridContainer div:nth-child(15) {
+  grid-column-start: 4;
+  grid-column-end: 7;
+}
+
+.GridContainer div:nth-child(16),
+.GridContainer div:nth-child(18),
+.GridContainer div:nth-child(20),
+.GridContainer div:nth-child(22),
+.GridContainer div:nth-child(24),
+.GridContainer div:nth-child(26) {
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+.GridContainer div:nth-child(17),
+.GridContainer div:nth-child(19),
+.GridContainer div:nth-child(21),
+.GridContainer div:nth-child(23),
+.GridContainer div:nth-child(25),
+.GridContainer div:nth-child(27) {
+  grid-column-start: 2;
+  grid-column-end: 7;
+}
+
+.LeftExtraInfoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.LeftExtraInfoList li {
+  margin-top: 10px;
+  display: flex;
+}
+.LeftExtraInfoList li:first-child {
+  margin-top: 0;
+}
+
+.RightExtraInfoList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.RightExtraInfoList li {
+  display: flex;
+  margin-top: 10px;
+}
+
+.RightExtraInfoList li:first-child {
+  margin-top: 0;
+}
+
+.RightExtraInfoList li:first-childselect {
+  width: 10em;
+}
+
+.ExtraInfoContainer {
+  display: flex;
+  padding: 2vh 6vw 2vh 6vw;
+  margin-top: 3vh;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.ExtraInfoContainer input {
+  flex-grow: 1;
+}
+
+.ExtraInfoContainer select {
+  flex-grow: 1;
+}
+
+.DataBlockContainer {
+  height: 1.5em;
+  display: inline-flex;
+  margin-left: 5px;
+  flex-grow: 1;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.progressRecordListContainer {
+  display: flex;
+  width: 100%;
+  overflow-wrap: break-word;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.progressRecord {
+  flex-grow: 1;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+  padding: 15px;
+  background-color: azure;
+  margin-right: 3vw;
+}
+
+.progressRecordListContainer :last-child {
+  margin-right: 0;
+}
+
+.progressRecordAssigneeContainer {
+  display: flex;
+  margin-top: 10px;
+  font-size: 0.8em;
+}
+
+.progressRecordAssigneeContainer select {
+  flex-grow: 1;
+  border: solid 1px var(--brown);
+  border-radius: 0.2em;
+}
+
+.progressRecordTimeContainer {
+  display: flex;
+  margin-top: 5px;
+  font-size: 0.8em;
+}
+
+.progressRecordTimeContainer input {
+  /* for some reason this width attribute is needed to make flex-grow:1 work */
+  flex-grow: 1;
+  border: 1px var(--brown) solid;
+  border-radius: 0.2em;
+}
+
+.missingUnAssignedProductEntriesDialog {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 20vh;
+  width: 30vw;
+  border: solid 1px var(--brown);
+  border-radius: 20px;
+  background-color: white;
+}
+
+.goToAddOrderBTN {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 4em;
+  height: 2em;
+  margin-top: 20px;
+  border: solid 1px var(--brown);
+  border-radius: 10px;
+  background-color: var(--yellow);
+
+  /* make text unselectable */
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.goToAddOrderBTN:active {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 4em;
+  height: 2em;
+  margin-top: 20px;
+  border: solid 1px var(--brown);
+  border-radius: 10px;
+  background-color: var(--brown);
+}
