@@ -8,15 +8,92 @@ import { IconContext } from "react-icons";
 import {
   getAllUsersRequest,
   getUnAssignedProductEntryRequest,
+  getProductionTicketByIdRequest,
 } from "../../../utils/AxiosRequestUtils.js";
 import { createProductionTicket } from "../../../components/redux/productionTicket.js";
 import { dateTimeNullCheckAndInsertT } from "../../../utils/UtilFunctions.js";
 import Modal from "../../../components/Modal/Modal.js";
 
 export async function getServerSideProps(context) {
+  const { ticketId } = context.query;
   let users;
   let unAssignedProductEntries;
   let canCreateProductionTicket;
+  let duplicatedProductionTicket;
+
+  if (ticketId !== undefined && ticketId !== null) {
+    try {
+      const result = await axios(getProductionTicketByIdRequest(ticketId));
+      duplicatedProductionTicket = result.data.data[0];
+    } catch (error) {
+      console.log(error.response.data);
+      console.log("fetch production ticket from server side failed");
+
+      duplicatedProductionTicket = {
+        ticketId: 0,
+        orderId: 0,
+        productEntryId: "",
+        customerId: "",
+        dueDate: null,
+        productName: "",
+        bristleType: "",
+        model: "",
+        innerTubeType: "",
+        bristleDiameter: null,
+        quantity: null,
+        alumTubeType: "",
+        alumRimType: "",
+        modelNote: "",
+        donePreparingAt: null,
+        preparedBy: "",
+        doneTwiningAt: null,
+        twinedBy: "",
+        doneTrimmingAt: null,
+        trimmedBy: "",
+        donePackagingAt: null,
+        packagedBy: "",
+        issuedAt: null,
+        productionNote1: "",
+        productionNote2: "",
+        productionNote3: "",
+        productionNote4: "",
+        productionNote5: "",
+        productionNote6: "",
+      };
+    }
+  } else {
+    duplicatedProductionTicket = {
+      ticketId: 0,
+      orderId: 0,
+      productEntryId: "",
+      customerId: "",
+      dueDate: null,
+      productName: "",
+      bristleType: "",
+      model: "",
+      innerTubeType: "",
+      bristleDiameter: null,
+      quantity: null,
+      alumTubeType: "",
+      alumRimType: "",
+      modelNote: "",
+      donePreparingAt: null,
+      preparedBy: "",
+      doneTwiningAt: null,
+      twinedBy: "",
+      doneTrimmingAt: null,
+      trimmedBy: "",
+      donePackagingAt: null,
+      packagedBy: "",
+      issuedAt: null,
+      productionNote1: "",
+      productionNote2: "",
+      productionNote3: "",
+      productionNote4: "",
+      productionNote5: "",
+      productionNote6: "",
+    };
+  }
 
   try {
     const result = await axios(getAllUsersRequest());
@@ -59,6 +136,7 @@ export async function getServerSideProps(context) {
       users: users,
       canCreateProductEntry: canCreateProductionTicket,
       unAssignedProductEntries: unAssignedProductEntries,
+      duplicatedProductionTicket: duplicatedProductionTicket,
     },
   };
 }
@@ -82,33 +160,60 @@ const AddTicket = (props) => {
   const [customerId, setCustomerId] = useState(
     props.unAssignedProductEntries[0].customerId
   );
-  const [dueDate, setDueDate] = useState("");
-  const [productName, setProductName] = useState("");
-  const [bristleType, setBristleType] = useState("");
+  const [dueDate, setDueDate] = useState(
+    props.duplicatedProductionTicket.dueDate
+  );
+  const [productName, setProductName] = useState(
+    props.duplicatedProductionTicket.productName
+  );
+  const [bristleType, setBristleType] = useState(
+    props.duplicatedProductionTicket.bristleType
+  );
   const [model, setModel] = useState(props.unAssignedProductEntries[0].model);
-  const [innerTubeType, setInnerTubeType] = useState("");
-  const [bristleDiameter, setBristleDiameter] = useState(null);
+  const [innerTubeType, setInnerTubeType] = useState(
+    props.duplicatedProductionTicket.innerTubeType
+  );
+  const [bristleDiameter, setBristleDiameter] = useState(
+    props.duplicatedProductionTicket.bristleDiameter
+  );
   const [quantity, setQuantity] = useState(
     props.unAssignedProductEntries[0].quantity
   );
-  const [alumTubeType, setAlumTubeType] = useState("");
-  const [alumRimType, setAlumRimType] = useState("");
-  const [modelNote, setModelNote] = useState("");
-  const [donePreparingAt, setDonePreparingAt] = useState("");
-  const [preparedBy, setPreparedBy] = useState("");
-  const [doneTwiningAt, setDoneTwiningAt] = useState("");
-  const [twinedBy, setTwinedBy] = useState("");
-  const [doneTrimmingAt, setDoneTrimmingAt] = useState("");
-  const [trimmedBy, setTrimmedBy] = useState("");
-  const [donePackagingAt, setDonePackagingAt] = useState("");
-  const [packagedBy, setPackagedBy] = useState("");
-  const [issuedAt, setIssuedAt] = useState("");
-  const [productionNote1, setProductionNote1] = useState("");
-  const [productionNote2, setProductionNote2] = useState("");
-  const [productionNote3, setProductionNote3] = useState("");
-  const [productionNote4, setProductionNote4] = useState("");
-  const [productionNote5, setProductionNote5] = useState("");
-  const [productionNote6, setProductionNote6] = useState("");
+  const [alumTubeType, setAlumTubeType] = useState(
+    props.duplicatedProductionTicket.alumTubeType
+  );
+  const [alumRimType, setAlumRimType] = useState(
+    props.duplicatedProductionTicket.alumRimType
+  );
+  const [modelNote, setModelNote] = useState(
+    props.duplicatedProductionTicket.modelNote
+  );
+  const [donePreparingAt, setDonePreparingAt] = useState(null);
+  const [preparedBy, setPreparedBy] = useState(null);
+  const [doneTwiningAt, setDoneTwiningAt] = useState(null);
+  const [twinedBy, setTwinedBy] = useState(null);
+  const [doneTrimmingAt, setDoneTrimmingAt] = useState(null);
+  const [trimmedBy, setTrimmedBy] = useState(null);
+  const [donePackagingAt, setDonePackagingAt] = useState(null);
+  const [packagedBy, setPackagedBy] = useState(null);
+  const [productionNote1, setProductionNote1] = useState(
+    props.duplicatedProductionTicket.productionNote1
+  );
+  const [productionNote2, setProductionNote2] = useState(
+    props.duplicatedProductionTicket.productionNote2
+  );
+  const [productionNote3, setProductionNote3] = useState(
+    props.duplicatedProductionTicket.productionNote3
+  );
+  const [productionNote4, setProductionNote4] = useState(
+    props.duplicatedProductionTicket.productionNote4
+  );
+  const [productionNote5, setProductionNote5] = useState(
+    props.duplicatedProductionTicket.productionNote5
+  );
+  const [productionNote6, setProductionNote6] = useState(
+    props.duplicatedProductionTicket.productionNote6
+  );
 
   const handleProductEntryChange = (index) => {
     console.log(index);
@@ -146,7 +251,7 @@ const AddTicket = (props) => {
       trimmedBy: trimmedBy,
       donePackagingAt: donePackagingAt,
       packagedBy: packagedBy,
-      issuedAt: issuedAt,
+      issuedAt: null,
       productionNote1: productionNote1,
       productionNote2: productionNote2,
       productionNote3: productionNote3,
