@@ -308,7 +308,7 @@ export const productionTicketSlice = createSlice({
       .addCase(createProductionTicket.fulfilled, (state, action) => {
         state.status = "success";
         alert("成功新增製造工單");
-        window.history.replace("/production_ticket");
+        window.location.replace("/production_ticket");
       })
       .addCase(createProductionTicket.rejected, (state, action) => {
         state.status = "failed";

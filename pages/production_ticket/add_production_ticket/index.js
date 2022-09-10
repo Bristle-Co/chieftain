@@ -16,7 +16,7 @@ import Modal from "../../../components/Modal/Modal.js";
 export async function getServerSideProps(context) {
   let users;
   let unAssignedProductEntries;
-  let canCreateProductEntry;
+  let canCreateProductionTicket;
 
   try {
     const result = await axios(getAllUsersRequest());
@@ -41,7 +41,8 @@ export async function getServerSideProps(context) {
   console.log(users);
   console.log("All unassigned product entries");
   console.log(unAssignedProductEntries);
-  if (unAssignedProductEntries.length === 0) {
+  canCreateProductionTicket = unAssignedProductEntries.length === 0;
+  if (canCreateProductionTicket) {
     unAssignedProductEntries = [
       {
         productEntryId: "無資料",
@@ -56,7 +57,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       users: users,
-      canCreateProductEntry: unAssignedProductEntries.length !== 0,
+      canCreateProductEntry: canCreateProductionTicket,
       unAssignedProductEntries: unAssignedProductEntries,
     },
   };
